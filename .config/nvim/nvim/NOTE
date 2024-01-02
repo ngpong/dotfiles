@@ -1,0 +1,82 @@
+----------------------------------------------------------------------------------
+lua版本5.1
+
+需要安装 luatz 库
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+使用终端的时候需要设置终端映射键，参考:
+  1. https://www.reddit.com/r/neovim/comments/12hyi9t/make_scr_cscr_stab_ctab_work_in_neovim_kitty/
+  2. https://www.reddit.com/r/neovim/comments/mbj8m5/how_to_setup_ctrlshiftkey_mappings_in_neovim_and/
+
+以下配置以 windows terimal 为例:
+{
+  "actions": [
+     {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[13;2u"
+      },
+      "keys": "shift+enter"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[13;5u"
+      },
+      "keys": "ctrl+enter"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[91;5u"
+      },
+      "keys": "ctrl+["
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[88;5u"
+      },
+      "keys": "ctrl+shift+x"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[59;5u"
+      },
+      "keys": "ctrl+;"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[90;5u"
+      },
+      "keys": "ctrl+shift+z"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[80;5u"
+      }
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[58;5u"
+      },
+      "keys": "ctrl+shift+;"
+    },
+  ]
+}
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+我自己fork出来的插件，需要定期同步上游修改
+
+NGPONG/multicursors.nvim
+NGPONG/hydra.nvim
+NGPONG/telescope-live-grep-args.nvim
+NGPONG/trouble.nvim
+NGPONG/which-key.nvim
+----------------------------------------------------------------------------------

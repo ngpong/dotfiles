@@ -1,0 +1,16 @@
+有时间去实现一下，看上去挺简单 https://github.com/p00f/clangd_extensions.nvim/issues/33
+
+Trouble 偶尔会报错，还没找到原因
+
+1. nvim-lint?
+2. cland-tidy?
+3. rmagatti/goto-preview?
+
+一些参考的项目
+1. https://github.com/NvChad/NvChad
+2. https://github.com/CosmicNvim/CosmicNvim
+3. https://github.com/LunarVim/LunarVim9
+4. https://github.com/tjdevries/config_manager/tree/78608334a7803a0de1a08a9a4bd1b03ad2a5eb11/xdg_config/nvim
+5. https://github.com/AstroNvim/AstroNvim
+6. https://github.com/TwIStOy/dotvim/tree/master/src
+7. https://github.com/CosmicNvim/CosmicNvim/blob/94a13ed01775c1ea72db650df2144dfc119fc7ed/lua/cosmic/lsp/diagnostics/init.lua#L2
