@@ -41,8 +41,8 @@ M.setup = function()
   })
   ls.add_snippets('cpp', {
     ls.parser.parse_snippet(
-      { trig = 'st', name = 'Starter Template.', desc = 'Standard starter template for a tiny cpp program' },
-      "#include <iostream>\n\nint main (int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}"
+      { trig = 'bmk', name = 'Benchmark Template.', desc = 'Google benchmark template for a tiny cpp program' },
+      "#include <benchmark/benchmark.h>\n\nvoid foo(benchmark::State& state) {\n\tfor (auto _: state) {}\n}\nBENCHMARK(foo);\n\nBENCHMARK_MAIN();"
     )
   })
 end

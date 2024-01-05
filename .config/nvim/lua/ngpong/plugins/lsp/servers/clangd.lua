@@ -96,9 +96,10 @@ local setup_server = function(cfg)
       '--limit-references=30',
       '--limit-results=30',
       '--include-cleaner-stdlib',
+      -- '--log=error'
     },
     single_file_support = true,
-    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'tcc' },
     capabilities = cfg.cli_capabilities({ snippetSupport = false }),
     on_attach = cfg.on_attach(function()
       -- inlay_hints.setup_autocmd()
