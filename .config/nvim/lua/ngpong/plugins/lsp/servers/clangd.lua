@@ -84,16 +84,17 @@ local setup_server = function(cfg)
     cmd = {
       'clangd',
       '-j=16',
-      '--clang-tidy',
+      -- '--clang-tidy',
       '--background-index',
       '--background-index-priority=normal',
       '--ranking-model=decision_forest',
       '--completion-style=detailed',
+      -- '--compile-commands-dir=/home/ngpong/code/cpp/CPP-Study-02/TEST/TEST_93/',
       '--header-insertion=never', -- iwyu
       '--header-insertion-decorators=false',
       '--malloc-trim',
       '--pch-storage=memory',
-      '--limit-references=30',
+      '--limit-references=0',
       '--limit-results=30',
       '--include-cleaner-stdlib',
       -- '--log=error'

@@ -1,0 +1,6 @@
+If:
+  PathMatch: [/usr/include/c\+\+/.*, /usr/include/x86_64-linux-gnu/c\+\+/.*, /usr/local/include/.*]
+CompileFlags:
+  Add: -ferror-limit=0
+Diagnostics:
+  Suppress: '*'
