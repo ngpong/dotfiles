@@ -74,6 +74,14 @@ local set_cmdline_keymaps = function(...)
         fallback()
       end
     end, { e_mode.COMMAND }),
+    ['<CR>'] = cmp.mapping(function(fallback)
+      if cmp.visible() and cmp.get_selected_entry() then
+        cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
+      else
+        HELPER.feedkeys('<C-]>')
+        HELPER.feedkeys('<CR>')
+      end
+    end, { e_mode.COMMAND }),
     ['<A-,>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         if #cmp.get_entries() > 1 then
