@@ -11,6 +11,7 @@ M.setup = function()
       'vim',
       'vimdoc',
       'regex',
+      'json',
       'lua',
       'bash',
       'markdown',

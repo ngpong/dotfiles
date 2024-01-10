@@ -101,6 +101,8 @@ local set_plugin_keymaps = function()
       ['<leader>c'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>p'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>P'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<leader>j'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<leader>J'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<HOME>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<END>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['d'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),

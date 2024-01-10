@@ -10,7 +10,6 @@ local e_mode = keymap.e_mode
 local e_events = events.e_name
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'gg', this.api.toggle_gitsymbols_list, { silent = true, remap = false, desc = 'toggle gitsigns list.' })
 end
 
 local del_buffer_keymaps = function(bufnr)
@@ -26,6 +25,7 @@ end
 local set_buffer_keymaps = function(bufnr)
   set_buffer_extra_keymaps(bufnr)
 
+  keymap.register(e_mode.NORMAL, 'gg', this.api.toggle_gitsymbols_list, { buffer = bufnr, silent = true, remap = false, desc = 'toggle gitsigns list.' })
   keymap.register(e_mode.NORMAL, 'g,', gitsigns.prev_hunk, { buffer = bufnr, desc = 'jump to prev hunk.' })
   keymap.register(e_mode.NORMAL, 'g.', gitsigns.next_hunk, { buffer = bufnr, desc = 'jump to next hunk.' })
   keymap.register(e_mode.NORMAL, 'ghs', gitsigns.select_hunk, { buffer = bufnr, desc = 'select current hunk.' })

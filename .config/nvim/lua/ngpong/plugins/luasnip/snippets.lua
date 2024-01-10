@@ -13,7 +13,9 @@ local postfix = ls_postfix.postfix
 
 M.setup = function()
   -- vscode snippets
-  require('luasnip.loaders.from_vscode').lazy_load()
+  require('luasnip.loaders.from_vscode').lazy_load {
+    exclude = { 'lua' }, -- luals 不支持禁用内置 snippets，为了使完成更加存粹，禁用掉这里的
+  }
 
   -- snippets write by lua
   ls.add_snippets('all', {

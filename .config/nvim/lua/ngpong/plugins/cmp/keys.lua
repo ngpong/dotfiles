@@ -4,6 +4,7 @@ local keymap  = require('ngpong.common.keybinder')
 local events  = require('ngpong.common.events')
 local lazy    = require('ngpong.utils.lazy')
 local cmp     = lazy.require('cmp')
+local cmp_cfg = lazy.require('cmp.config')
 local luasnip = lazy.require('luasnip')
 
 local this     = PLGS.cmp
@@ -13,19 +14,21 @@ local e_events = events.e_name
 
 local set_global_keymaps = function(...)
   return {
-    ['<CR>'] = cmp.mapping(function(fallback)
-      if cmp.visible() and cmp.get_selected_entry() then
-        ls.api.unlink_current_if_expandable()
-        cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
-      else
-        fallback()
-      end
-    end, { e_mode.INSERT }),
-    ['<C-CR>'] = cmp.mapping(function(fallback)
+    -- ['<CR>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() and cmp.get_selected_entry() then
+    --     ls.api.unlink_current_if_expandable()
+    --     cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
+    --   else
+    --     fallback()
+    --   end
+    -- end, { e_mode.INSERT }),
+    ['<C-h>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         if cmp.visible_docs() then
+          cmp_cfg.get().view.docs.auto_open = false
           cmp.close_docs()
         else
+          cmp_cfg.get().view.docs.auto_open = true
           cmp.open_docs()
         end
       else
@@ -74,14 +77,14 @@ local set_cmdline_keymaps = function(...)
         fallback()
       end
     end, { e_mode.COMMAND }),
-    ['<CR>'] = cmp.mapping(function(fallback)
-      if cmp.visible() and cmp.get_selected_entry() then
-        cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
-      else
-        HELPER.feedkeys('<C-]>')
-        HELPER.feedkeys('<CR>')
-      end
-    end, { e_mode.COMMAND }),
+    -- ['<CR>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() and cmp.get_selected_entry() then
+    --     cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
+    --   else
+    --     HELPER.feedkeys('<C-]>')
+    --     HELPER.feedkeys('<CR>')
+    --   end
+    -- end, { e_mode.COMMAND }),
     ['<A-,>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         if #cmp.get_entries() > 1 then

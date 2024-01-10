@@ -84,12 +84,11 @@ local setup_server = function(cfg)
     cmd = {
       'clangd',
       '-j=16',
-      -- '--clang-tidy',
+      '--clang-tidy',
       '--background-index',
       '--background-index-priority=normal',
       '--ranking-model=decision_forest',
       '--completion-style=detailed',
-      -- '--compile-commands-dir=/home/ngpong/code/cpp/CPP-Study-02/TEST/TEST_93/',
       '--header-insertion=never', -- iwyu
       '--header-insertion-decorators=false',
       '--malloc-trim',
@@ -97,7 +96,8 @@ local setup_server = function(cfg)
       '--limit-references=0',
       '--limit-results=30',
       '--include-cleaner-stdlib',
-      -- '--log=error'
+      -- '--compile-commands-dir=/home/ngpong/code/cpp/CPP-Study-02/TEST/TEST_93/',
+      -- '--log=verbose',
     },
     single_file_support = true,
     filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'tcc' },
@@ -125,15 +125,35 @@ local setup_keymaps = function(_)
     end
 
     keymap.register(e_mode.NORMAL, 'dh', function()
+      if M.__dh_key_executing then
+        return
+      end
+
+      if is_open_extensions('ClangdTypeHierarchy') > 0 then
+        return
+      end
+
+      M.__dh_key_executing = true
+
       async.run(function()
         vim.go.splitbelow = true
 
         vim.cmd('ClangdTypeHierarchy')
 
+        local retry = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
+          if retry > 5 then
+            HELPER.notify_warn('Type hierarchy not found or timeout.')
+            break
+          end
+          retry = retry + 1
+
           async.util.sleep(50)
         end
+
         vim.go.splitbelow = false
+
+        M.__dh_key_executing = false
       end)
     end, { silent = true, buffer = state.bufnr, remap = false, desc = 'show type hierarchy.' })
     keymap.register(e_mode.NORMAL, 'dm', TOOLS.wrap_f(vim.cmd, 'ClangdMemoryUsage'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show clangd memory usage.' })
@@ -153,6 +173,7 @@ local setup_keymaps = function(_)
     keymap.hidegister(e_mode.NORMAL, 'd,', { buffer = state.buf })
     keymap.hidegister(e_mode.NORMAL, 'dd', { buffer = state.buf })
     keymap.hidegister(e_mode.NORMAL, 'dD', { buffer = state.buf })
+    keymap.hidegister(e_mode.NORMAL, 'dp', { buffer = state.buf })
     local cb = keymap.get_rhs(e_mode.NORMAL, 'gd', state.buf)
     if cb then
       keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })

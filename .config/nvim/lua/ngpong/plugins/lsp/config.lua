@@ -25,6 +25,8 @@ local default_cfg = {
     local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities(opts or {})
 
     local capabilities = TOOLS.tbl_rr_extend(raw_capabilities, cmp_capabilities)
+
+    -- https://www.reddit.com/r/neovim/comments/161tv8l/lsp_has_gotten_very_slow/
     capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
     return capabilities

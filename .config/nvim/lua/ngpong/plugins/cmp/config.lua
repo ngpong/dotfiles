@@ -103,8 +103,8 @@ local setup_global = function()
 
   local performance_cfg = {
     performance = {
-      debounce = 60,
-      throttle = 30,
+      debounce = 60, -- 控制弹出窗口的时间
+      throttle = 30, -- 控制关闭窗口的时间
       fetching_timeout = 500,
       confirm_resolve_timeout = 80,
       async_budget = 1,

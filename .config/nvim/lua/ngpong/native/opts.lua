@@ -138,6 +138,9 @@ M.setup = function()
   -- 不可见字符的表示
   -- vim.o.listchars = "space:·,tab:··"
 
+  -- 禁用内置语法高亮
+  -- vim.cmd('syntax off')
+
   -- 控制 tabline 显示行为
   -- 0  never
   -- 1  only if there are at least two tab pages
@@ -174,7 +177,6 @@ M.setup = function()
   vim.g.loaded_netrwPlugin = 1
   vim.g.loaded_netrwSettings = 1
   vim.g.loaded_netrwFileHandlers = 1
-  -- vim.cmd("syntax off") TODO: 看看 lazyvim 中的 disable plugins 是否重复了
 
   -- 设置 <leader>
   vim.g.mapleader = ' '

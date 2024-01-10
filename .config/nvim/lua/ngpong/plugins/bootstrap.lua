@@ -131,7 +131,7 @@ M.laungh = function()
       reset_packpath = true,
       rtp = {
         reset = true,
-        paths = {},
+        paths = { '/usr/lib/x86_64-linux-gnu/nvim' },
         disabled_plugins = {
           'bugreport',
           'rplugin',
@@ -259,6 +259,7 @@ M.register_keymap = function()
   require('lazy.view.config').keys.close = '<esc>'
   require('lazy.view.config').keys.hover = '<nop>'
   require('lazy.view.config').keys.diff  = '<nop>'
+  TOOLS.tbl_r_extend(require('lazy.view.config').commands.help, { key = 'M' })
 end
 
 return M

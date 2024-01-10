@@ -421,6 +421,8 @@ local extension = {
       },
       lualine_x = {
         module.filetype,
+        module.searchcount_1,
+        module.searchcount_2,
         module.datetime,
       },
       lualine_y = {
@@ -440,6 +442,20 @@ local extension = {
       lualine_a = {
         module.touble_type
       },
+      lualine_x = {
+        module.searchcount_1,
+        module.searchcount_2,
+        module.datetime,
+      },
+      lualine_y = {
+        module.space
+      },
+      lualine_z = {
+        module.location_1,
+        module.location_2,
+        module.progress_1,
+        module.progress_2,
+      }
     },
     filetypes = { 'Trouble' }
   },
@@ -448,6 +464,20 @@ local extension = {
       lualine_a = {
         module.clangd_extensions('Clangd type hierarchy')
       },
+      lualine_x = {
+        module.searchcount_1,
+        module.searchcount_2,
+        module.datetime,
+      },
+      lualine_y = {
+        module.space
+      },
+      lualine_z = {
+        module.location_1,
+        module.location_2,
+        module.progress_1,
+        module.progress_2,
+      }
     },
     filetypes = { 'ClangdTypeHierarchy' }
   },
@@ -457,6 +487,8 @@ local extension = {
         module.lazy_indicator
       },
       lualine_x = {
+        module.searchcount_1,
+        module.searchcount_2,
         module.datetime,
       },
       lualine_y = {
@@ -477,6 +509,8 @@ local extension = {
         module.mason_indicator
       },
       lualine_x = {
+        module.searchcount_1,
+        module.searchcount_2,
         module.datetime,
       },
       lualine_y = {

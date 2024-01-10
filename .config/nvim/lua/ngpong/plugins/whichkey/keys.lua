@@ -40,7 +40,7 @@ local fix_keymap_native = async.void(function()
     },
 
     ['d'] = {
-      name = 'LSP CODEING:',
+      name = 'CODEING:',
     },
 
     ['r'] = {
