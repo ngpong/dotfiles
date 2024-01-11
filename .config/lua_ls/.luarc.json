@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+
+  "addonManager.enable": false,
+
+  "runtime": {
+    "version": "LuaJIT",
+    "path" : [
+      "?.lua",
+      "?/init.lua",
+      "/usr/local/share/lua/5.1/?.lua",
+      "/usr/local/share/lua/5.1/?/init.lua",
+      "/usr/share/lua/5.1/?.lua",
+      "/usr/share/lua/5.1/?/init.lua"
+    ]
+  },
+
+  "workspace": {
+    "checkThirdParty": false,
+    "library": [
+      "/usr/local/share/lua/5.1",
+      "/usr/share/lua/5.1"
+    ]
+  }
+}

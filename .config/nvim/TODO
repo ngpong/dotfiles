@@ -14,3 +14,13 @@ Trouble 偶尔会报错，还没找到原因
 5. https://github.com/AstroNvim/AstroNvim
 6. https://github.com/TwIStOy/dotvim/tree/master/src
 7. https://github.com/CosmicNvim/CosmicNvim/blob/94a13ed01775c1ea72db650df2144dfc119fc7ed/lua/cosmic/lsp/diagnostics/init.lua#L2
+
+插件
+  Lua.workspace.userThirdParty?
+  workspace.library?
+
+snippets
+  注解的 snippets
+
+runtime.version?
+
