@@ -27,8 +27,9 @@ return {
       PLGS.lsp.behavior.setup()
       PLGS.lsp.package.setup()
       PLGS.lsp.config.clangd.setup()
-      PLGS.lsp.config.jsonls.setup()
       PLGS.lsp.config.luals.setup()
+      PLGS.lsp.config.jsonls.setup()
+      PLGS.lsp.config.yamlls.setup()
     end
   }
 }
