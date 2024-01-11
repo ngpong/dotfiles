@@ -25,7 +25,7 @@ local set_native_keymaps = function()
   }), { silent = true, remap = false, desc = 'show diagnostic(problems) preview.' })
 end
 
-local del_buffer_keymaps = function(state)
+local del_buffer_keymaps = function(_)
 end
 
 local set_buffer_keymaps = function(state)

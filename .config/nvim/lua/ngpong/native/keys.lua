@@ -371,13 +371,7 @@ local set_native_keymaps = function()
   keymap.register(e_mode.VISUAL, 'u', 'P', { remap = false, desc = 'which_key_ignore' })
 
   -- 文本剪切
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL } , 'c', function()
-    if vim.api.nvim_get_mode()['mode'] == '\22' then
-      return 'c'
-    else
-      return 'xi'
-    end
-  end, { expr = true, remap = false, desc = 'TEXT: cut character and enter insert mode.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL } , 'c', 'c', { remap = false, desc = 'TEXT: cut character and enter insert mode.' })
 
   -- 文本删除
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'x', '"_x', { remap = false, desc = 'TEXT: delete character.' })

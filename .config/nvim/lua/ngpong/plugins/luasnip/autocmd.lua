@@ -13,7 +13,7 @@ local setup_autocmds = function()
   vim.api.nvim_create_autocmd('ModeChanged', {
     group = group_id,
     pattern = '*',
-    callback = function()
+    callback = function(_)
       if ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
           and luasnip.session.current_nodes[HELPER.get_cur_bufnr()]
           and not luasnip.session.jump_active

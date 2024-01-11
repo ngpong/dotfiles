@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+
+  "addonManager": {
+    "enable": false
+  },
+
+  "completion": {
+    "displayContext": 0,
+    "showWord": "Disable",
+    "keywordSnippet": "Both",
+    "workspaceWord": false
+  },
+
+  "format.enable": false,
+
+  "diagnostics": {
+    "globals": [ "" ]
+  },
+
+  "runtime": {
+    "version": "LuaJIT"
+  },
+
+  "workspace": {
+    "checkThirdParty": "Disable",
+    "library": [
+      "/usr/local/share/lua/5.1",
+      "/usr/share/lua/5.1"
+    ]
+  }
+}

@@ -14,7 +14,7 @@ Diagnostics:
       bugprone-reserved-identifier
     ]
     CheckOptions:
-      performance-unnecessary-value-param.AllowedTypes: 'std::shared_ptr;std::string'
+      performance-unnecessary-value-param.AllowedTypes: 'std::shared_ptr'
 ---
 If:
   PathMatch: [
