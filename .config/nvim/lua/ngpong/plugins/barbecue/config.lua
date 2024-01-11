@@ -20,7 +20,7 @@ M.setup = function()
       dirname = ':~:.',
       basename = '',
     },
-    show_dirname = false,
+    show_dirname = true,
     show_basename = true,
     show_modified = false,
     modified = function(bufnr) return vim.bo[bufnr].modified end,
@@ -31,15 +31,16 @@ M.setup = function()
     symbols = {
       modified = icons.circular_big,
       ellipsis = icons.ellipsis,
-      separator = icons.dapstopped,
+      separator = icons.separator,
     },
     theme = {
-      normal = { fg = colors.light1 },
+      normal = { fg = colors.light1, bold = true },
 
       ellipsis = { fg = colors.light4 },
       separator = { fg = colors.light4 },
+      dirname = { fg = colors.bright_blue, italic = true, bold = false },
       modified = { fg = colors.light4 },
-      basename = { bold = false },
+      basename = { bold = true, fg = colors.light1 },
 
       context_file = { link = icons.lsp_kinds.File.hl_link },
       context_module = { link = icons.lsp_kinds.Module.hl_link },

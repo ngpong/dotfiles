@@ -7,9 +7,9 @@
 
   "completion": {
     "displayContext": 0,
-    "showWord": "Disable",
+    "showWord": "Fallback",
     "keywordSnippet": "Both",
-    "workspaceWord": false
+    "workspaceWord": true
   },
 
   "format.enable": false,
