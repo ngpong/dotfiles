@@ -42,7 +42,8 @@ M.setup = function()
   vim.go.laststatus = 0
 
   -- 不显示当前输入的命令(右下角)
-  vim.go.showcmd = false
+  -- 暂时禁用它，不然在移动(从下往上一直按p移动)的时候会有一些鼠标乱飘的bug
+  -- vim.go.showcmd = false
 
   -- 控制命令行的高度(最后一行)
   vim.go.cmdheight = 1

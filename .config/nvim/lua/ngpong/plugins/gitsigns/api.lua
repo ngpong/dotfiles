@@ -35,12 +35,17 @@ local is_open_win = function(id)
   return false
 end
 
-M.toggle_gitsymbols_list = function()
-  gitsigns.setqflist(0, { use_location_list = true, open = false })
+M.toggle_gitsymbols_list = function(target)
+  HELPER.clear_loclst()
+
+  gitsigns.setqflist((target == 'cur' and 0 or target), { use_location_list = true, open = false })
 
   async.run(function()
-    async.util.scheduler()
-    trouble.api.open('loclist', 'Git symbols')
+    while not HELPER.is_has_loclst() do
+      async.util.sleep(50)
+    end
+
+    trouble.api.open('loclist', 'Git ' .. (target == 'cur' and 'current buffer' or 'workspace') .. ' symbols')
   end)
 end
 

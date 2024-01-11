@@ -25,7 +25,8 @@ end
 local set_buffer_keymaps = function(bufnr)
   set_buffer_extra_keymaps(bufnr)
 
-  keymap.register(e_mode.NORMAL, 'gg', this.api.toggle_gitsymbols_list, { buffer = bufnr, silent = true, remap = false, desc = 'toggle gitsigns list.' })
+  keymap.register(e_mode.NORMAL, 'gg', TOOLS.wrap_f(this.api.toggle_gitsymbols_list, 'cur'), { buffer = bufnr, silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
+  keymap.register(e_mode.NORMAL, 'gG', TOOLS.wrap_f(this.api.toggle_gitsymbols_list, 'all'), { buffer = bufnr, silent = true, remap = false, desc = 'toggle workspace buffer gitsigns list.' })
   keymap.register(e_mode.NORMAL, 'g,', gitsigns.prev_hunk, { buffer = bufnr, desc = 'jump to prev hunk.' })
   keymap.register(e_mode.NORMAL, 'g.', gitsigns.next_hunk, { buffer = bufnr, desc = 'jump to next hunk.' })
   keymap.register(e_mode.NORMAL, 'ghs', gitsigns.select_hunk, { buffer = bufnr, desc = 'select current hunk.' })

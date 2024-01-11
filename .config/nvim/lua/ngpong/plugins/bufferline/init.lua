@@ -1,7 +1,7 @@
 return {
   'akinsho/bufferline.nvim',
   lazy = true,
-  event = "VeryLazy",
+  event = 'VeryLazy',
   init = function()
     PLGS.record_seq('bufferline.nvim init')
     PLGS.bufferline.keys.setup()

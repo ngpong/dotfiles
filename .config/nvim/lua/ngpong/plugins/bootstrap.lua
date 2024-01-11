@@ -30,14 +30,28 @@ M.laungh = function()
   -- local dirs = {
   --   'libs',
   --   'colorscheme',
-  --   'multicursors',
-  --   'lualine'
+  --   -- 'barbecue',
+  --   -- 'bufferline',
+  --   -- 'dressing',
+  --   -- 'indentscope',
+  --   -- 'leap',
   --   -- 'lsp',
-  --   -- 'treesitter',
   --   -- 'luasnip',
-  --   -- 'cmp',
+  --   -- 'matchparen',
+  --   'neotree',
   --   -- 'profiler',
+  --   -- 'treesitter',
+  --   -- 'whichkey',
+  --   -- 'cmp',
+  --   -- 'comment',
+  --   -- 'gitsigns',
+  --   -- 'lualine',
+  --   -- 'marks',
+  --   -- 'multicursors',
   --   -- 'notify',
+  --   -- 'telescope',
+  --   -- 'trouble',
+  --   -- 'wordmontion'
   -- }
   for _, dir in ipairs(dirs) do
     local success, spec = pcall(require, 'ngpong.plugins.' .. dir)

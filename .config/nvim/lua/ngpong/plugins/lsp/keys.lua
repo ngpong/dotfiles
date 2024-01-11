@@ -55,7 +55,7 @@ local set_buffer_keymaps = function(state)
     keymap.register(e_mode.NORMAL, 'de', TOOLS.wrap_f(vim.lsp.buf.definition, {
       on_list = function(options)
         if #options.items == 1 then
-          vim.lsp.util.jump_to_location(options.items[1].user_data, vim.lsp.buf_get_clients()[1].offset_encoding, false)
+          vim.lsp.util.jump_to_location(options.items[1].user_data, state.cli.offset_encoding, false)
         else
           vim.fn.setloclist(0, {}, ' ', options)
           touble.api.open('loclist', 'Lsp definitions')

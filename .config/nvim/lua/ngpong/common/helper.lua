@@ -472,7 +472,7 @@ helper.is_open_loclst = function(winid)
 end
 
 helper.is_has_loclst = function(winid)
-  return next(vim.fn.getloclist(winid)) ~= nil
+  return next(vim.fn.getloclist(winid or 0)) ~= nil
 end
 
 helper.toggle_loclst = function(winid)

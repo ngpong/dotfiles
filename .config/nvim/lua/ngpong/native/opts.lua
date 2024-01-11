@@ -1,6 +1,9 @@
 local M = {}
 
 M.setup = function()
+  -- 设置 <leader>
+  vim.g.mapleader = ' '
+
   -- 全局编码
   vim.go.encoding = "utf-8"
   vim.opt.fileencoding = 'utf-8'
@@ -177,9 +180,6 @@ M.setup = function()
   vim.g.loaded_netrwPlugin = 1
   vim.g.loaded_netrwSettings = 1
   vim.g.loaded_netrwFileHandlers = 1
-
-  -- 设置 <leader>
-  vim.g.mapleader = ' '
 
   -- 禁用一些无用的 providers
   vim.g.loaded_ruby_provider = 0

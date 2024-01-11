@@ -16,6 +16,7 @@ M.setup = function()
     enable_opened_markers = false,
     enable_refresh_on_write = false,
     enable_modified_markers = true,
+    enable_git_status = true,
     open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf' },
     sort_case_insensitive = false, -- used when sorting files and directories in the tree
     sort_function = nil , -- use a custom function for sorting files and directories in the tree 
@@ -26,29 +27,18 @@ M.setup = function()
     add_blank_line_at_top = false,
     auto_clean_after_session_restore = true, -- Automatically clean up broken neo-tree buffers saved in sessions
     open_files_in_last_window = true,
-    resize_timer_interval = 100,
+    resize_timer_interval = 200,
     default_component_configs = {
       container = {
         enable_character_fade = true,
         width = '100%',
         right_padding = 0,
       },
-      modified = {
-        symbol = icons.circular_big,
-      },
       name = {
         trailing_slash = false,
         highlight_opened_files = false,
         use_git_status_colors = true,
         highlight = 'NeoTreeFileName',
-      },
-      diagnostics = {
-        highlights = {
-          hint = 'NeoTreeDiagnosticSignHint',
-          info = 'NeoTreeDiagnosticSignInfo',
-          warn = 'NeoTreeDiagnosticSignWarn',
-          error = 'NeoTreeDiagnosticSignError',
-        },
       },
     },
     window = {
@@ -80,6 +70,7 @@ M.setup = function()
           --'.null-ls_*',
         },
       },
+      use_libuv_file_watcher = true,
       bind_to_cwd = true,
       follow_current_file = {
         enabled = false,
@@ -171,22 +162,6 @@ M.setup = function()
     },
   }
 
-  local fix942_cfg = {
-    -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/942
-    git_status_async = false,
-    filesystem = {
-      async_directory_scan = 'never',
-    },
-  }
-
-  local fix337_cfg = {
-    -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/337
-    enable_git_status = true,
-    filesystem = {
-      use_libuv_file_watcher = true,
-    },
-  }
-
   local fixicon_cfg = {
     default_component_configs = {
       indent = {
@@ -194,6 +169,20 @@ M.setup = function()
         last_indent_marker = icons.indent_marker_2,
         expander_collapsed = icons.closepand,
         expander_expanded = icons.expand,
+      },
+      diagnostics = {
+        symbols = {
+          hint = icons.diagnostic_hint,
+          info = icons.diagnostic_info,
+          warn = icons.diagnostic_warn,
+          error = icons.diagnostic_err,
+        },
+        highlights = {
+          hint = 'NeoTreeDiagnosticSignHint',
+          info = 'NeoTreeDiagnosticSignInfo',
+          warn = 'NeoTreeDiagnosticSignWarn',
+          error = 'NeoTreeDiagnosticSignError',
+        },
       },
       icon = {
         folder_closed = icons.dir_closed,
@@ -247,8 +236,6 @@ M.setup = function()
   }
 
   TOOLS.tbl_r_extend(cfg, hook_cfg,
-                          fix337_cfg,
-                          --fix942_cfg,
                           fixicon_cfg)
 
   events.emit(e_events.SETUP_NEOTREE, cfg)
