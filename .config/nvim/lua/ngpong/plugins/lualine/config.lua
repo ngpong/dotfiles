@@ -125,7 +125,7 @@ local module = {
   },
   lsp_1 = {
     function()
-      local clis = vim.lsp.get_clients({ buffer = HELPER.get_cur_bufnr() })
+      local clis = vim.lsp.get_clients({ bufnr = HELPER.get_cur_bufnr() })
       if next(clis) then
         return clis[1].name
       else
