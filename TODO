@@ -1,14 +1,14 @@
 // 1: 设置代理
 sudo passwd root
 
-export http_proxy="192.168.1.2:7890"
-export https_proxy="192.168.1.2:7890"
-export HTTP_PROXY="192.168.1.2:7890"
-export HTTPS_PROXY="192.168.1.2:7890"
+export http_proxy="http://192.168.1.2:7890"
+export https_proxy="http://192.168.1.2:7890"
+export HTTP_PROXY="http://192.168.1.2:7890"
+export HTTPS_PROXY="http://192.168.1.2:7890"
 
 sudo vi /etc/apt/apt.conf
-Acquire::http::Proxy "192.168.1.2:7890";
-Acquire::https::Proxy "192.168.1.2:7890";
+Acquire::http::Proxy "http://192.168.1.2:7890";
+Acquire::https::Proxy "http://192.168.1.2:7890";
 
 // 2: 设置 git
 git config --global user.name "ngpong"
@@ -18,10 +18,10 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-// 3: 设置终端环境
+// 3: 终端环境
 sudo apt update
 sudo apt upgrade
-sudo apt install zsh jq curl net-tools tree htop ripgrep
+sudo apt install zsh jq curl net-tools tree htop ripgrep unzip zip
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -36,19 +36,19 @@ cd ~/dotfiles
 rm -rf ~/.config ~/.zshrc
 ./install.sh
 
-// c/cpp环境
+// 4: c/cpp环境
 sudo apt install build-essential git gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool autoconf software-properties-common
 sudo update-alternatives --remove-all cpp
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9  --slave /usr/bin/cpp cpp /usr/bin/cpp-9
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10  --slave /usr/bin/cpp cpp /usr/bin/cpp-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11  --slave /usr/bin/cpp cpp /usr/bin/cpp-11
 
-// 4: lua环境
+// 5: lua环境
 sudo apt install lua5.1 lua5.2 lua5.3 lua5.4
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
 sudo update-alternatives --install /usr/bin/luac lua-compiler /usr/bin/luac5.4 140 --slave /usr/share/man/man1/luac.1.gz lua-compiler-manual /usr/share/man/man1/luac5.4.1.gz
 
-// 5: neovim
+// 6: neovim
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
