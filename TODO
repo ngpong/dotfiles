@@ -1,3 +1,15 @@
+// apt包管理
+1. dpkg -l: 查询安装的包
+2. dpkg -L <installed_package_name>: 查看已安装包包含的文件
+3. dpkg --contents <.deb file name>: 查看.deb安装包包含的文件
+4. dpkg -r <installed_package_name>: 卸载已安装的包
+5. dpkg -i <.deb file name>: 从.deb文件安装
+
+// update-alternatives管理
+1. update-alternatives --get-selections: 获取所有
+2. update-alternatives --query <name>: 查询name
+3. 
+
 // 1: 设置代理
 sudo passwd root
 
@@ -10,7 +22,7 @@ sudo vi /etc/apt/apt.conf
 Acquire::http::Proxy "http://192.168.1.2:7890";
 Acquire::https::Proxy "http://192.168.1.2:7890";
 
-// 2: 设置 git
+// 2: git环境
 git config --global user.name "ngpong"
 git config --global user.email "pengpeng1997428@gmail.com"
 ssh-keygen -t rsa -C "pengpeng1997428@gmail.com"
@@ -21,34 +33,45 @@ cat ~/.ssh/id_rsa.pub
 // 3: 终端环境
 sudo apt update
 sudo apt upgrade
-sudo apt install zsh jq curl net-tools tree htop ripgrep unzip zip
+sudo apt install zsh jq curl net-tools tree htop ripgrep unzip zip zlib1g-dev
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-sudo vi /etc/wsl.conf
-[interop]
-appendWindowsPath = false
 
 git clone git@github.com:NGPONG/dotfiles.git
 cd ~/dotfiles
 rm -rf ~/.config ~/.zshrc
 ./install.sh
 
-// 4: c/cpp环境
+// 4: wsl环境
+https://github.com/microsoft/WSL/issues/5548#issuecomment-912495487
+
+sudo vi /etc/wsl.conf
+[interop]
+appendWindowsPath = false
+
+// 5: c/cpp环境
 sudo apt install build-essential git gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool autoconf software-properties-common
 sudo update-alternatives --remove-all cpp
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9  --slave /usr/bin/cpp cpp /usr/bin/cpp-9
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10  --slave /usr/bin/cpp cpp /usr/bin/cpp-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11  --slave /usr/bin/cpp cpp /usr/bin/cpp-11
 
-// 5: lua环境
-sudo apt install lua5.1 lua5.2 lua5.3 lua5.4
+// 6: lua环境
+sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
 sudo update-alternatives --install /usr/bin/luac lua-compiler /usr/bin/luac5.4 140 --slave /usr/share/man/man1/luac.1.gz lua-compiler-manual /usr/share/man/man1/luac5.4.1.gz
 
-// 6: neovim
+TODO
+./configure --with-lua-include=/usr/include/lua5.4 --lua-version=5.4 --with-lua-lib=/usr/lib/
+sudo make
+
+cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
+vi /usr/local/etc/luarocks/config-5.1.lua
+
+// 7: neovim
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
+sudo luarocks install --global luatz
