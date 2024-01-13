@@ -1,0 +1,22 @@
+// 1
+sudo passwd root
+
+export http_proxy="192.168.1.2:7890"
+export https_proxy="192.168.1.2:7890"
+export HTTP_PROXY="192.168.1.2:7890"
+export HTTPS_PROXY="192.168.1.2:7890"
+
+sudo vi /etc/apt/apt.conf
+Acquire::http::Proxy "192.168.1.2:7890";
+Acquire::https::Proxy "192.168.1.2:7890";
+
+// 2
+git config --global user.name "ngpong"
+git config --global user.email "pengpeng1997428@gmail.com"
+ssh-keygen -t rsa -C "pengpeng1997428@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub
+
+// 3
+install zsh jq
