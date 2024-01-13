@@ -169,6 +169,7 @@ alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # user_setting() {
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
 export PATH=$PATH:\
 /mnt/c/Windows/:\
@@ -184,6 +185,8 @@ export WSL2_IP=$(hostname -I | awk '{print $1}')
 export SOCKS5_ADDR="socks5://$HOST_IP:7890"
 export HTTP_ADDR="http://$HOST_IP:7890"
 export win_home='/mnt/c/Users/NGPONG/Desktop/'
+
+ulimit -c unlimited
 
 # custom commands
 alias lss='ls -la --color=always | sort -r'
@@ -233,13 +236,11 @@ export VISUAL=nvim
 export GIT_EDITOR=nvim
 export EDITOR="$VISUAL"
 
-ulimit -c unlimited
-
 # golang
-export GO111MODULE=""
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/home/ngpong/.local/bin
+# export GO111MODULE=""
+# export GOROOT=/usr/local/go
+# export GOPATH=$HOME/go
+# export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/home/ngpong/.local/bin
 
 # x11
 # export DISPLAY=$HOST_IP:0.0
