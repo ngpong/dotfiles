@@ -33,7 +33,7 @@ cat ~/.ssh/id_rsa.pub
 // 3: 终端环境
 sudo apt update
 sudo apt upgrade
-sudo apt install zsh jq curl net-tools tree htop ripgrep unzip zip zlib1g-dev
+sudo apt install zsh jq curl net-tools tree htop ripgrep unzip zip checkinstall
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -52,7 +52,7 @@ sudo vi /etc/wsl.conf
 appendWindowsPath = false
 
 // 5: c/cpp环境
-sudo apt install build-essential git gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool autoconf software-properties-common
+sudo apt install build-essential git gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool autoconf software-properties-common zlib1g-dev libssl-dev 
 sudo update-alternatives --remove-all cpp
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9  --slave /usr/bin/cpp cpp /usr/bin/cpp-9
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10  --slave /usr/bin/cpp cpp /usr/bin/cpp-10
@@ -63,15 +63,14 @@ sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
 sudo update-alternatives --install /usr/bin/luac lua-compiler /usr/bin/luac5.4 140 --slave /usr/share/man/man1/luac.1.gz lua-compiler-manual /usr/share/man/man1/luac5.4.1.gz
 
-TODO
 ./configure --with-lua-include=/usr/include/lua5.4 --lua-version=5.4 --with-lua-lib=/usr/lib/
-sudo make
-
-cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
-vi /usr/local/etc/luarocks/config-5.1.lua
+make
+sudo checkinstall
+sudo cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
+sudo vi /usr/local/etc/luarocks/config-5.1.lua
 
 // 7: neovim
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
-sudo luarocks install --global luatz
+sudo luarocks --lua-version=5.1 --global install luatz
