@@ -47,7 +47,7 @@ rm -rf ~/.config ~/.zshrc
 curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 sudo bash nodesource_setup.sh
 
-sudo apt install curl net-tools tree htop ripgrep unzip zip checkinstall nodejs python2 python3 python3-pip -y
+sudo apt install curl net-tools tree htop ripgrep unzip zip checkinstall nodejs python2 python3 python3-pip python3.10-venv -y
 
 // 5. redis
 curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
