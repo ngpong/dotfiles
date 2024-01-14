@@ -70,6 +70,11 @@ cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_
 cmake --build "build" --config Release
 sudo checkinstall cmake --build "build" --config Release --target install
 
+git clone https://github.com/rizsotto/Bear.git
+cmake -DENABLE_UNIT_TESTS=OFF -DENABLE_FUNC_TESTS=OFF $BEAR_SOURCE_DIR
+make all -j8
+sudo checkinstall
+
 // 6: lua环境
 sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
