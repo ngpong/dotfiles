@@ -72,30 +72,26 @@ helper.delete_buffer = function(bufnr)
   end
 end
 
-helper.wipeout_buffer = function(bufnr, cond)
+helper.wipeout_buffer = function(bufnr, force, cond)
   local bd = require('bufdelete')
   if not bd then
     return
   end
 
   bufnr = bufnr or helper.get_cur_bufnr()
+  force = force or true
+  cond  = cond  or nil
 
   if cond and not cond(bufnr) then
     return
   end
 
-  bd.bufwipeout(bufnr, true)
+  bd.bufwipeout(bufnr, force)
 end
 
-helper.wipeout_all_buffers = function(filter)
+helper.wipeout_all_buffers = function(force, cond)
   for _, bufnr in pairs(helper.get_all_bufs()) do
-    if filter and filter(bufnr) then
-      goto continue
-    end
-
-    helper.wipeout_buffer(bufnr)
-
-    ::continue::
+    helper.wipeout_buffer(bufnr, force, cond)
   end
 end
 

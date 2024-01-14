@@ -3,7 +3,7 @@ return {
   lazy = true,
   event = 'VeryLazyFile',
   cmd = { 'TSInstall', 'TSBufEnable', 'TSBufDisable', 'TSModuleInfo' },
-  -- build = ':TSUpdate',
+  build = ':TSUpdate',
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects'
     -- 'HiPhish/rainbow-delimiters.nvim'

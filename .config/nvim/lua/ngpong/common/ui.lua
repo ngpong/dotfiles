@@ -23,6 +23,7 @@ ui.popup_fileinfo = function(bufnr)
   local lines = {}
   table.insert(lines, '')
   table.insert(lines, string.format('%9s: %s', 'Name', TOOLS.get_filename(path)))
+  table.insert(lines, string.format('%9s: %s', 'bufnr', tostring(bufnr)))
   table.insert(lines, string.format('%9s: %s', 'Path', path))
   table.insert(lines, string.format('%9s: %s', 'Type', state.type))
   if state.size then

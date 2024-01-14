@@ -144,6 +144,9 @@ M.setup = function()
   -- 禁用内置语法高亮
   -- vim.cmd('syntax off')
 
+  -- 禁用折叠
+  vim.wo.foldenable = false
+
   -- 控制 tabline 显示行为
   -- 0  never
   -- 1  only if there are at least two tab pages
