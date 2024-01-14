@@ -8,7 +8,6 @@
 // update-alternatives管理
 1. update-alternatives --get-selections: 获取所有
 2. update-alternatives --query <name>: 查询name
-3. 
 
 // 1: 设置代理
 sudo passwd root
@@ -50,7 +49,6 @@ sudo apt install nodejs -y
 
 sudo apt install python2 python3 python3-pip
 
-
 // 4: wsl环境
 https://github.com/microsoft/WSL/issues/5548#issuecomment-912495487
 
@@ -65,6 +63,13 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /u
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10  --slave /usr/bin/cpp cpp /usr/bin/cpp-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11  --slave /usr/bin/cpp cpp /usr/bin/cpp-11
 
+git clone https://github.com/google/benchmark.git
+cd benchmark
+cmake -E make_directory "build"
+cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
+cmake --build "build" --config Release
+sudo checkinstall cmake --build "build" --config Release --target install
+
 // 6: lua环境
 sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
@@ -76,7 +81,7 @@ sudo checkinstall
 sudo cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
 sudo vi /usr/local/etc/luarocks/config-5.1.lua
 
-// 7: neovim
+// 7: neovim环境
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
