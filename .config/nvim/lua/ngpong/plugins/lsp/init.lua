@@ -30,6 +30,8 @@ return {
       PLGS.lsp.config.luals.setup()
       PLGS.lsp.config.jsonls.setup()
       PLGS.lsp.config.yamlls.setup()
+      PLGS.lsp.config.cmakels.setup()
+      PLGS.lsp.config.bashls.setup()
     end
   }
 }
