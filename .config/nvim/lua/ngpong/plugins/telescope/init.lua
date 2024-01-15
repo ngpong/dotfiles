@@ -7,6 +7,7 @@ return {
       'nvim-telescope/telescope-fzf-native.nvim',
       build = 'make'
     },
+    'nvim-telescope/telescope-smart-history.nvim',
     'NGPONG/telescope-live-grep-args.nvim' ,
   },
   init = function()

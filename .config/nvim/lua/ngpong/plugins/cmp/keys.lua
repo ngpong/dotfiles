@@ -22,7 +22,7 @@ local set_global_keymaps = function(...)
     --     fallback()
     --   end
     -- end, { e_mode.INSERT }),
-    ['<C-h>'] = cmp.mapping(function(fallback)
+    ['<C-s>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         if cmp.visible_docs() then
           cmp_cfg.get().view.docs.auto_open = false

@@ -136,16 +136,20 @@ local set_plugin_keymaps = function()
       ['l'] = wrap_keymap(this.api.keep_cursor_outof_range('h'), { desc = 'MONTION: left.' }),
       ['q'] = wrap_keymap(this.api.keep_cursor_outof_range('b'), { desc = 'MONTION: cursor world backward.' }),
 
+      -- history
+      ['p'] = wrap_keymap(this.api.actions.cycle_history_prev, { desc = 'TELESCOPE: cycle previouse history.' }),
+      [';'] = wrap_keymap(this.api.actions.cycle_history_next, { desc = 'TELESCOPE: cycle next history.' }),
+
       -- preview
-      ['P'] = wrap_keymap(this.api.scroll_preview(-1, 1), { desc = 'TELESCOPE: scrolling pageup preview window.' }),
-      [':'] = wrap_keymap(this.api.scroll_preview(1, 1), { desc = 'TELESCOPE: scrolling pagedown preview window.' }),
+      ['<C-p>'] = wrap_keymap(this.api.scroll_preview(-1, 1), { desc = 'TELESCOPE: scrolling pageup preview window.' }),
+      ['<C-;>'] = wrap_keymap(this.api.scroll_preview(1, 1), { desc = 'TELESCOPE: scrolling pagedown preview window.' }),
       -- ['<nop>'] = wrap_keymap(this.api.actions.preview_scrolling_left, { desc = 'TELESCOPE: scrolling left (horizontal)preview window.' }),
       -- ['<nop>'] = wrap_keymap(this.api.actions.preview_scrolling_right, { desc = 'TELESCOPE: scrolling right (horizontal)preview window.' }),
 
       -- result
       -- NOTE: Open muilt files at onces is in roadmap. https://github.com/nvim-telescope/telescope.nvim/issues/1048
       ['<CR>'] = wrap_keymap(this.api.select_entries, { desc = 'TELESCOPE: select entries.' }),
-      ['<C-CR>'] = wrap_keymap(this.api.toggle_preview, { desc = 'TELESCOPE: toggle file preview.' }),
+      ['<C-s>'] = wrap_keymap(this.api.toggle_preview, { desc = 'TELESCOPE: toggle file preview(seek).' }),
       ['<Tab>'] = wrap_keymap(this.api.actions.toggle_selection, { desc = 'TELESCOPE: Toggle selection.' }),
       [','] = wrap_keymap(this.api.actions.move_selection_previous, { desc = 'TELESCOPE: move to prev selection.' }),
       ['.'] = wrap_keymap(this.api.actions.move_selection_next, { desc = 'TELESCOPE: move to next selection.' }),

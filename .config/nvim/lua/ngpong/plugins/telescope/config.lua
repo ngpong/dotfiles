@@ -18,7 +18,10 @@ M.setup = function()
       hl_result_eol = true,
       dynamic_preview_title = true,
       results_title = false,
-      history = false,
+      history = {
+        path = '~/.local/share/nvim/databases/telescope_history.sqlite3',
+        limit = 100,
+      },
       prompt_prefix = icons.space .. icons.search .. icons.space,
       selection_caret = icons.dapstopped .. icons.space,
       vimgrep_arguments = {
@@ -123,6 +126,7 @@ M.setup = function()
 
   telescope.setup(cfg)
   telescope.load_extension('fzf')
+  telescope.load_extension('smart_history')
 end
 
 return M
