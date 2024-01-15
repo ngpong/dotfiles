@@ -14,6 +14,27 @@ M.actions = setmetatable({}, {
   end
 })
 
+M.append_to_history = function(bufnr)
+  local picker = actions_state.get_current_picker(bufnr)
+  if picker == nil then
+    return
+  end
+
+  local line = actions_state.get_current_line()
+  if TOOLS.isempty(line) then
+    return
+  end
+
+  actions_state.get_current_history():append(line, picker)
+end
+
+M.close_telescope = function()
+  return function(bufnr)
+    M.append_to_history(bufnr)
+    actions.close(bufnr)
+  end
+end
+
 M.toggle_preview = function(bufnr)
   actions_layout.toggle_preview(bufnr)
 end

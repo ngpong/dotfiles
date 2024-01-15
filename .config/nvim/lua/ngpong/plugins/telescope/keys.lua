@@ -130,7 +130,7 @@ local set_plugin_keymaps = function()
       ----------------------------------------------------------------------
 
       -----------------------------remap keymap-----------------------------
-      ['<ESC>'] = wrap_keymap(this.api.actions.close, { desc = 'which_key_ignore' }),
+      ['<ESC>'] = wrap_keymap(this.api.close_telescope(), { desc = 'which_key_ignore' }),
 
       ['['] = wrap_keymap(this.api.keep_cursor_outof_range(), { desc = 'MONTION: move cursor to end of line.' }),
       ['l'] = wrap_keymap(this.api.keep_cursor_outof_range('h'), { desc = 'MONTION: left.' }),
