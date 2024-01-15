@@ -9,8 +9,8 @@ M.setup = function()
   vim.opt.fileencoding = 'utf-8'
 
   -- 剪切板设置
-  -- 
-  -- NOTE: 
+  --
+  -- NOTE:
   --  1. 当 host 为 win11 的情况下，需要将 win32yank.exe 移动到 c/windows/system32/ 目录下才可用
   --  2. 一个目前所找到的可备用的解决方案为：使用 xclip/xsel/wl-cliboard，并在 host 中开启 xserver
   --  3. 由于 WSLG 已内置了 xserver，网上资料说似乎使用内置的即可，但是实际测试没有效果，这一点有待研究(因为 win32yank 偶尔会有问题)
@@ -53,19 +53,12 @@ M.setup = function()
   -- 使用空格替代 <Tab>
   vim.opt.expandtab = true
 
-  local tab_size = 1
-  if (TOOLS.curpath_exist('project_w_server') or TOOLS.curpath_exist('game301_server')) then
-    tab_size = 4
-  elseif (vim.fn.expand('%:e') == 'go') then
-    tab_size = 2
-  else
-    tab_size = 2
-  end
   -- 控制 <Tab> 缩进所代表的空格数
-  vim.opt.tabstop = tab_size
-  vim.opt.softtabstop = tab_size
+  vim.opt.tabstop = 2
+  vim.opt.softtabstop = 2
+
   -- 控制 shift 缩进所代表的空格数
-  vim.opt.shiftwidth = tab_size
+  vim.opt.shiftwidth = 2
   vim.go.shiftround = true
 
   -- 新行自动对齐上一行
@@ -154,7 +147,7 @@ M.setup = function()
   vim.go.showtabline = 2
 
   -- 禁用原生filetype插件所定义的keymaps
-  -- 
+  --
   -- REF: https://neovim.io/doc/user/filetype.html#filetype-plugins
   vim.g.no_plugin_maps = 1
 

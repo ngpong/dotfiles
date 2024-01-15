@@ -38,7 +38,7 @@ M.laungh = function()
   --   -- 'lsp',
   --   -- 'luasnip',
   --   -- 'matchparen',
-  --   'neotree',
+  --   -- 'neotree',
   --   -- 'profiler',
   --   -- 'treesitter',
   --   -- 'whichkey',
