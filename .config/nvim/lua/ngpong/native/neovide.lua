@@ -33,6 +33,7 @@ M.setup = function()
 
   -- 不透明度
   vim.g.neovide_transparency = 1.0
+  vim.g.transparency = 1.0
 
   -- 空闲的时候也会刷新
   vim.g.neovide_no_idle = true

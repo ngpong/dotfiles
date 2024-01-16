@@ -41,7 +41,7 @@ M.laungh = function()
   --   -- 'neotree',
   --   -- 'profiler',
   --   -- 'treesitter',
-  --   -- 'whichkey',
+  --   'whichkey',
   --   -- 'cmp',
   --   -- 'comment',
   --   -- 'gitsigns',

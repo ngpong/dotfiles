@@ -121,9 +121,6 @@ M.setup = function()
 
   events.emit(e_events.SETUP_TELESCOPE, cfg)
 
-  -- https://github.com/nvim-telescope/telescope-live-grep-args.nvim
-  -- https://github.com/molecule-man/telescope-menufacture
-
   telescope.setup(cfg)
   telescope.load_extension('fzf')
   telescope.load_extension('smart_history')

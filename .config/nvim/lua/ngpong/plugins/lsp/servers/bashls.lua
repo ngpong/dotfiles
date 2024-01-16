@@ -14,6 +14,9 @@ local setup_server = function(cfg)
     settings = {
       bashIde = {
         globPattern = '*@(.sh|.inc|.bash|.command)',
+        shellcheckArguments = {
+          '--exclude=SC2034',
+        }
       }
     },
     capabilities = cfg.cli_capabilities(),
