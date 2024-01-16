@@ -1,7 +1,7 @@
 return {
   'lewis6991/gitsigns.nvim',
   lazy = true,
-  event = 'VeryLazyFile',
+  event = 'LazyFile',
   init = function()
     PLGS.record_seq('gitsigns.nvim init')
     PLGS.gitsigns.keys.setup()
