@@ -48,11 +48,27 @@ local setup_autocmd = function()
     end
   })
 
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    group = group_id,
+    pattern = { '*' },
+    callback = function(args)
+      events.emit(e_events.BUFFER_WIN_ENTER, args)
+    end
+  })
+
   vim.api.nvim_create_autocmd('BufAdd', {
     group = group_id,
     pattern = { '*' },
     callback = function(args)
       events.emit(e_events.BUFFER_ADD, args)
+    end
+  })
+
+  vim.api.nvim_create_autocmd('BufDelete', {
+    group = group_id,
+    pattern = { '*' },
+    callback = function(args)
+      events.emit(e_events.BUFFER_DELETE, args)
     end
   })
 

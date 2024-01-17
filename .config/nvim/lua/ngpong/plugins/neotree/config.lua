@@ -19,7 +19,7 @@ M.setup = function()
     enable_git_status = true,
     open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf' },
     sort_case_insensitive = false, -- used when sorting files and directories in the tree
-    sort_function = nil , -- use a custom function for sorting files and directories in the tree 
+    sort_function = nil , -- use a custom function for sorting files and directories in the tree
     nesting_rules = {},
     use_default_mappings = false,
     hide_root_node = false,
@@ -189,7 +189,7 @@ M.setup = function()
         folder_open = icons.dir_opened,
         folder_empty = icons.dir_empty_opend,
         folder_empty_open = icons.dir_empty_closed,
-        default = '*',
+        default = icons.file_3,
       },
       modified = {
         symbol = icons.circular_big,

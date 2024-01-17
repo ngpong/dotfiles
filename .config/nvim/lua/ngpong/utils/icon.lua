@@ -22,6 +22,7 @@ local icons = {
   pen = '✎',
   file_1 = '󰈙',
   file_2 = '',
+  file_3 = '',
   directory = '',
   diagnostic = '󰒡',
   diagnostic_err = '',

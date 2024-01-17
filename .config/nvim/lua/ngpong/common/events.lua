@@ -7,10 +7,12 @@ events.e_name = {
   BUFFER_READ = 1,
   VIM_ENTER = 2,
   BUFFER_ENTER = 3,
-  BUFFER_READ_POST = 4,
-  BUFFER_ADD = 5,
-  FILE_TYPE = 6,
-  WIN_CLOSED = 7,
+  BUFFER_WIN_ENTER = 4,
+  BUFFER_READ_POST = 5,
+  BUFFER_ADD = 6,
+  BUFFER_DELETE = 7,
+  FILE_TYPE = 8,
+  WIN_CLOSED = 9,
 
   -- explore tree
   SETUP_NEOTREE = 20,

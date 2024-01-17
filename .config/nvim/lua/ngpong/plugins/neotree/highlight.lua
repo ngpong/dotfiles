@@ -3,6 +3,7 @@ local M = {}
 local colors = PLGS.colorscheme.colors
 
 M.setup = function()
+  vim.api.nvim_set_hl(0, 'NeoTreeFileIcon', { link = 'DevIconDefault' })
   vim.api.nvim_set_hl(0, 'NeoTreeDirectoryIcon', { fg = colors.bright_yellow })
   vim.api.nvim_set_hl(0, 'NeoTreeDiagnosticSignWarn', { fg = colors.bright_yellow })
   vim.api.nvim_set_hl(0, 'NeoTreeDiagnosticSignError', { fg = colors.bright_red })
