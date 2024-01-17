@@ -28,6 +28,7 @@ M.setup = function()
     lead_custom_section = function() return '' end,
     custom_section = function() return '' end,
     context_follow_icon_color = false,
+    context_suffix = icons.space,
     symbols = {
       modified = icons.circular_big,
       ellipsis = icons.ellipsis,

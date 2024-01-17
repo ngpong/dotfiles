@@ -1,5 +1,5 @@
 return {
-  'utilyre/barbecue.nvim',
+  'NGPONG/barbecue.nvim',
   lazy = true,
   event = 'LazyFile',
   dependencies = {

@@ -28,12 +28,12 @@ M.setup = function()
       return
     end
 
-    navic_lib.request_symbol(bufnr, function(bufnr, symbols)
-      if not HELPER.is_buf_valid(bufnr) then
+    navic_lib.request_symbol(bufnr, function(_bufnr, _symbols)
+      if not HELPER.is_buf_valid(_bufnr) then
         return
       end
 
-      navic_lib.update_data(bufnr, symbols)
+      navic_lib.update_data(_bufnr, _symbols)
     end, clis[1])
   end
 
