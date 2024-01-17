@@ -235,8 +235,17 @@ M.setup = function()
     },
   }
 
+  local fix_1312_cfg = {
+    document_symbols = {
+      client_filters = {
+        fn = function(name) return name ~= 'bashls' end,
+      },
+    },
+  }
+
   TOOLS.tbl_r_extend(cfg, hook_cfg,
-                          fixicon_cfg)
+                          fixicon_cfg,
+                          fix_1312_cfg)
 
   events.emit(e_events.SETUP_NEOTREE, cfg)
 
