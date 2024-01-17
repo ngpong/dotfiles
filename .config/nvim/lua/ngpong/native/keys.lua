@@ -450,15 +450,7 @@ M.setup = function()
   del_buffer_keymaps()
   set_buffer_keymaps()
 
-  events.rg(e_events.BUFFER_WIN_ENTER, function(state)
-    M.__already_setkey_bufs = M.__already_setkey_bufs or {}
-
-    if M.__already_setkey_bufs[state.buf] then
-      return
-    else
-      M.__already_setkey_bufs[state.buf] = true
-    end
-
+  events.rg(e_events.BUFFER_READ, function(state)
     del_buffer_keymaps(state.buf)
     set_buffer_keymaps(state.buf)
   end)
