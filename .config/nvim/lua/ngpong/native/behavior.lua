@@ -1,6 +1,6 @@
 local M = {}
 
-local events = require 'ngpong.common.events'
+local events = require('ngpong.common.events')
 
 local e_events = events.e_name
 

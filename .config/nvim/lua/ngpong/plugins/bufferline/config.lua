@@ -44,7 +44,7 @@ M.setup = function()
       },
       groups = {
         items = {
-          buffline_groups.builtin.pinned:with({ icon = '' })
+          buffline_groups.builtin.pinned:with({ icon = icons.pinned_2 })
         }
       },
       custom_filter = this.filter()

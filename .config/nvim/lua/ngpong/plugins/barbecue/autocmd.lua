@@ -2,55 +2,74 @@ local M = {}
 
 local autocmd     = require('ngpong.common.autocmd')
 local bouncer     = require('ngpong.utils.debounce')
-local navic_lib   = require('nvim-navic.lib')
-local barbecue_ui = require('barbecue.ui')
+local events      = require('ngpong.common.events')
+local lazy        = require('ngpong.utils.lazy')
+local navic_lib   = lazy.require('nvim-navic.lib')
+local barbecue_ui = lazy.require('barbecue.ui')
 
-local unset_autocmds = function()
-  autocmd.del_augroup('barbecue')
-end
+local e_events = events.e_name
 
 local setup_autocmds = function()
-  local group_id = autocmd.new_augroup('barbecue')
+  -- 0x1: 保证任何文件都有 wintab 显示
+  events.rg(e_events.VIM_ENTER, function()
+    vim.api.nvim_create_autocmd({
+      'BufWinEnter',
+      'WinResized',
+    }, {
+      group = autocmd.new_augroup('barbecue'),
+      callback = function(args)
+        vim.schedule(function()
+          if not PLGS.is_loaded('barbecue.nvim') then
+            return
+          end
+          
+          if not HELPER.is_buf_valid(args.buf) then
+            return
+          end
 
-  vim.api.nvim_create_autocmd({
-    'WinResized',
-    'BufWinEnter',
-    'InsertLeave',
-    'CursorHold',
-  }, {
-    group = group_id,
-    callback = function(args)
-      if not vim.b[args.buf].barbecu_enable then
-        return
-      end
+          barbecue_ui.update()
+        end)
+      end,
+    })
+  end)
 
-      barbecue_ui.update()
-    end,
-  })
+  -- 0x2: 保证仅附加了navic的文件能够更新tabline的状态(因为只有它们会存在符号)
+  local _proc_insert_leave = false
+  events.rg(e_events.ATTACH_NAVIC, function(state)
+    vim.api.nvim_create_autocmd({
+      'CursorMoved',
+      'InsertLeave',
+    }, {
+      group = autocmd.new_augroup('barbecue_' .. state.bufnr),
+      buffer = state.bufnr,
+      callback = bouncer.throttle_trailing(350, true, function(args)
+        vim.schedule(function() 
+          if args.event == 'CursorMoved' and  _proc_insert_leave then
+            _proc_insert_leave = false
+            return
+          end
 
-  vim.api.nvim_create_autocmd({
-    'CursorMoved'
-  }, {
-    group = group_id,
-    callback = bouncer.throttle_trailing(350, true, function(args)
-      vim.schedule(function()
-        if not HELPER.is_buf_valid(args.buf) then
-          return
-        end
+          if args.event == 'InsertLeave' then
+            _proc_insert_leave = true
+          end
 
-        if not vim.b[args.buf].barbecu_enable then
-          return
-        end
+          if not HELPER.is_buf_valid(state.bufnr) then
+            return
+          end
 
-        navic_lib.update_context(args.buf)
-        barbecue_ui.update()
-      end)
-    end),
-  })
+          if not PLGS.is_loaded('barbecue.nvim') then
+            return
+          end
+
+          navic_lib.update_context(state.bufnr)
+          barbecue_ui.update()
+        end)
+      end),
+    })
+  end)
 end
 
 M.setup = function()
-  unset_autocmds()
   setup_autocmds()
 end
 

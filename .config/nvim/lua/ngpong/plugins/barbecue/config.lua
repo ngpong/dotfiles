@@ -103,6 +103,8 @@ M.setup = function()
     lazy_update_context = true
   }
 
+  barbecue_ui.toggle(true)
+
   events.rg(e_events.ATTACH_LSP, function(state)
     if this.filter(2, state) then
       navic.attach(state.cli, state.bufnr)
@@ -110,12 +112,8 @@ M.setup = function()
       vim.b[state.bufnr].barbecu_enable = true
 
       events.emit(e_events.ATTACH_NAVIC, state)
-
-      barbecue_ui.toggle(true)
     else
       vim.b[state.bufnr].barbecu_enable = false
-
-      barbecue_ui.toggle(false)
     end
   end)
 end

@@ -5,9 +5,13 @@ return {
   dependencies = {
     'SmiteshP/nvim-navic'
   },
+  init = function()
+    PLGS.record_seq('barbecue.nvim init')
+    PLGS.barbecue.handler.setup()
+    PLGS.barbecue.autocmd.setup()
+  end,
   config = function()
     PLGS.record_seq('barbecue.nvim config')
-    PLGS.barbecue.autocmd.setup()
     PLGS.barbecue.config.setup()
   end
 }

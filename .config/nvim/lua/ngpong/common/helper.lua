@@ -502,6 +502,10 @@ helper.clear_loclst_before = function(winid, ...)
   end
 end
 
+helper.get_cur_mode = function()
+  return vim.api.nvim_get_mode()
+end
+
 helper.set_cursor = function(row, col)
   pcall(vim.api.nvim_win_set_cursor, 0, { row, col })
 end
