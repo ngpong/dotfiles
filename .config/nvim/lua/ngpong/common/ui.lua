@@ -42,7 +42,7 @@ ui.popup_fileinfo = function(bufnr)
   end
 
   local popup_options = {
-    relative = 'win',
+    relative = 'editor',
     position = '50%',
     size = {
       width = max_line_width + 1,
