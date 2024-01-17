@@ -59,7 +59,7 @@ M.setup = function()
   end, { desc = 'which_key_ignore' })
 
   -- 动态修改字体大小
-  vim.g.neovide_scale_factor = 1.1
+  vim.g.neovide_scale_factor = 1.2
   local function scale(amount)
     local temp = vim.g.neovide_scale_factor + amount
     if temp < 0.5 then
