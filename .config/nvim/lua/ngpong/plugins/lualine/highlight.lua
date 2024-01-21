@@ -1,4 +1,5 @@
 local M = {}
+
 local colors = PLGS.colorscheme.colors
 
 M.setup = function()

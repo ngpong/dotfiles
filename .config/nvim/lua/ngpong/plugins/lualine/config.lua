@@ -79,7 +79,11 @@ local module = {
   mode_6 = {
     'mode',
     fmt = function(str)
-      return str:sub(1,1)
+      if mc.api.is_active() then
+        return '󰳽'
+      else
+        return str:sub(1,1)
+      end
     end,
     component_name = 'mode_6',
     separator = { right = icons.right_half_1 },
@@ -206,7 +210,7 @@ local module = {
   searchcount_1 = {
     'searchcount',
     component_name = 'searchcount',
-    icon = { icons.search },
+    icon = { icons.search, color = { fg = colors.bright_yellow } },
     padding = {
       left = 0,
       right = 0,
@@ -227,41 +231,11 @@ local module = {
       right = 0,
     }
   },
-  multicursors_1 = {
-    function()
-      local mode = mc.api.get_cur_mode()
-      if mode then
-        return mode
-      else
-        return ''
-      end
-    end,
-    component_name = 'multicursors_1',
-    icon = { icons.cursor },
-    padding = {
-      left = 0,
-      right = 0,
-    },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
-    color = { fg = colors.light1, bg = colors.dark2, gui = 'italic' },
-  },
-  multicursors_2 = {
-    function()
-      return icons.space
-    end,
-    component_name = 'multicursors_2',
-    cond = function()
-      return mc.api.is_active()
-    end,
-    padding = {
-      left = 0,
-      right = 0,
-    }
-  },
   datetime = {
     function()
-      return icons.alarm .. icons.space .. os.date("%A %H:%M")
+      return os.date("%A %H:%M")
     end,
+    icon = { icons.alarm, color = { fg = colors.bright_aqua } },
     component_name = 'datetime',
     padding = {
       left = 0,
@@ -630,8 +604,6 @@ M.setup = function()
         module.encoding,
         module.searchcount_1,
         module.searchcount_2,
-        module.multicursors_1,
-        module.multicursors_2,
         module.datetime,
       },
       lualine_y = {

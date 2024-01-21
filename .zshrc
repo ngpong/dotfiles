@@ -171,6 +171,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # user_setting() {
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
+setopt RM_STAR_SILENT 
+
 export PATH=$PATH:\
 /mnt/c/Windows/:\
 /mnt/c/Windows/system32:\

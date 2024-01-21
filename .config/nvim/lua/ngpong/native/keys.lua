@@ -264,8 +264,8 @@ local set_native_keymaps = function()
   keymap.register(e_mode.NORMAL, '<CR>', '<C-m>', { remap = false, desc = 'which_key_ignore' })
 
   -- 进入 insert 模式
-  keymap.register(e_mode.NORMAL, 'a', 'a', { remap = false, desc = 'COMMON: enter(head) inster mode.' })
-  keymap.register(e_mode.NORMAL, 'A', 'i', { remap = false, desc = 'COMMON: enter(tail) inster mode.' })
+  keymap.register(e_mode.NORMAL, 'a', 'a', { remap = false, desc = 'COMMON: enter(tail) inster mode.' })
+  keymap.register(e_mode.NORMAL, 'A', 'i', { remap = false, desc = 'COMMON: enter(head) inster mode.' })
 
   -- 进入 block visual 模式
   keymap.register(e_mode.NORMAL, '<C-v>', '<C-v>', { remap = false, desc = 'COMMON: enter blockwise-visual mode.' })
@@ -367,11 +367,13 @@ local set_native_keymaps = function()
   -- 文本复制与粘贴
   keymap.register(e_mode.NORMAL, 'y', 'yl', { remap = false, desc = 'TEXT: copy text.' })
   keymap.register(e_mode.VISUAL, 'y', 'y', { remap = false, desc = 'TEXT: copy text.' })
-  keymap.register(e_mode.NORMAL, 'u', 'p', { remap = false, desc = 'TEXT: paste text.' })
+  keymap.register(e_mode.NORMAL, 'u', 'p', { remap = false, desc = 'TEXT: paste(tail) text before.' })
+  keymap.register(e_mode.NORMAL, 'U', 'p', { remap = false, desc = 'TEXT: paste(head) text.' })
   keymap.register(e_mode.VISUAL, 'u', 'P', { remap = false, desc = 'which_key_ignore' })
 
   -- 文本剪切
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL } , 'c', 'c', { remap = false, desc = 'TEXT: cut character and enter insert mode.' })
+  keymap.register(e_mode.VISUAL, 'c', 'c', { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.NORMAL, 'c', 'xi', { remap = false, desc = 'TEXT: cut character and enter insert mode.' })
 
   -- 文本删除
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'x', '"_x', { remap = false, desc = 'TEXT: delete character.' })

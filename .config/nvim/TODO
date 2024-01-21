@@ -3,8 +3,10 @@
 Trouble 偶尔会报错，还没找到原因
 
 1. nvim-lint?
-2. cland-tidy?
-3. rmagatti/goto-preview?
+2. rmagatti/goto-preview?
+3. git_revert 需要加一个 yes or no 的选项
+4. neovim-pair
+5. git blame 和 preivew 窗口不会触发 autocmd，在调用后需要手动触发一下事件
 
 一些参考的项目
 1. https://github.com/NvChad/NvChad

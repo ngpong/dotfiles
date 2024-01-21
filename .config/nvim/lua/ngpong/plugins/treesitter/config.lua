@@ -14,6 +14,7 @@ M.setup = function()
       'json',
       'lua',
       'bash',
+      'cmake',
       'markdown',
       'markdown_inline'
     },
