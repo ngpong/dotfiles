@@ -13,6 +13,7 @@ events.e_name = {
   BUFFER_DELETE = 7,
   FILE_TYPE = 8,
   WIN_CLOSED = 9,
+  BUFFER_READ_LAZY = 10,
 
   -- explore tree
   SETUP_NEOTREE = 20,

@@ -4,6 +4,32 @@ local events = require('ngpong.common.events')
 
 local e_events = events.e_name
 
+local setup_bufferread_lazy = function()
+  local async = require('plenary.async')
+  if not async then
+    return
+  end
+
+  local queue = {}
+
+  events.rg(e_events.BUFFER_READ, function(state)
+    table.insert(queue, state)
+  end)
+
+  async.run(function()
+    while true do
+      async.util.sleep(200)
+
+      local state = queue[#queue]
+      if state and HELPER.is_buf_valid(state.buf) then
+        events.emit(e_events.BUFFER_READ_LAZY, state)
+
+        table.remove(queue)
+      end
+    end
+  end)
+end
+
 M.setup = function()
   events.rg(e_events.VIM_ENTER, function()
     -- clear jump list
@@ -11,6 +37,11 @@ M.setup = function()
 
     -- clear search pattern
     HELPER.clear_searchpattern()
+  end)
+
+  events.rg(e_events.VIM_ENTER, function()
+    -- step up extra buffer lazy events
+    setup_bufferread_lazy()
   end)
 
   events.rg(e_events.BUFFER_READ_POST, function(args)

@@ -161,11 +161,12 @@ local setup_keymaps = function(_)
     keymap.register(e_mode.NORMAL, 'da', TOOLS.wrap_f(vim.cmd, 'ClangdAST'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show AST.' })
   end)
 
-  events.rg(e_events.BUFFER_READ, async.void(function(state)
-    async.util.scheduler()
+  events.rg(e_events.BUFFER_READ_LAZY, function(state)
+    if not HELPER.is_buf_valid(state.buf) then
+      return
+    end
 
-    local ft = HELPER.get_filetype(state.buf)
-    if ft ~= 'ClangdTypeHierarchy' then
+    if HELPER.get_filetype(state.buf) ~= 'ClangdTypeHierarchy' then
       return
     end
 
@@ -179,7 +180,7 @@ local setup_keymaps = function(_)
       keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })
       keymap.register(e_mode.NORMAL, 'de', cb, { buffer = state.buf, desc = 'jump to definition.' })
     end
-  end))
+  end)
 end
 
 M.setup = function(cfg)
