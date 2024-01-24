@@ -14,8 +14,8 @@ local del_native_keymaps = function()
 end
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'd.', TOOLS.wrap_f(vim.diagnostic.goto_next, { float = false }), { remap = false, desc = 'jump to next diagnostic.' })
-  keymap.register(e_mode.NORMAL, 'd,', TOOLS.wrap_f(vim.diagnostic.goto_prev, { float = false }), { remap = false, desc = 'jump to prev diagnostic.' })
+  keymap.register(e_mode.NORMAL, 'd.', TOOLS.wrap_f(vim.diagnostic.goto_next, { float = false, wrap = false }), { remap = false, desc = 'jump to next diagnostic.' })
+  keymap.register(e_mode.NORMAL, 'd,', TOOLS.wrap_f(vim.diagnostic.goto_prev, { float = false, wrap = false }), { remap = false, desc = 'jump to prev diagnostic.' })
   keymap.register(e_mode.NORMAL, 'dd', TOOLS.wrap_f(touble.api.open, 'document_diagnostics'), { silent = true, remap = false, desc = 'toggle document diagnostics list.' })
   keymap.register(e_mode.NORMAL, 'dD', TOOLS.wrap_f(touble.api.open, 'workspace_diagnostics'), { silent = true, remap = false, desc = 'toggle workspace diagnostics list.' })
   keymap.register(e_mode.NORMAL, 'dp', TOOLS.wrap_f(vim.diagnostic.open_float, {
@@ -68,7 +68,7 @@ local set_buffer_keymaps = function(state)
     keymap.register(e_mode.NORMAL, 'dE', TOOLS.wrap_f(vim.lsp.buf.declaration, {
       on_list = function(options)
         if #options.items == 1 then
-          vim.lsp.util.jump_to_location(options.items[1].user_data, vim.lsp.buf_get_clients()[1].offset_encoding, false)
+          vim.lsp.util.jump_to_location(options.items[1].user_data, state.cli.offset_encoding, false)
         else
           vim.fn.setloclist(0, {}, ' ', options)
           touble.api.open('loclist', 'Lsp declaration')

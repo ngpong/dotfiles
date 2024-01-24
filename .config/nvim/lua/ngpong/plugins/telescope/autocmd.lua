@@ -41,6 +41,10 @@ local setup_autocmds = function()
       end
     end,
   })
+
+  -- preview 显示行号
+  -- https://github.com/nvim-telescope/telescope.nvim/issues/1186
+  vim.cmd 'autocmd User TelescopePreviewerLoaded setlocal number'
 end
 
 M.setup = function()

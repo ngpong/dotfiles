@@ -27,8 +27,8 @@ end
 local set_buffer_keymaps = function(bufnr)
   set_buffer_extra_keymaps(bufnr)
 
-  keymap.register(e_mode.NORMAL, 'g,', gitsigns.prev_hunk, { buffer = bufnr, desc = 'jump to prev hunk.' })
-  keymap.register(e_mode.NORMAL, 'g.', gitsigns.next_hunk, { buffer = bufnr, desc = 'jump to next hunk.' })
+  keymap.register(e_mode.NORMAL, 'g,', TOOLS.wrap_f(gitsigns.prev_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to prev hunk.' })
+  keymap.register(e_mode.NORMAL, 'g.', TOOLS.wrap_f(gitsigns.next_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to next hunk.' })
   keymap.register(e_mode.NORMAL, 'ghs', gitsigns.select_hunk, { buffer = bufnr, desc = 'select current hunk.' })
   keymap.register(e_mode.NORMAL, 'gha', gitsigns.stage_hunk, { buffer = bufnr, desc = 'staged current hunk.' })
   keymap.register(e_mode.NORMAL, 'ghr', gitsigns.reset_hunk, { buffer = bufnr, desc = 'restore current hunk.' })
