@@ -515,17 +515,27 @@ helper.set_wincursor = function(winid, row, col)
 end
 
 -- will causes a lazy loading with nvim-notify plugin.
-helper.notify = function(msg, lv)
-  vim.schedule(function() vim.notify(tostring(msg), lv) end)
+helper.notify = function(msg, title, lv)
+  vim.schedule(function() vim.notify(tostring(msg), lv, { title = title or 'System' }) end)
 end
-helper.notify_err = function(msg)
-  helper.notify(tostring(msg), vim.log.levels.ERROR)
+helper.notify_err = function(msg, title)
+  helper.notify(tostring(msg), title, vim.log.levels.ERROR)
 end
-helper.notify_warn = function(msg)
-  helper.notify(tostring(msg), vim.log.levels.WARN)
+helper.notify_warn = function(msg, title)
+  helper.notify(tostring(msg), title, vim.log.levels.WARN)
 end
-helper.notify_info = function(msg)
-  helper.notify(tostring(msg), vim.log.levels.INFO)
+helper.notify_info = function(msg, title)
+  helper.notify(tostring(msg), title, vim.log.levels.INFO)
+end
+
+helper.get_visual_selected = function()
+  local _, ls, cs = unpack(vim.fn.getpos("v"))
+  local _, le, ce = unpack(vim.fn.getpos("."))
+
+  ls, le = math.min(ls, le), math.max(ls, le)
+  cs, ce = math.min(cs, ce), math.max(cs, ce)
+
+  return vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})[1] or ''
 end
 
 helper.dclock = {

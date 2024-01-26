@@ -37,7 +37,7 @@ M.setup = function()
   }
 
   -- 字符过长自动换行
-  vim.wo.wrap = true -- 当一行的字符过长时，超出行的字符将会被包裹并显示在下一行
+  vim.wo.wrap = false -- 当一行的字符过长时，超出行的字符将会被包裹并显示在下一行
   vim.wo.breakindent = true -- 换行时自动对齐上一行的格式(可能会有性能损失)
   vim.wo.breakindentopt = 'sbr' -- 设置换行符
   vim.wo.showbreak = '➥►' -- 设置换行符
@@ -110,6 +110,12 @@ M.setup = function()
 
   -- 显示左侧图标指示列
   vim.wo.signcolumn = 'auto:1-2'
+
+  -- comment段换行时继承换行符
+  vim.opt.formatoptions:remove({ 'j', 'q' })
+  vim.opt.formatoptions = vim.opt.formatoptions + 'c'
+  vim.opt.formatoptions = vim.opt.formatoptions + 'r'
+  vim.opt.formatoptions = vim.opt.formatoptions + 'o'
 
   -- 组织状态线
   vim.wo.statuscolumn = '%s %r'

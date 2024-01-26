@@ -67,8 +67,40 @@ local set_native_keymaps = function()
     HELPER.add_jumplist()
   end, { remap = false, desc = 'jump to next.' })
   keymap.register(e_mode.NORMAL, 'ms<leader>', TOOLS.wrap_f(lazy.access('marks', 'set_next')), { remap = false, desc = '[NEXT]' })
-  keymap.register(e_mode.NORMAL, 'md<leader>', TOOLS.wrap_f(lazy.access('marks', 'delete_line')), { remap = false, desc = '[LINE]' })
-  keymap.register(e_mode.NORMAL, 'md<CR>', TOOLS.wrap_f(lazy.access('marks', 'delete_buf')), { remap = false, desc = '[BUFFER]' })
+  keymap.register(e_mode.NORMAL, 'md<leader>', function()
+    local bufnr  = HELPER.get_cur_bufnr()
+    local row, _ = HELPER.get_cursor()
+
+    local datas = marks.mark_state.buffers[bufnr].marks_by_line[row]
+    if not datas then
+      return
+    end
+
+    local texts = {}
+    for _, mark in pairs(datas) do
+      table.insert(texts, string.format('[%s]', mark))
+    end
+    marks.delete_line()
+    HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+  end, { remap = false, desc = '[LINE]' })
+  keymap.register(e_mode.NORMAL, 'md<CR>', function()
+    local bufnr  = HELPER.get_cur_bufnr()
+
+    local datas = marks.mark_state.buffers[bufnr].marks_by_line
+    if not datas then
+      return
+    end
+
+    local texts = {}
+    for _, _marks in pairs(datas) do
+      for _, mark in pairs(_marks) do
+        table.insert(texts, string.format('[%s]', mark))
+      end
+    end
+
+    HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+    marks.delete_buf()
+  end, { remap = false, desc = '[BUFFER]' })
   keymap.register(e_mode.NORMAL, 'mm', this.api.toggle_marks_list, { silent = true, remap = false, desc = 'toggle marks list.' })
 end
 

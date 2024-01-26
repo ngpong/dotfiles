@@ -22,7 +22,7 @@ local setup_autocmds = function()
           if not PLGS.is_loaded('barbecue.nvim') then
             return
           end
-          
+
           if not HELPER.is_buf_valid(args.buf) then
             return
           end
@@ -43,7 +43,7 @@ local setup_autocmds = function()
       group = autocmd.new_augroup('barbecue_' .. state.bufnr),
       buffer = state.bufnr,
       callback = bouncer.throttle_trailing(350, true, function(args)
-        vim.schedule(function() 
+        vim.schedule(function()
           if args.event == 'CursorMoved' and  _proc_insert_leave then
             _proc_insert_leave = false
             return

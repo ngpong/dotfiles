@@ -143,7 +143,7 @@ local setup_keymaps = function(_)
         local retry = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
           if retry > 5 then
-            HELPER.notify_warn('Type hierarchy not found or timeout.')
+            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
             break
           end
           retry = retry + 1

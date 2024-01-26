@@ -2,7 +2,7 @@ return {
   'nvim-treesitter/nvim-treesitter',
   lazy = true,
   event = 'VeryLazyFile',
-  cmd = { 'TSInstall', 'TSBufEnable', 'TSBufDisable', 'TSModuleInfo' },
+  cmd = { 'TSInstall', 'TSUpdate', 'TSBufEnable', 'TSBufDisable', 'TSModuleInfo' },
   build = ':TSUpdate',
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects'

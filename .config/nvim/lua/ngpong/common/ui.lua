@@ -16,7 +16,7 @@ ui.popup_fileinfo = function(bufnr)
 
   local state = TOOLS.get_filestate(path)
   if not state then
-    HELPER.notify_err('Unable to get file state, bufnr [' .. bufnr .. ']')
+    HELPER.notify_err('Unable to get file state, bufnr [' .. bufnr .. ']', 'System: file')
     return
   end
 
