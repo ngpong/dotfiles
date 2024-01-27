@@ -80,8 +80,12 @@ local set_native_keymaps = function()
     for _, mark in pairs(datas) do
       table.insert(texts, string.format('[%s]', mark))
     end
+
     marks.delete_line()
-    HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+
+    if next(texts) then
+      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+    end
   end, { remap = false, desc = '[LINE]' })
   keymap.register(e_mode.NORMAL, 'md<CR>', function()
     local bufnr  = HELPER.get_cur_bufnr()
@@ -94,12 +98,18 @@ local set_native_keymaps = function()
     local texts = {}
     for _, _marks in pairs(datas) do
       for _, mark in pairs(_marks) do
-        table.insert(texts, string.format('[%s]', mark))
+        local code = string.byte(mark)
+        if code >= 97 and code <= 122 then
+          table.insert(texts, string.format('[%s]', mark))
+        end
       end
     end
 
-    HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
     marks.delete_buf()
+
+    if next(texts) then
+      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+    end
   end, { remap = false, desc = '[BUFFER]' })
   keymap.register(e_mode.NORMAL, 'mm', this.api.toggle_marks_list, { silent = true, remap = false, desc = 'toggle marks list.' })
 end

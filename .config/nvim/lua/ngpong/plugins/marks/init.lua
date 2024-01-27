@@ -1,5 +1,5 @@
 return {
-  'chentoast/marks.nvim',
+  'NGPONG/marks.nvim',
   lazy = true,
   event = 'VeryVeryLazy',
   init = function()

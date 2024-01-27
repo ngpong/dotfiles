@@ -14,7 +14,7 @@ M.setup = function()
       mode = 'buffers',
       show_buffer_close_icons = false,
       show_close_icon = false,
-      separator_style = 'thick', --{'█', '█'},
+      separator_style = 'slant', --{'█', '█'},
       -- numbers = function(opts)
       --   return string.format('%s·%s', opts.ordinal, opts.lower(opts.id))
       -- end,
@@ -22,8 +22,8 @@ M.setup = function()
       left_trunc_marker = icons.arrow_left_1,
       right_trunc_marker = icons.arrow_right_2,
       indicator = {
-        icon = '▎',
-        style = 'icon',
+        -- icon = '▎',
+        style = 'underline',
       },
       tab_size = 12,
       show_tab_indicators = true,
@@ -44,7 +44,7 @@ M.setup = function()
       },
       groups = {
         items = {
-          buffline_groups.builtin.pinned:with({ icon = icons.pinned_2 })
+          buffline_groups.builtin.pinned:with({ icon = icons.pinned_3 })
         }
       },
       custom_filter = this.filter()
@@ -63,7 +63,14 @@ M.setup = function()
       },
       indicator_selected = {
         fg = colors.bright_red,
+        sp = colors.bright_red,
         bg = colors.dark0_soft,
+      },
+      buffer_selected = {
+        sp = colors.bright_red,
+      },
+      separator_selected = {
+        sp = colors.bright_red,
       },
       -- fill = {
       --   fg = colors.dark1,

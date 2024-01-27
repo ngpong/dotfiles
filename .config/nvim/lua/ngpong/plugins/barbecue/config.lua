@@ -35,13 +35,13 @@ M.setup = function()
       separator = icons.separator,
     },
     theme = {
-      normal = { fg = colors.light1, bold = true },
+      normal = { fg = colors.light1, bold = false },
 
       ellipsis = { fg = colors.light4 },
       separator = { fg = colors.light4 },
       dirname = { fg = colors.bright_blue, italic = true, bold = false },
       modified = { fg = colors.light4 },
-      basename = { bold = true, fg = colors.light1 },
+      basename = { bold = false, fg = colors.light1 },
 
       context_file = { link = icons.lsp_kinds.File.hl_link },
       context_module = { link = icons.lsp_kinds.Module.hl_link },

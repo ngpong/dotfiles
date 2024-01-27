@@ -134,6 +134,7 @@ local icons = {
   yes = '✔',
   pinned_1 = '',
   pinned_2 = '',
+  pinned_3 = '📌',
   spinner_frames = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
 }
 icons.lsp_kinds = {
