@@ -36,6 +36,7 @@ M.setup = function()
       ['@type.qualifier'] = { fg = gruvbox.palette.bright_red, italic = true },
       ['@keyword.return']  = { fg = gruvbox.palette.bright_red, italic = true },
       ['@keyword.operator']  = { fg = gruvbox.palette.bright_red, italic = true },
+      ['@keyword.conditional.ternary']  = { link = 'GruvboxFg4' },
       ['@keyword'] = { fg = gruvbox.palette.bright_red, italic = true },
       ['@repeat'] = { fg = gruvbox.palette.bright_red, italic = true },
       ['@namespace'] = { fg = gruvbox.palette.bright_green, italic = true }

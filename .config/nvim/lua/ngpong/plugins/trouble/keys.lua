@@ -80,6 +80,8 @@ local set_buffer_keymaps = function(bufnr)
     HELPER.add_jumplist()
     this.api.actions.jump()
     HELPER.add_jumplist()
+
+    HELPER.keep_screen_center()
   end, { remap = false, buffer = bufnr, desc = 'TOUBLE: open selected entry into buffer.' })
   keymap.register(e_mode.NORMAL, '<C-s>', this.api.actions.toggle_preview, { remap = false, buffer = bufnr, desc = 'TOUBLE: toggle preview(seek) with selected entry.' })
   keymap.register(e_mode.NORMAL, 'R', this.api.actions.refresh, { remap = false, buffer = bufnr, desc = 'TOUBLE: refresh trouble list.' })

@@ -55,7 +55,25 @@ local set_buffer_keymaps = function(state)
     keymap.register(e_mode.NORMAL, 'de', TOOLS.wrap_f(vim.lsp.buf.definition, {
       on_list = function(options)
         if #options.items == 1 then
-          vim.lsp.util.jump_to_location(options.items[1].user_data, state.cli.offset_encoding, false)
+          local loc = options.items[1].user_data
+
+          local range = loc.range or loc.targetSelectionRange
+          if not range then
+            return
+          end
+
+          -- 检查是否在相同的位置
+          local row, col = HELPER.get_cursor()
+          if (row == range['start'].line + 1) and
+             (col >= range['start'].character and col <= range['end'].character) then
+            return
+          end
+
+          if not vim.lsp.util.jump_to_location(loc, state.cli.offset_encoding, false) then
+            return
+          end
+
+          HELPER.keep_screen_center()
         else
           vim.fn.setloclist(0, {}, ' ', options)
           touble.api.open('loclist', 'Lsp definitions')
@@ -68,7 +86,25 @@ local set_buffer_keymaps = function(state)
     keymap.register(e_mode.NORMAL, 'dE', TOOLS.wrap_f(vim.lsp.buf.declaration, {
       on_list = function(options)
         if #options.items == 1 then
-          vim.lsp.util.jump_to_location(options.items[1].user_data, state.cli.offset_encoding, false)
+          local loc = options.items[1].user_data
+
+          local range = loc.range or loc.targetSelectionRange
+          if not range then
+            return
+          end
+
+          -- 检查是否在相同的位置
+          local row, col = HELPER.get_cursor()
+          if (row == range['start'].line + 1) and
+             (col >= range['start'].character and col <= range['end'].character) then
+            return
+          end
+
+          if not vim.lsp.util.jump_to_location(loc, state.cli.offset_encoding, false) then
+            return
+          end
+
+          HELPER.keep_screen_center()
         else
           vim.fn.setloclist(0, {}, ' ', options)
           touble.api.open('loclist', 'Lsp declaration')

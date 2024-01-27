@@ -35,18 +35,21 @@ helper.add_buffer = function(arg)
   end
 end
 
-helper.delete_buffer = function(bufnr)
-  local buffline = PLGS.buffline
-  if buffline and buffline.api.is_pinned(bufnr) then
+helper.delete_buffer = function(bufnr, force, cond)
+  local bd = require('bufdelete')
+  if not bd then
     return
   end
 
-  local bufdelete = require('bufdelete')
-  if not bufdelete then
+  bufnr = bufnr or helper.get_cur_bufnr()
+  force = force or true
+  cond  = cond  or nil
+
+  if cond and not cond(bufnr) then
     return
   end
 
-  bufdelete.bufdelete(bufnr and bufnr or 0, true)
+  bd.bufdelete(bufnr and bufnr or 0, true)
 
   local wipeout_unnamed_buf = function()
     for _, _bufnr in pairs(helper.get_all_bufs()) do
@@ -163,6 +166,10 @@ end
 
 helper.presskeys = function(key)
   pcall(vim.cmd, "normal! " .. key)
+end
+
+helper.keep_screen_center = function()
+  helper.presskeys('zz')
 end
 
 helper.get_bufnr = function(winid)

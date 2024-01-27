@@ -58,6 +58,7 @@ M.select_entries = function(bufnr)
     handler(bufnr)
   else
     actions.select_default(bufnr)
+    HELPER.keep_screen_center()
   end
 end
 
