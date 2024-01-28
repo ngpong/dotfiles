@@ -5,7 +5,6 @@ local events = require('ngpong.common.events')
 local e_events = events.e_name
 
 local setup_extra_buffer_event = function()
-  -- 理论上应该不用清理，数量也不多，而且现在 bc 都是 buffer_delete 而不是 wipeout_buffer
   local bufnrs = {}
 
   -- 只触发一次的 BUFFER_ENTER event
