@@ -17,5 +17,6 @@ return {
     PLGS.record_seq('nvim-treesitter config')
     -- PLGS.treesitter.autocmd.setup() -- 关于设置折叠的 autocmd，但是可能会在大文件上引发性能问题
     PLGS.treesitter.config.setup()
+    PLGS.treesitter.hacker.setup()
   end,
 }

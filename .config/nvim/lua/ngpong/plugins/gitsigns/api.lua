@@ -85,7 +85,7 @@ M.blame_line = async.void(function()
 
   if not opened and state then
     events.emit(e_events.GITSIGNS_OPEN_POPUP, state)
-    events.emit(e_events.BUFFER_READ, { buf = state.bufnr })
+    events.emit(e_events.BUFFER_ENTER, { buf = state.bufnr })
   end
 end)
 
@@ -108,7 +108,7 @@ M.preview_hunk = async.void(function()
 
   if not opened and state then
     events.emit(e_events.GITSIGNS_OPEN_POPUP, state)
-    events.emit(e_events.BUFFER_READ, { buf = state.bufnr })
+    events.emit(e_events.BUFFER_ENTER, { buf = state.bufnr })
   end
 end)
 

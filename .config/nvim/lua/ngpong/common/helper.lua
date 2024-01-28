@@ -495,17 +495,22 @@ helper.set_wincursor = function(winid, row, col)
 end
 
 -- will causes a lazy loading with nvim-notify plugin.
-helper.notify = function(msg, title, lv)
-  vim.schedule(function() vim.notify(tostring(msg), lv, { title = title or 'System' }) end)
+helper.notify = function(msg, title, opts, lv)
+  vim.schedule(function()
+    local final_opts = { title = title or 'System' }
+    TOOLS.tbl_r_extend(final_opts, opts or {})
+
+    vim.notify(tostring(msg), lv, final_opts)
+  end)
 end
-helper.notify_err = function(msg, title)
-  helper.notify(tostring(msg), title, vim.log.levels.ERROR)
+helper.notify_err = function(msg, title, opts)
+  helper.notify(tostring(msg), title, opts, vim.log.levels.ERROR)
 end
-helper.notify_warn = function(msg, title)
-  helper.notify(tostring(msg), title, vim.log.levels.WARN)
+helper.notify_warn = function(msg, title, opts)
+  helper.notify(tostring(msg), title, opts, vim.log.levels.WARN)
 end
-helper.notify_info = function(msg, title)
-  helper.notify(tostring(msg), title, vim.log.levels.INFO)
+helper.notify_info = function(msg, title, opts)
+  helper.notify(tostring(msg), title, opts, vim.log.levels.INFO)
 end
 
 helper.get_visual_selected = function()

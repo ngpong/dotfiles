@@ -4,30 +4,27 @@ local events = require('ngpong.common.events')
 
 local e_events = events.e_name
 
-local setup_bufferread_lazy = function()
-  local async = require('plenary.async')
-  if not async then
-    return
-  end
+local setup_extra_buffer_event = function()
+  -- 理论上应该不用清理，数量也不多，而且现在 bc 都是 buffer_delete 而不是 wipeout_buffer
+  local bufnrs = {}
 
-  local queue = {}
-
-  events.rg(e_events.BUFFER_READ, function(state)
-    table.insert(queue, state)
-  end)
-
-  async.run(function()
-    while true do
-      async.util.sleep(200)
-
-      local state = queue[#queue]
-      if state and HELPER.is_buf_valid(state.buf) then
-        events.emit(e_events.BUFFER_READ_LAZY, state)
-
-        table.remove(queue)
-      end
+  -- 只触发一次的 BUFFER_ENTER event
+  events.rg(e_events.BUFFER_ENTER, function(state)
+    if bufnrs[state.buf] then
+      return
     end
+
+    bufnrs[state.buf] = true
+
+    events.emit(e_events.BUFFER_ENTER_ONCE, state)
   end)
+
+  events.rg(e_events.BUFFER_DELETE, function(state)
+    bufnrs[state.buf] = nil
+  end)
+
+  -- 由于 VIM_ENTER 的时候不会触发 BUFFER_ENTER，所以手动触发一次
+  events.emit(e_events.BUFFER_ENTER, { buf = HELPER.get_cur_bufnr() })
 end
 
 M.setup = function()
@@ -40,8 +37,8 @@ M.setup = function()
   end)
 
   events.rg(e_events.VIM_ENTER, function()
-    -- step up extra buffer lazy events
-    setup_bufferread_lazy()
+    -- step up extra events
+    setup_extra_buffer_event()
   end)
 
   events.rg(e_events.BUFFER_READ_POST, function(args)

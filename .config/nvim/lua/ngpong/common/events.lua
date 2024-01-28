@@ -1,5 +1,7 @@
 local events = {}
 
+local icons = require('ngpong.utils.icon')
+
 local event_handlers = {}
 
 events.e_name = {
@@ -13,7 +15,7 @@ events.e_name = {
   BUFFER_DELETE = 7,
   FILE_TYPE = 8,
   WIN_CLOSED = 9,
-  BUFFER_READ_LAZY = 10,
+  BUFFER_ENTER_ONCE = 10,
 
   -- explore tree
   SETUP_NEOTREE = 20,
@@ -82,7 +84,7 @@ events.emit = function(name, ...)
     local status, res = pcall(fn, ...)
     if not status then
       success = false
-      HELPER.notify_err('execute event error, please check log file for more information.', 'System: events')
+      HELPER.notify_err('execute event error, please check log file for more information.', 'System: events', { icon = icons.diagnostic_err })
       LOGGER.error(res)
     end
   end

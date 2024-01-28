@@ -449,10 +449,8 @@ end
 M.setup = function()
   del_native_keymaps()
   set_native_keymaps()
-  del_buffer_keymaps()
-  set_buffer_keymaps()
 
-  events.rg(e_events.BUFFER_READ_LAZY, function(state)
+  events.rg(e_events.BUFFER_ENTER_ONCE, function(state)
     del_buffer_keymaps(state.buf)
     set_buffer_keymaps(state.buf)
   end)

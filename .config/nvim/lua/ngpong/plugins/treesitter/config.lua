@@ -1,9 +1,12 @@
 local M = {}
 
+local lazy       = require('ngpong.utils.lazy')
+local treesitter = lazy.require('nvim-treesitter.configs')
+
 local this = PLGS.treesitter
 
 M.setup = function()
-  require('nvim-treesitter.configs').setup {
+  treesitter.setup {
     ensure_installed = {
       'c',
       'cpp',

@@ -1,5 +1,6 @@
 local M = {}
 
+local icons   = require('ngpong.utils.icon')
 local lazy    = require('ngpong.utils.lazy')
 local bouncer = require('ngpong.utils.debounce')
 local trouble = lazy.require('trouble')
@@ -36,7 +37,7 @@ M.refresh = bouncer.throttle_leading(1000, function()
     M.actions.refresh()
 
     vim.schedule(function()
-      HELPER.notify_info(msg, title)
+      HELPER.notify_info(msg, title, { icon = icons.lsp_loaded })
     end)
   end
 

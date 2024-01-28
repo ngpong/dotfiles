@@ -2,6 +2,7 @@ local M = {}
 
 local events      = require('ngpong.common.events')
 local keymap      = require('ngpong.common.keybinder')
+local icons       = require('ngpong.utils.icon')
 local lazy        = require('ngpong.utils.lazy')
 local async       = lazy.require('plenary.async')
 local lspcfg      = lazy.require('lspconfig')
@@ -143,13 +144,13 @@ local setup_keymaps = function(_)
 
         local timespan = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
-          if timespan > 1000 then
-            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
+          if timespan > 10000 then
+            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd', { icon = icons.diagnostic_warn })
             break
           end
-          timespan = timespan + 100
+          timespan = timespan + 500
 
-          async.util.sleep(100)
+          async.util.sleep(500)
         end
 
         vim.go.splitbelow = false
@@ -162,7 +163,9 @@ local setup_keymaps = function(_)
     keymap.register(e_mode.NORMAL, 'da', TOOLS.wrap_f(vim.cmd, 'ClangdAST'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show AST.' })
   end)
 
-  events.rg(e_events.BUFFER_READ_LAZY, function(state)
+  events.rg(e_events.BUFFER_ENTER_ONCE, async.void(function(state)
+    async.util.scheduler()
+
     if not HELPER.is_buf_valid(state.buf) then
       return
     end
@@ -181,7 +184,7 @@ local setup_keymaps = function(_)
       keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })
       keymap.register(e_mode.NORMAL, 'de', cb, { buffer = state.buf, desc = 'jump to definition.' })
     end
-  end)
+  end))
 end
 
 M.setup = function(cfg)

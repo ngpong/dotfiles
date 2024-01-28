@@ -1,6 +1,7 @@
 local M = {}
 
 local keymap = require('ngpong.common.keybinder')
+local icons  = require('ngpong.utils.icon')
 local lazy   = require('ngpong.utils.lazy')
 local marks  = lazy.require('marks')
 
@@ -84,7 +85,7 @@ local set_native_keymaps = function()
     marks.delete_line()
 
     if next(texts) then
-      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
     end
   end, { remap = false, desc = '[LINE]' })
   keymap.register(e_mode.NORMAL, 'md<CR>', function()
@@ -108,7 +109,7 @@ local set_native_keymaps = function()
     marks.delete_buf()
 
     if next(texts) then
-      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks')
+      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
     end
   end, { remap = false, desc = '[BUFFER]' })
   keymap.register(e_mode.NORMAL, 'mm', TOOLS.wrap_f(this.api.toggle_marks_list), { silent = true, remap = false, desc = 'toggle current buffer marks list.' })

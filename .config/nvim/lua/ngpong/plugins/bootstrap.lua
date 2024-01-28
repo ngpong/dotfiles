@@ -4,9 +4,11 @@ local icons   = require('ngpong.utils.icon')
 local lazy    = require('ngpong.utils.lazy')
 local keymap  = require('ngpong.common.keybinder')
 local autocmd = require('ngpong.common.autocmd')
+local events  = require('ngpong.common.events')
 local async   = lazy.require('plenary.async')
 
 local e_mode = keymap.e_mode
+local e_events = events.e_name
 
 M.ensure_install = function()
   local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -267,7 +269,17 @@ end
 
 M.register_keymap = function()
   -- 打开 lazy plugin manager
-  keymap.register(e_mode.NORMAL, '<leader>p', '<CMD>Lazy<CR>', { remap = false, desc = 'open lazy plugins manager.' })
+  keymap.register(e_mode.NORMAL, '<leader>p', function()
+    vim.cmd('Lazy')
+
+    -- 由于 lazy 禁用了 autocmd，所以我们要手动触发一次
+    for _, _bufnr in pairs(HELPER.get_all_bufs()) do
+      if 'lazy' == HELPER.get_filetype(_bufnr) then
+        events.emit(e_events.BUFFER_ENTER, { buf = _bufnr })
+        break
+      end
+    end
+  end, { remap = false, desc = 'open lazy plugins manager.' })
 
   -- hijack plugin manager native key setup
   require('lazy.view.config').keys.close = '<esc>'

@@ -6,14 +6,30 @@ local setup_diagnostics = function()
   -- 仅设置 publishDiagnostics handlers 所产生的 diagnostic
   --  REF1: https://www.reddit.com/r/neovim/comments/xqsboa/lsp_how_can_i_only_show_diagnostic_text_on_the/
   --  REF2: https://www.reddit.com/r/neovim/comments/og1cdv/neovim_lsp_how_do_you_get_diagnostic_mesages_to/
-  -- 
+  --
   -- 如果想要该配置应用于全局(因为可能会有不同的源会设置 diagnostic)
   --  REF1: https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.config()
-  -- 
+  --
   -- 对于 windows terimal 下划线没有颜色的问题
   --  REF1: https://github.com/microsoft/language-server-protocol/issues/257
   vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
+      underline = {
+        severity = {
+          vim.diagnostic.severity.ERROR,
+          vim.diagnostic.severity.WARN,
+          vim.diagnostic.severity.INFO,
+          vim.diagnostic.severity.HINT,
+        }
+      },
+      virtual_text = false,
+      signs = false,
+      update_in_insert = false,
+    }
+  )
+
+  vim.lsp.handlers['textDocument/diagnostic'] = vim.lsp.with(
+    vim.lsp.diagnostic.on_diagnostic, {
       underline = {
         severity = {
           vim.diagnostic.severity.ERROR,
@@ -41,9 +57,9 @@ local setup_hover = function()
 end
 
 local setup_signaturehelp = function()
-  -- handler: 
+  -- handler:
   --  vim.lsp.handlers['textDocument/signatureHelp']
-  -- 
+  --
   -- NOTE: for maunmal setup handler checkout NVChad::signatureHelp
 
   local lsp_signature = require('lsp_signature')
@@ -112,7 +128,7 @@ local setup_signaturehelp = function()
 end
 
 local setup_lsp_notify = function()
-  -- handler: 
+  -- handler:
   --  vim.lsp.handlers['$/progress']
   --  vim.lsp.handlers['window/showMessage']
 
@@ -121,34 +137,34 @@ local setup_lsp_notify = function()
   local client_notifs = {}
 
   local function get_notif_data(client_id, token)
-   if not client_notifs[client_id] then
-     client_notifs[client_id] = {}
-   end
+    if not client_notifs[client_id] then
+      client_notifs[client_id] = {}
+    end
 
-   if not client_notifs[client_id][token] then
-     client_notifs[client_id][token] = {}
-   end
+    if not client_notifs[client_id][token] then
+      client_notifs[client_id][token] = {}
+    end
 
-   return client_notifs[client_id][token]
+    return client_notifs[client_id][token]
   end
 
   local function update_spinner(client_id, token)
-   local notif_data = get_notif_data(client_id, token)
+    local notif_data = get_notif_data(client_id, token)
 
-   if notif_data.spinner then
-     local new_spinner = (notif_data.spinner + 1) % #icons.spinner_frames
-     notif_data.spinner = new_spinner
+    if notif_data.spinner then
+      local new_spinner = (notif_data.spinner + 1) % #icons.spinner_frames
+      notif_data.spinner = new_spinner
 
-     notif_data.notification = vim.notify(nil, nil, {
-       hide_from_history = true,
-       icon = icons.spinner_frames[new_spinner],
-       replace = notif_data.notification,
-     })
+      notif_data.notification = vim.notify(nil, nil, {
+        hide_from_history = true,
+        icon = icons.spinner_frames[new_spinner],
+        replace = notif_data.notification,
+      })
 
-     vim.defer_fn(function()
-       update_spinner(client_id, token)
-     end, 100)
-   end
+      vim.defer_fn(function()
+        update_spinner(client_id, token)
+      end, 100)
+    end
   end
 
   local function format_title(title, client_name)
