@@ -1,10 +1,9 @@
 local M = {}
 
 local icons = require('ngpong.utils.icon')
-local trouble = require('trouble')
 
 M.setup = function()
-  trouble.setup {
+  require('trouble').setup {
     position = 'bottom', -- position of the list can be: bottom, top, left, right
     height = 10, -- height of the trouble list when position is top or bottom
     width = 50, -- width of the list when position is left or right
@@ -38,6 +37,13 @@ M.setup = function()
         previous = {}, -- previous item
         next = {}, -- next item
         help = {}, -- help menu
+    },
+    signs = {
+      error = icons.diagnostic_err,
+      hint = icons.diagnostic_hint,
+      information = icons.diagnostic_info,
+      other = icons.arrow_right_2,
+      warning = icons.diagnostic_warn
     },
     multiline = true, -- render multi-line messages
     indent_lines = true, -- add an indent guide below the fold icons

@@ -2,9 +2,10 @@ local M = {}
 
 local events      = require('ngpong.common.events')
 local icons       = require('ngpong.utils.icon')
-local navic       = require('nvim-navic')
-local barbecue    = require('barbecue')
-local barbecue_ui = require('barbecue.ui')
+local lazy        = require('ngpong.utils.lazy')
+local navic       = lazy.require('nvim-navic')
+local barbecue    = lazy.require('barbecue')
+local barbecue_ui = lazy.require('barbecue.ui')
 
 local this = PLGS.barbecue
 local colors = PLGS.colorscheme.colors

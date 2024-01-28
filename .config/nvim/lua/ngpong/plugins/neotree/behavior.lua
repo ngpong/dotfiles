@@ -1,7 +1,8 @@
 local M = {}
 
 local events = require('ngpong.common.events')
-local async  = require('plenary.async')
+local lazy   = require('ngpong.utils.lazy')
+local async  = lazy.require('plenary.async')
 
 local e_events = events.e_name
 
@@ -19,6 +20,10 @@ M.setup = function()
     end
 
     async.util.scheduler()
+
+    if not HELPER.is_buf_valid(state.buf) then
+      return
+    end
 
     local bufname = HELPER.get_buf_name(state.buf)
     if TOOLS.isempty(bufname) then

@@ -1,7 +1,8 @@
 
 local M = {}
 
-local lspcfg = require('lspconfig')
+local lazy   = require('ngpong.utils.lazy')
+local lspcfg = lazy.require('lspconfig')
 
 local setup_server = function(cfg)
   lspcfg.cmake.setup({

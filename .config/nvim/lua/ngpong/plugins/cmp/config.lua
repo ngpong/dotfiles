@@ -2,9 +2,10 @@ local M = {}
 
 local events      = require('ngpong.common.events')
 local icons       = require('ngpong.utils.icon')
-local cmp         = require('cmp')
-local cmp_types   = require('cmp.types')
-local cmp_context = require('cmp.config.context')
+local lazy        = require('ngpong.utils.lazy')
+local cmp         = lazy.require('cmp')
+local cmp_types   = lazy.require('cmp.types')
+local cmp_context = lazy.require('cmp.config.context')
 
 local this = PLGS.cmp
 local e_events = events.e_name
@@ -19,8 +20,8 @@ local cmp_compare = setmetatable({}, {
     end
 
     if k == 'clangd_extensions' then
-      local clangd_extensions = require('clangd_extensions.cmp_scores')
-      return clangd_extensions
+      local _, module = pcall(require, 'clangd_extensions.cmp_scores')
+      return module
     end
 
     if compare[k] ~= nil then

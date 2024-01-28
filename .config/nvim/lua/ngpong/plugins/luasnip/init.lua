@@ -7,8 +7,8 @@ return {
   },
   config = function()
     PLGS.record_seq('LuaSnip config')
-    PLGS.luasnip.autocmd.setup()
     PLGS.luasnip.config.setup()
+    PLGS.luasnip.autocmd.setup()
     PLGS.luasnip.snippets.setup()
   end
 }

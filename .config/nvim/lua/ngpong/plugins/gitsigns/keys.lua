@@ -10,7 +10,7 @@ local e_mode = keymap.e_mode
 local e_events = events.e_name
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'gg', TOOLS.wrap_f(this.api.toggle_gitsymbols_list, 'cur'), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
+  keymap.register(e_mode.NORMAL, 'gg', TOOLS.wrap_f(this.api.toggle_gitsymbols_list), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
   keymap.register(e_mode.NORMAL, 'gG', TOOLS.wrap_f(this.api.toggle_gitsymbols_list, 'all'), { silent = true, remap = false, desc = 'toggle workspace buffer gitsigns list.' })
 end
 

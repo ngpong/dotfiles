@@ -45,8 +45,9 @@ local set_buffer_keymaps = function(state)
   if state.cli.server_capabilities.referencesProvider then
     keymap.register(e_mode.NORMAL, 'dr', TOOLS.wrap_f(vim.lsp.buf.references, nil, {
       on_list = function(options)
-        vim.fn.setloclist(0, {}, ' ', options)
-        touble.api.open('loclist', 'Lsp references')
+        HELPER.clear_qflst()
+        HELPER.set_qflst(nil, 'r', options)
+        touble.api.open('quickfix', 'Lsp references')
       end
     }), { buffer = state.bufnr, silent = true, remap = false, desc = 'get all references to the symbol.' })
   end
@@ -75,8 +76,9 @@ local set_buffer_keymaps = function(state)
 
           HELPER.keep_screen_center()
         else
-          vim.fn.setloclist(0, {}, ' ', options)
-          touble.api.open('loclist', 'Lsp definitions')
+          HELPER.clear_qflst()
+          HELPER.set_qflst(nil, 'r', options)
+          touble.api.open('quickfix', 'Lsp definitions')
         end
       end
     }), { buffer = state.bufnr, remap = false, desc = 'jump to definition.' })
@@ -106,8 +108,9 @@ local set_buffer_keymaps = function(state)
 
           HELPER.keep_screen_center()
         else
-          vim.fn.setloclist(0, {}, ' ', options)
-          touble.api.open('loclist', 'Lsp declaration')
+          HELPER.clear_qflst()
+          HELPER.set_qflst(nil, 'r', options)
+          touble.api.open('quickfix', 'Lsp declaration')
         end
       end
     }), { buffer = state.bufnr, remap = false, desc = 'jump to declaration.' })

@@ -2,10 +2,11 @@ local M = {}
 
 local events      = require('ngpong.common.events')
 local keymap      = require('ngpong.common.keybinder')
-local lspcfg      = require('lspconfig')
-local async       = require('plenary.async')
-local extensions  = require('clangd_extensions')
-local inlay_hints = require('clangd_extensions.inlay_hints')
+local lazy        = require('ngpong.utils.lazy')
+local async       = lazy.require('plenary.async')
+local lspcfg      = lazy.require('lspconfig')
+local extensions  = lazy.require('clangd_extensions')
+local inlay_hints = lazy.require('clangd_extensions.inlay_hints')
 
 local e_mode   = keymap.e_mode
 local e_events = events.e_name
@@ -140,15 +141,15 @@ local setup_keymaps = function(_)
 
         vim.cmd('ClangdTypeHierarchy')
 
-        local retry = 0
+        local timespan = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
-          if retry > 5 then
+          if timespan > 1000 then
             HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
             break
           end
-          retry = retry + 1
+          timespan = timespan + 100
 
-          async.util.sleep(50)
+          async.util.sleep(100)
         end
 
         vim.go.splitbelow = false

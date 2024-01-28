@@ -2,7 +2,8 @@ local M = {}
 
 local events    = require('ngpong.common.events')
 local icons     = require('ngpong.utils.icon')
-local telescope = require('telescope')
+local lazy      = require('ngpong.utils.lazy')
+local telescope = lazy.require('telescope')
 
 local this = PLGS.telescope
 local e_events = events.e_name

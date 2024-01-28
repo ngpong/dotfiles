@@ -1,3 +1,1 @@
-local gruxbox = require('gruvbox')
-
-return gruxbox.palette
+return require('ngpong.utils.lazy').access('gruvbox', 'palette')

@@ -1,6 +1,7 @@
 local M = {}
 
-local gruvbox = require('gruvbox')
+local lazy    = require('ngpong.utils.lazy')
+local gruvbox = lazy.require('gruvbox')
 
 M.setup = function()
   gruvbox.setup {

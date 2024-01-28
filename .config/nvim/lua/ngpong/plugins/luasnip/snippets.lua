@@ -1,24 +1,24 @@
 local M = {}
 
-local ls         = require('luasnip')
-local ls_extras  = require('luasnip.extras')
-local ls_postfix = require('luasnip.extras.postfix')
+local lazy     = require('ngpong.utils.lazy')
+local engine   = lazy.require('luasnip')
+local snippets = lazy.require('luasnip.loaders.from_vscode')
 
-local s       = ls.snippet
-local t       = ls.text_node
-local i       = ls.insert_node
-local f       = ls.function_node
-local p       = ls_extras.partial
-local postfix = ls_postfix.postfix
+local s       = lazy.access('luasnip', 'snippet')
+local t       = lazy.access('luasnip', 'text_node')
+local i       = lazy.access('luasnip', 'insert_node')
+local f       = lazy.access('luasnip', 'function_node')
+local p       = lazy.access('luasnip.extras', 'partial')
+local postfix = lazy.access('luasnip.extras.postfix', 'postfix')
 
 M.setup = function()
   -- vscode snippets
-  require('luasnip.loaders.from_vscode').lazy_load {
+  snippets.lazy_load {
     exclude = { 'lua' }, -- luals 不支持禁用内置 snippets，为了使完成更加存粹，禁用掉这里的
   }
 
   -- snippets write by lua
-  ls.add_snippets('all', {
+  engine.add_snippets('all', {
     s('$YEAR', {
       p(os.date, '%Y')
     }),
@@ -41,8 +41,8 @@ M.setup = function()
       end, {}),
     }),
   })
-  ls.add_snippets('cpp', {
-    ls.parser.parse_snippet(
+  engine.add_snippets('cpp', {
+    engine.parser.parse_snippet(
       { trig = 'bmk', name = 'Benchmark Template.', desc = 'Google benchmark template for a tiny cpp program' },
       "#include <benchmark/benchmark.h>\n\nvoid foo(benchmark::State& state) {\n\tfor (auto _: state) {}\n}\nBENCHMARK(foo);\n\nBENCHMARK_MAIN();"
     )

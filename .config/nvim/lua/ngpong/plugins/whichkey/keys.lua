@@ -2,8 +2,8 @@ local M = {}
 
 local events = require('ngpong.common.events')
 local keymap = require('ngpong.common.keybinder')
-local async  = require('plenary.async')
 local lazy   = require('ngpong.utils.lazy')
+local async  = lazy.require('plenary.async')
 local wk     = lazy.require('which-key')
 
 local e_mode   = keymap.e_mode

@@ -1,12 +1,11 @@
 local M = {}
 
-local events   = require('ngpong.common.events')
-local gitsigns = require('gitsigns')
+local events = require('ngpong.common.events')
 
 local e_events = events.e_name
 
 M.setup = function()
-  gitsigns.setup {
+  require('gitsigns').setup {
     signs = {
       add          = { text = '│' },
       change       = { text = '│' },

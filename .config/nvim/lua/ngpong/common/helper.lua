@@ -41,6 +41,11 @@ helper.delete_buffer = function(bufnr, force, cond)
     return
   end
 
+  local async = require('plenary.async')
+  if not async then
+    return
+  end
+
   bufnr = bufnr or helper.get_cur_bufnr()
   force = force or true
   cond  = cond  or nil
@@ -49,7 +54,7 @@ helper.delete_buffer = function(bufnr, force, cond)
     return
   end
 
-  bd.bufdelete(bufnr and bufnr or 0, true)
+  bd.bufdelete(bufnr and bufnr or 0, force)
 
   local wipeout_unnamed_buf = function()
     for _, _bufnr in pairs(helper.get_all_bufs()) do
@@ -67,11 +72,12 @@ helper.delete_buffer = function(bufnr, force, cond)
     end
   end
 
-  local async = require('plenary.async')
-  if async then
-    async.run(wipeout_unnamed_buf)
-  else
-    wipeout_unnamed_buf()
+  async.run(wipeout_unnamed_buf)
+end
+
+helper.delete_all_buffers = function(force, cond)
+  for _, bufnr in pairs(helper.get_all_bufs()) do
+    helper.delete_buffer(bufnr, force, cond)
   end
 end
 
@@ -130,13 +136,13 @@ helper.hide_cursor = function()
   end
 
   local async = require('plenary.async')
-  if async then
-    async.run(function()
-      async.util.scheduler() f()
-    end)
-  else
-    f()
+  if not async then
+    return
   end
+
+  async.run(function()
+    async.util.scheduler() f()
+  end)
 end
 
 helper.unhide_cursor = function()
@@ -147,13 +153,13 @@ helper.unhide_cursor = function()
   end
 
   local async = require('plenary.async')
-  if async then
-    async.run(function()
-      async.util.scheduler() f()
-    end)
-  else
-    f()
+  if not async then
+    return
   end
+
+  async.run(function()
+    async.util.scheduler() f()
+  end)
 end
 
 helper.feedkeys = function(key, mode)
@@ -375,7 +381,7 @@ helper.get_shown_bufs = function(tabpage)
 end
 
 helper.get_buf_name = function(bufnr)
-  local bufnr = bufnr or helper.get_cur_bufnr()
+  bufnr = bufnr or helper.get_cur_bufnr()
 
   local success, result = pcall(vim.api.nvim_buf_get_name, bufnr)
   if not success then
@@ -464,49 +470,16 @@ helper.add_jumplist = function()
   helper.presskeys('m\'')
 end
 
-helper.is_open_loclst = function(winid)
-  local result = vim.fn.getloclist(winid, { winid = 0 }).winid
-
-  if result == 0 or result == nil then
-    return false
-  else
-    return true
-  end
+helper.is_has_qflst = function()
+  return next(vim.fn.getqflist()) ~= nil
 end
 
-helper.is_has_loclst = function(winid)
-  return next(vim.fn.getloclist(winid or 0)) ~= nil
+helper.set_qflst = function(items, action, options)
+  vim.fn.setqflist(items or {}, action or 'r', options or {})
 end
 
-helper.toggle_loclst = function(winid)
-  winid = winid or helper.get_cur_winid()
-
-  -- https://www.reddit.com/r/neovim/comments/104hjjw/does_anyone_know_how_to_toggle_location_list_in/
-  if helper.is_open_loclst(winid) then
-    vim.cmd.lclose()
-    return
-  end
-
-  -- create default empty location list to escape error message.
-  if not helper.is_has_loclst(winid) then
-    vim.fn.setloclist(0, {}, 'a')
-  end
-
-  vim.cmd.lopen()
-end
-
-helper.clear_loclst = function(winid)
-  vim.fn.setloclist(winid or 0, {}, 'r')
-end
-
-helper.clear_loclst_before = function(winid, ...)
-  local afters = { ... }
-  return function(...)
-    helper.clear_loclst(winid)
-    for _, after in ipairs(afters) do
-      after(...)
-    end
-  end
+helper.clear_qflst = function()
+  vim.fn.setqflist({}, 'r')
 end
 
 helper.get_cur_mode = function()

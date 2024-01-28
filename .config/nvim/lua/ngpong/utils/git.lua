@@ -1,13 +1,8 @@
 local gitter = {}
 
-local async = require('plenary.async')
-local Job   = require('plenary.job')
-
-if async == nil or Job == nil then
-  return
-end
-
-local await_schedule = async.util.scheduler
+local lazy  = require('ngpong.utils.lazy')
+local async = lazy.require('plenary.async')
+local Job   = lazy.require('plenary.job')
 
 local get_repository_root = (function()
   local git_root = nil
@@ -90,7 +85,7 @@ gitter.if_has_diff = async.void(function(path, cb)
   await_has_diff()
 
   if next(result) and cb then
-    await_schedule()
+    async.util.scheduler()
     cb(result)
   end
 end)
@@ -111,7 +106,7 @@ gitter.if_has_log = async.void(function(path, cb)
   await_has_log()
 
   if next(result) and cb then
-    await_schedule()
+    async.util.scheduler()
     cb(result)
   end
 end)
@@ -132,7 +127,7 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb)
 
   await_is_untracked()
   if next(result) and cb then
-    await_schedule()
+    async.util.scheduler()
     cb(result)
     return
   end
@@ -150,7 +145,7 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb)
 
   await_has_diff()
   if next(result) and cb then
-    await_schedule()
+    async.util.scheduler()
     cb(result)
     return
   end

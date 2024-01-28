@@ -1,7 +1,8 @@
 local M = {}
 
 local autocmd = require('ngpong.common.autocmd')
-local luasnip = require('luasnip')
+local lazy    = require('ngpong.utils.lazy')
+local luasnip = lazy.require('luasnip')
 
 local unset_autocmds = function()
   autocmd.del_augroup('luasnip')

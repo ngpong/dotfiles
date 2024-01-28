@@ -17,9 +17,24 @@ M.jump = function(name)
   HELPER.add_jumplist()
 end
 
-M.toggle_marks_list = function()
-  marks.mark_state:all_to_list()
-  PLGS.trouble.api.open('loclist', 'Marks')
+M.send_marks_2_qf = function(target, cb)
+  HELPER.clear_qflst()
+
+  if type(target) == 'number' or target == nil then
+    marks.mark_state:buffer_to_list('quickfixlist', target)
+  else
+    marks.mark_state:all_to_list('quickfixlist')
+  end
+
+  if cb then
+    cb()
+  end
+end
+
+M.toggle_marks_list = function(target)
+  M.send_marks_2_qf(target, function()
+    PLGS.trouble.api.open('quickfix', 'Marks ' .. (not target and 'current buffer' or 'workspace'))
+  end)
 end
 
 return M

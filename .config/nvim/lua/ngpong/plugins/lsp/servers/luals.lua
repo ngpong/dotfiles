@@ -1,6 +1,7 @@
 local M = {}
 
-local lspcfg = require('lspconfig')
+local lazy   = require('ngpong.utils.lazy')
+local lspcfg = lazy.require('lspconfig')
 
 M.setup = function(cfg)
   lspcfg.lua_ls.setup {

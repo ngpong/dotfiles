@@ -1,10 +1,11 @@
 local M = {}
 
-local events   = require('ngpong.common.events')
-local gitter   = require('ngpong.utils.git')
-local lazy     = require('ngpong.utils.lazy')
-local async    = lazy.require('plenary.async')
-local gitsigns = lazy.require('gitsigns')
+local events         = require('ngpong.common.events')
+local gitter         = require('ngpong.utils.git')
+local lazy           = require('ngpong.utils.lazy')
+local async          = lazy.require('plenary.async')
+local gitsigns       = lazy.require('gitsigns')
+local gitsigns_cache = lazy.require('gitsigns.cache')
 
 local trouble = PLGS.trouble
 local e_events = events.e_name
@@ -35,17 +36,33 @@ local is_open_win = function(id)
   return false
 end
 
-M.toggle_gitsymbols_list = function(target)
-  HELPER.clear_loclst()
+M.send_symbols_2_qf = function(target, cb)
+  HELPER.clear_qflst()
 
-  gitsigns.setqflist((target == 'cur' and 0 or target), { use_location_list = true, open = false })
+  gitsigns.setqflist(target, { use_location_list = false, open = false })
 
+  local timespan = 0
   async.run(function()
-    while not HELPER.is_has_loclst() do
-      async.util.sleep(50)
+    while not HELPER.is_has_qflst() do
+      if timespan >= 1000 then
+        return
+      end
+      timespan = timespan + 100
+
+      async.util.sleep(100)
     end
 
-    trouble.api.open('loclist', 'Git ' .. (target == 'cur' and 'current buffer' or 'workspace') .. ' symbols')
+    if cb then
+      cb()
+    end
+  end)
+end
+
+M.toggle_gitsymbols_list = function(target)
+  target = target or 0
+
+  M.send_symbols_2_qf(target, function()
+    trouble.api.open('quickfix', 'Git ' .. (target == 0 and 'current buffer' or 'workspace') .. ' symbols')
   end)
 end
 
@@ -54,8 +71,14 @@ M.blame_line = async.void(function()
 
   gitsigns.blame_line()
 
+  local timespan = 0
   while not is_open_win('blame') do
-    async.util.sleep(10)
+    if timespan >= 1000 then
+      return
+    end
+    timespan = timespan + 100
+
+    async.util.sleep(100)
   end
 
   local state = get_win_state('blame')
@@ -71,8 +94,14 @@ M.preview_hunk = async.void(function()
 
   gitsigns.preview_hunk()
 
+  local timespan = 0
   while not is_open_win('hunk') do
-    async.util.sleep(10)
+    if timespan >= 1000 then
+      return
+    end
+    timespan = timespan + 100
+
+    async.util.sleep(100)
   end
 
   local state = get_win_state('hunk')
@@ -113,6 +142,20 @@ M.toggle_diffthis = function()
   -- open diffthis if has git status
   local path = HELPER.get_buf_name(HELPER.get_cur_bufnr())
   gitter.if_has_diff_or_untracked(path, TOOLS.wrap_f(open_diffthis))
+end
+
+M.get_hunks = function(bufnr)
+  local cache = gitsigns_cache.cache[bufnr]
+
+  if cache == nil then
+    return nil
+  end
+
+  if not next(cache.hunks) then
+    return nil
+  end
+
+  return cache.hunks
 end
 
 return M

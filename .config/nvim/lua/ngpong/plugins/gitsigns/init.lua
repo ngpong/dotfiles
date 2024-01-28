@@ -8,7 +8,7 @@ return {
   end,
   config = function()
     PLGS.record_seq('gitsigns.nvim config')
-    PLGS.gitsigns.autocmd.setup()
     PLGS.gitsigns.config.setup()
+    PLGS.gitsigns.autocmd.setup()
   end
 }

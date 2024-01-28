@@ -1,7 +1,8 @@
 local M = {}
 
 local autocmd = require('ngpong.common.autocmd')
-local async   = require('plenary.async')
+local lazy    = require('ngpong.utils.lazy')
+local async   = lazy.require('plenary.async')
 
 local this = PLGS.telescope
 

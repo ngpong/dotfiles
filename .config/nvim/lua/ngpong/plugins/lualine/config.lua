@@ -2,7 +2,8 @@ local M = {}
 
 local events  = require('ngpong.common.events')
 local icons   = require('ngpong.utils.icon')
-local lualine = require('lualine')
+local lazy    = require('ngpong.utils.lazy')
+local lualine = lazy.require('lualine')
 
 local colors = PLGS.colorscheme.colors
 

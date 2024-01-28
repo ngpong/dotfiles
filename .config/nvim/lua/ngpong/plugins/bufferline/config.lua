@@ -1,15 +1,12 @@
 local M = {}
 
-local icons           = require('ngpong.utils.icon')
-local buffline        = require('bufferline')
-local buffline_lazy   = require('bufferline.lazy')
-local buffline_groups = buffline_lazy.require('bufferline.groups')
+local icons = require('ngpong.utils.icon')
 
 local this   = PLGS.bufferline
 local colors = PLGS.colorscheme.colors
 
 M.setup = function()
-  buffline.setup({
+  require('bufferline').setup({
     options = {
       mode = 'buffers',
       show_buffer_close_icons = false,
@@ -44,7 +41,7 @@ M.setup = function()
       },
       groups = {
         items = {
-          buffline_groups.builtin.pinned:with({ icon = icons.pinned_3 })
+          require('bufferline.groups').builtin.pinned:with({ icon = icons.pinned_3 })
         }
       },
       custom_filter = this.filter()

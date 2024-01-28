@@ -48,9 +48,9 @@ M.select_entries = function(bufnr)
   if next(picker:get_multi_selection()) ~= nil then
     local wrap = TOOLS.wrap_f
 
-    local handler = wrap(HELPER.clear_loclst, picker.original_win_id) +
-                    wrap(actions.send_selected_to_loclist) +
-                    wrap(PLGS.trouble.api.open, 'loclist', 'Telescope entries selected')
+    local handler = wrap(HELPER.clear_qflst, picker.original_win_id) +
+                    wrap(actions.send_selected_to_qflist) +
+                    wrap(PLGS.trouble.api.open, 'quickfix', 'Telescope entries selected')
     if not handler then
       return
     end
@@ -127,6 +127,10 @@ M.resolve_height = function(val)
 end
 
 M.is_prompt_buf = function(bufnr)
+  if not HELPER.is_buf_valid(bufnr) then
+    return false
+  end
+
   -- require "telescope.state".get_existing_prompt_bufnrs()
   return vim.api.nvim_buf_get_option(bufnr, 'filetype') == 'TelescopePrompt'
 end

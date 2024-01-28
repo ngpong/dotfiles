@@ -1,6 +1,6 @@
 local M = {}
 
-local icons  = require('ngpong.utils.icon')
+local icons = require('ngpong.utils.icon')
 
 local setup_diagnostics = function()
   -- 仅设置 publishDiagnostics handlers 所产生的 diagnostic
