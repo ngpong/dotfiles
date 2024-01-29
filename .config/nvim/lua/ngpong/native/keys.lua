@@ -3,6 +3,7 @@ local M = {}
 local keymap = require('ngpong.common.keybinder')
 local events = require('ngpong.common.events')
 local ui     = require('ngpong.common.ui')
+local icons  = require('ngpong.utils.icon')
 
 local e_mode = keymap.e_mode
 local e_events = events.e_name
@@ -346,15 +347,27 @@ local set_native_keymaps = function()
 
   -- search command
   keymap.register(e_mode.NORMAL, '.', function()
-    if vim.fn.getreg('/') ~= '' then
-      return 'n'
+    if vim.fn.getreg('/') == '' then
+      return
     end
-  end, { remap = false, expr = true, desc = 'SEARCH: jump to next match pattern.' })
+
+    local success, _ = pcall(vim.cmd, 'normal! n')
+    if not success then
+      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern', { icon = icons.diagnostic_warn })
+      HELPER.clear_commandline()
+    end
+  end, { remap = false, desc = 'SEARCH: jump to next match pattern.' })
   keymap.register(e_mode.NORMAL, ',', function()
-    if vim.fn.getreg('/') ~= '' then
-      return 'N'
+    if vim.fn.getreg('/') == '' then
+      return
     end
-  end, { remap = false, expr = true, desc = 'SEARCH: jump to prev match pattern.' })
+
+    local success, _ = pcall(vim.cmd, 'normal! N')
+    if not success then
+      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern', { icon = icons.diagnostic_warn })
+      HELPER.clear_commandline()
+    end
+  end, { remap = false, desc = 'SEARCH: jump to prev match pattern.' })
   keymap.register(e_mode.NORMAL, '?', function()
     HELPER.clear_searchpattern()
     HELPER.clear_commandline()

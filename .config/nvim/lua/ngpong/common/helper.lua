@@ -36,8 +36,7 @@ helper.add_buffer = function(arg)
 end
 
 helper.delete_buffer = function(bufnr, force, cond)
-  local bd = require('bufdelete')
-  if not bd then
+  if not require('bufdelete') then
     return
   end
 
@@ -46,7 +45,7 @@ helper.delete_buffer = function(bufnr, force, cond)
     return
   end
 
-  bufnr = bufnr or helper.get_cur_bufnr()
+  bufnr = bufnr or 0
   force = force or true
   cond  = cond  or nil
 
@@ -54,7 +53,7 @@ helper.delete_buffer = function(bufnr, force, cond)
     return
   end
 
-  bd.bufdelete(bufnr and bufnr or 0, force)
+  vim.cmd('keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
 
   local wipeout_unnamed_buf = function()
     for _, _bufnr in pairs(helper.get_all_bufs()) do
@@ -82,8 +81,7 @@ helper.delete_all_buffers = function(force, cond)
 end
 
 helper.wipeout_buffer = function(bufnr, force, cond)
-  local bd = require('bufdelete')
-  if not bd then
+  if not require('bufdelete') then
     return
   end
 
@@ -95,7 +93,7 @@ helper.wipeout_buffer = function(bufnr, force, cond)
     return
   end
 
-  bd.bufwipeout(bufnr, force)
+  vim.cmd('keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
 end
 
 helper.wipeout_all_buffers = function(force, cond)

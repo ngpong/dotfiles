@@ -63,6 +63,10 @@ M.setup = function()
         sp = colors.bright_red,
         bg = colors.dark0_soft,
       },
+      duplicate_selected = {
+        sp = colors.bright_red,
+        italic = true,
+      },
       buffer_selected = {
         sp = colors.bright_red,
       },

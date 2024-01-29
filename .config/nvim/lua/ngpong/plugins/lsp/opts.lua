@@ -17,6 +17,9 @@ local setup_options = function(state)
   vim.bo[state.bufnr].formatexpr = nil
   vim.bo[state.bufnr].omnifunc = nil
   vim.bo[state.bufnr].tagfunc = nil
+
+  -- 禁用日志
+  vim.lsp.set_log_level('off')
 end
 
 M.setup = function ()

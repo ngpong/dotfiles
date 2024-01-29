@@ -26,33 +26,39 @@ M.is_pinned = function(bufnr)
 end
 
 M.cycle_next = function(_)
-  vim.cmd('BufferLineCycleNext')
+  local success, _ = pcall(vim.cmd, 'keepjumps BufferLineCycleNext')
 
-  events.emit(e_events.CYCLE_NEXT_BUFFER)
+  if success then
+    events.emit(e_events.CYCLE_NEXT_BUFFER)
+  end
 end
 
 M.cycle_prev = function(_)
-  vim.cmd('BufferLineCyclePrev')
+  local success, _ = pcall(vim.cmd, 'keepjumps BufferLineCyclePrev')
 
-  events.emit(e_events.CYCLE_PREV_BUFFER)
+  if success then
+    events.emit(e_events.CYCLE_PREV_BUFFER)
+  end
 end
 
 M.move_next = function(_)
-  vim.cmd('BufferLineMoveNext')
+  pcall(vim.cmd, 'BufferLineMoveNext')
 end
 
 M.move_prev = function(_)
-  vim.cmd('BufferLineMovePrev')
+  pcall(vim.cmd, 'BufferLineMovePrev')
 end
 
 M.pin = function(_)
-  vim.cmd('BufferLineTogglePin')
+  pcall(vim.cmd, 'BufferLineTogglePin')
 end
 
 M.select = function(_)
-  vim.cmd('BufferLinePick')
+  local success, _ = pcall(vim.cmd, 'keepjumps BufferLinePick')
 
-  events.emit(e_events.SELECT_TARGET_BUFFER)
+  if success then
+    events.emit(e_events.SELECT_TARGET_BUFFER)
+  end
 end
 
 return M
