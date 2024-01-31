@@ -37,10 +37,10 @@ M.setup = function()
   }
 
   -- 字符过长自动换行
-  vim.wo.wrap = false -- 当一行的字符过长时，超出行的字符将会被包裹并显示在下一行
-  vim.wo.breakindent = true -- 换行时自动对齐上一行的格式(可能会有性能损失)
-  vim.wo.breakindentopt = 'sbr' -- 设置换行符
-  vim.wo.showbreak = '➥►' -- 设置换行符
+  vim.opt.wrap = false -- 当一行的字符过长时，超出行的字符将会被包裹并显示在下一行
+  vim.opt.breakindent = true -- 换行时自动对齐上一行的格式(可能会有性能损失)
+  vim.opt.breakindentopt = 'sbr' -- 设置换行符
+  vim.opt.showbreak = '➥►' -- 设置换行符
   vim.go.display = 'lastline' -- '@@@' 放在最后一列上
 
   -- 禁用鼠标模式

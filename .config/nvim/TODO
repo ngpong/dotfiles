@@ -1,5 +1,10 @@
 有时间去实现一下，看上去挺简单 https://github.com/p00f/clangd_extensions.nvim/issues/33
 
+1. ,. 按键要不要换一下？
+2. neotree preview 不会换行
+3. 跳转表的问题，d.. m.. g..
+7. notify 转圈等待的感觉可以封装成一个函数
+
 1. nvim-lint？
 2. rmagatti/goto-preview？
 3. git_revert 需要加一个 yes or no 的选项？

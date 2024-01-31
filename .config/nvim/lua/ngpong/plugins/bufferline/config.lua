@@ -73,6 +73,9 @@ M.setup = function()
       separator_selected = {
         sp = colors.bright_red,
       },
+      modified_selected = {
+        sp = colors.bright_red,
+      },
       -- fill = {
       --   fg = colors.dark1,
       --   bg = colors.dark1,

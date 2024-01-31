@@ -1,6 +1,7 @@
 local helper = {}
 
 local timestamp = require('ngpong.utils.timestamp')
+local icons     = require('ngpong.utils.icon')
 
 helper.get_cur_bufnr = function(_)
   return vim.api.nvim_get_current_buf and vim.api.nvim_get_current_buf() or vim.fn.bufnr()
@@ -45,7 +46,7 @@ helper.delete_buffer = function(bufnr, force, cond)
     return
   end
 
-  bufnr = bufnr or 0
+  bufnr = bufnr or HELPER.get_cur_bufnr()
   force = force or true
   cond  = cond  or nil
 
@@ -502,13 +503,13 @@ helper.notify = function(msg, title, opts, lv)
   end)
 end
 helper.notify_err = function(msg, title, opts)
-  helper.notify(tostring(msg), title, opts, vim.log.levels.ERROR)
+  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_err }, opts or {}), vim.log.levels.ERROR)
 end
 helper.notify_warn = function(msg, title, opts)
-  helper.notify(tostring(msg), title, opts, vim.log.levels.WARN)
+  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_warn }, opts or {}), vim.log.levels.WARN)
 end
 helper.notify_info = function(msg, title, opts)
-  helper.notify(tostring(msg), title, opts, vim.log.levels.INFO)
+  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_info }, opts or {}), vim.log.levels.INFO)
 end
 
 helper.get_visual_selected = function()

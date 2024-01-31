@@ -1,9 +1,39 @@
 local M = {}
 
+local icons = require('ngpong.utils.icon')
 local lazy  = require('ngpong.utils.lazy')
 local marks = lazy.require('marks')
 
 M.set = function(name)
+  local code = string.byte(name)
+  local compare = '\'' .. name
+  local row, _ = HELPER.get_cursor()
+  if code >= 65 and code <= 90 then
+    for _, data in ipairs(vim.fn.getmarklist()) do
+      if data.mark == compare then
+        if data.pos[2] == row then
+          return
+        else
+          HELPER.notify_warn('Replace mark [' .. name .. '] from `' .. data.file .. ':' .. data.pos[2] .. '`', 'System: marks')
+          break
+        end
+      end
+    end
+  elseif code >= 97 and code <= 122 then
+    for _, data in ipairs(vim.fn.getmarklist("%")) do
+      if data.mark == compare then
+        if data.pos[2] == row then
+          return
+        else
+          HELPER.notify_warn('Replace mark [' .. name .. '] from `' .. data.pos[2] .. '`', 'System: marks')
+          break
+        end
+      end
+    end
+  else
+    return
+  end
+
   marks.mark_state:place_mark_cursor(name)
   HELPER.presskeys('m' .. name)
 end

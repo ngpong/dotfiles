@@ -27,6 +27,8 @@ M.setup = function()
       NormalFloat = { bg = gruvbox.palette.dark0_soft, blend = 20 },
       FloatTitle = { fg = gruvbox.palette.bright_green, italic = true },
       SignColumn = { bg = gruvbox.palette.dark0_soft, italic = true },
+      -- FloatBorder = { fg = gruvbox.palette.dark0_soft, blend = 100 },
+      -- DiagnosticInfo = { link = 'GruvboxGreen' },
       ['@operator'] = { link = 'GruvboxFg4' },
       ['@operators'] = { link = 'GruvboxFg2' },
       ['@parameter'] = { link = 'GruvboxFg2' },

@@ -139,8 +139,8 @@ local set_plugin_keymaps = function()
       -- preview
       ['<C-p>'] = wrap_keymap(this.api.scroll_preview(-1, 1), { desc = 'TELESCOPE: scrolling pageup preview window.' }),
       ['<C-;>'] = wrap_keymap(this.api.scroll_preview(1, 1), { desc = 'TELESCOPE: scrolling pagedown preview window.' }),
-      -- ['<nop>'] = wrap_keymap(this.api.actions.preview_scrolling_left, { desc = 'TELESCOPE: scrolling left (horizontal)preview window.' }),
-      -- ['<nop>'] = wrap_keymap(this.api.actions.preview_scrolling_right, { desc = 'TELESCOPE: scrolling right (horizontal)preview window.' }),
+      -- ['<C-l>'] = wrap_keymap(this.api.actions.preview_scrolling_left, { desc = 'TELESCOPE: scrolling left (horizontal)preview window.' }),
+      -- ['<C-\'>'] = wrap_keymap(this.api.actions.preview_scrolling_right, { desc = 'TELESCOPE: scrolling right (horizontal)preview window.' }),
 
       -- result
       -- NOTE: Open muilt files at onces is in roadmap. https://github.com/nvim-telescope/telescope.nvim/issues/1048

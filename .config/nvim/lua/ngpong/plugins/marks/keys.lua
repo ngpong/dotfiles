@@ -3,6 +3,7 @@ local M = {}
 local keymap = require('ngpong.common.keybinder')
 local icons  = require('ngpong.utils.icon')
 local lazy   = require('ngpong.utils.lazy')
+local async  = require('plenary.async')
 local marks  = lazy.require('marks')
 
 local this = PLGS.marks
@@ -87,8 +88,8 @@ local set_native_keymaps = function()
     if next(texts) then
       HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
     end
-  end, { remap = false, desc = '[LINE]' })
-  keymap.register(e_mode.NORMAL, 'md<CR>', function()
+  end, { remap = false, desc = '<LINE>' })
+  keymap.register(e_mode.NORMAL, 'md<CR>', async.void(function()
     local bufnr  = HELPER.get_cur_bufnr()
 
     local datas = marks.mark_state.buffers[bufnr].marks_by_line
@@ -97,21 +98,27 @@ local set_native_keymaps = function()
     end
 
     local texts = {}
+    local delete_marks = {}
     for _, _marks in pairs(datas) do
-      for _, mark in pairs(_marks) do
-        local code = string.byte(mark)
-        if code >= 97 and code <= 122 then
-          table.insert(texts, string.format('[%s]', mark))
-        end
+      for _, _mark in pairs(_marks) do
+        table.insert(texts, string.format('[%s]', _mark))
+        table.insert(delete_marks, _mark)
       end
     end
 
-    marks.delete_buf()
+    table.sort(delete_marks, function (r, l)
+      return string.byte(r) < string.byte(l)
+    end)
+
+    for _, _mark in pairs(delete_marks) do
+      this.api.del(_mark)
+      async.util.scheduler()
+    end
 
     if next(texts) then
       HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
     end
-  end, { remap = false, desc = '[BUFFER]' })
+  end), { remap = false, desc = '<BUFFER>' })
   keymap.register(e_mode.NORMAL, 'mm', TOOLS.wrap_f(this.api.toggle_marks_list), { silent = true, remap = false, desc = 'toggle current buffer marks list.' })
   keymap.register(e_mode.NORMAL, 'mM', TOOLS.wrap_f(this.api.toggle_marks_list, 'all'), { silent = true, remap = false, desc = 'toggle all marks list.' })
 end

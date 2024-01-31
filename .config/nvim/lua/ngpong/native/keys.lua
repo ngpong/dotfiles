@@ -351,9 +351,9 @@ local set_native_keymaps = function()
       return
     end
 
-    local success, _ = pcall(vim.cmd, 'normal! n')
+    local success, _ = pcall(vim.cmd, 'keepjumps normal! n')
     if not success then
-      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern', { icon = icons.diagnostic_warn })
+      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern')
       HELPER.clear_commandline()
     end
   end, { remap = false, desc = 'SEARCH: jump to next match pattern.' })
@@ -362,9 +362,9 @@ local set_native_keymaps = function()
       return
     end
 
-    local success, _ = pcall(vim.cmd, 'normal! N')
+    local success, _ = pcall(vim.cmd, 'keepjumps normal! N')
     if not success then
-      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern', { icon = icons.diagnostic_warn })
+      HELPER.notify_warn('Pattern [' .. vim.fn.getreg('/') .. '] not found any matched result.', 'System: pattern')
       HELPER.clear_commandline()
     end
   end, { remap = false, desc = 'SEARCH: jump to prev match pattern.' })

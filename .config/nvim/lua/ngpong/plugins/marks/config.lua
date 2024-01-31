@@ -1,5 +1,7 @@
 local M = {}
 
+local this = PLGS.marks
+
 M.setup = function()
   require('marks').setup {
     -- whether to map keybinds or not. default true
@@ -21,7 +23,7 @@ M.setup = function()
     -- default 10.
     sign_priority = { upper=2, lower=3, builtin=4, bookmark=5 },
     -- disables mark tracking for specific filetypes. default {}
-    excluded_filetypes = {},
+    excluded_filetypes = this.filter(),
   }
 end
 

@@ -12,7 +12,7 @@ M.setup = function()
   local cfg = {
     defaults = {
       sorting_strategy = 'ascending', -- ascending, descending
-      winblend = 20,
+      winblend = 0, -- 完全不透明
       wrap_results = false,
       initial_mode = 'normal',
       border = true,
@@ -60,7 +60,7 @@ M.setup = function()
         horizontal = {
           height = this.api.resolve_height(0.9),
           preview_cutoff = 1,
-          preview_width = this.api.resolve_width(0.5),
+          preview_width = this.api.resolve_width(0.6),
           prompt_position = 'top',
           width = this.api.resolve_width(0.9)
         },

@@ -13,6 +13,16 @@ end
 local setup_autocmds = function()
   local group_id = autocmd.new_augroup('telescope')
 
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'TelescopePreviewerLoaded',
+    callback = function(_)
+      -- https://github.com/nvim-telescope/telescope.nvim/issues/2777
+      vim.opt.wrap = true
+      -- https://github.com/nvim-telescope/telescope.nvim/issues/1186
+      vim.opt.number = true
+    end,
+  })
+
   vim.api.nvim_create_autocmd('WinEnter', {
     group = group_id,
     callback = function(args)
@@ -42,10 +52,6 @@ local setup_autocmds = function()
       end
     end,
   })
-
-  -- preview 显示行号
-  -- https://github.com/nvim-telescope/telescope.nvim/issues/1186
-  vim.cmd 'autocmd User TelescopePreviewerLoaded setlocal number'
 end
 
 M.setup = function()

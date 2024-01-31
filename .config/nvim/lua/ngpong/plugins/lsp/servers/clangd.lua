@@ -145,7 +145,7 @@ local setup_keymaps = function(_)
         local timespan = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
           if timespan > 10000 then
-            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd', { icon = icons.diagnostic_warn })
+            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
             break
           end
           timespan = timespan + 500

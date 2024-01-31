@@ -27,7 +27,7 @@ autocmd.del_augroup = function(key)
   end
 
   if not pcall(vim.api.nvim_del_augroup_by_id, group_id) then
-    HELPER.notify_err('delete auto cmd error, please check log file for more information.', 'System: autocmd', { icon = icons.diagnostic_err })
+    HELPER.notify_err('delete auto cmd error, please check log file for more information.', 'System: autocmd')
     LOGGER.error('delete augroup error: ' .. debug.traceback())
   end
 
