@@ -119,8 +119,8 @@ local set_native_keymaps = function()
       HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
     end
   end), { remap = false, desc = '<BUFFER>' })
-  keymap.register(e_mode.NORMAL, 'mm', TOOLS.wrap_f(this.api.toggle_marks_list), { silent = true, remap = false, desc = 'toggle current buffer marks list.' })
-  keymap.register(e_mode.NORMAL, 'mM', TOOLS.wrap_f(this.api.toggle_marks_list, 'all'), { silent = true, remap = false, desc = 'toggle all marks list.' })
+  keymap.register(e_mode.NORMAL, 'mm', TOOLS.wrap_f(this.api.toggle_marks_list, nil, false), { silent = true, remap = false, desc = 'toggle current buffer marks list.' })
+  keymap.register(e_mode.NORMAL, 'mM', TOOLS.wrap_f(this.api.toggle_marks_list, nil, true), { silent = true, remap = false, desc = 'toggle all marks list.' })
 end
 
 M.setup = function()

@@ -4,6 +4,7 @@
 2. neotree preview 不会换行
 3. 跳转表的问题，d.. m.. g..
 7. notify 转圈等待的感觉可以封装成一个函数
+9. marks 的 mM 需要考虑没有打开过的 buffer，能够实现；已实现，但是偶尔会报错
 
 1. nvim-lint？
 2. rmagatti/goto-preview？

@@ -47,14 +47,14 @@ helper.delete_buffer = function(bufnr, force, cond)
   end
 
   bufnr = bufnr or HELPER.get_cur_bufnr()
-  force = force or true
-  cond  = cond  or nil
+  force = force == nil and true or force
+  cond  = cond or nil
 
   if cond and not cond(bufnr) then
     return
   end
 
-  vim.cmd('keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  local success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
 
   local wipeout_unnamed_buf = function()
     for _, _bufnr in pairs(helper.get_all_bufs()) do
@@ -68,11 +68,13 @@ helper.delete_buffer = function(bufnr, force, cond)
 
       helper.wipeout_buffer(_bufnr)
 
-        ::continue::
+      ::continue::
     end
   end
 
-  async.run(wipeout_unnamed_buf)
+  if success then
+    async.run(wipeout_unnamed_buf)
+  end
 end
 
 helper.delete_all_buffers = function(force, cond)
@@ -87,14 +89,14 @@ helper.wipeout_buffer = function(bufnr, force, cond)
   end
 
   bufnr = bufnr or helper.get_cur_bufnr()
-  force = force or true
+  force = force == nil and true or force
   cond  = cond  or nil
 
   if cond and not cond(bufnr) then
     return
   end
 
-  vim.cmd('keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
 end
 
 helper.wipeout_all_buffers = function(force, cond)
@@ -491,6 +493,15 @@ end
 
 helper.set_wincursor = function(winid, row, col)
   pcall(vim.api.nvim_win_set_cursor, winid, { row, col })
+end
+
+helper.get_workspace = function()
+  local success, dir = pcall(vim.fn.getcwd)
+  if not success then
+    return ''
+  end
+
+  return dir
 end
 
 -- will causes a lazy loading with nvim-notify plugin.

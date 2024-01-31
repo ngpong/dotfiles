@@ -67,7 +67,7 @@ M.refresh = bouncer.throttle_leading(1000, function()
 
       PLGS.gitsigns.api.send_symbols_2_qf(source:match('workspace') and 'all' or bufnr, _refresh)
     elseif source:match('^Mark') then
-      PLGS.marks.api.send_marks_2_qf(source:match('workspace') and 'all' or bufnr, _refresh)
+      PLGS.marks.api.send_marks_2_qf(bufnr, source:match('workspace') ~= nil, _refresh)
     else
       _refresh()
     end
