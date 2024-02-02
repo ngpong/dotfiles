@@ -286,6 +286,12 @@ local set_native_keymaps = function()
   keymap.register(e_mode.VISUAL, ':', '<C-e>', { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'L\"', 'zz', { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, '\"L', 'zz', { remap = false, desc = 'which_key_ignore' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-p>', '<C-u>', { remap = false, desc = 'MONTION: updown.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-;>', '<C-d>', { remap = false, desc = 'MONTION: backward.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-S-p>', '<C-b>', { remap = false, desc = 'MONTION: pageup' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-:>', '<C-f>', { remap = false, desc = 'MONTION: pagedown' })
+  keymap.register(e_mode.INSERT, '<C-p>', '<C-o><C-u>', { remap = false, desc = 'MONTION: updown.' })
+  keymap.register(e_mode.INSERT, '<C-;>', '<C-o><C-d>', { remap = false, desc = 'MONTION: backward.' })
 
   -- jump to
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'eh', function()
@@ -296,12 +302,12 @@ local set_native_keymaps = function()
     HELPER.presskeys('G')
     HELPER.add_jumplist()
   end, { remap = false, desc = 'file tail.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'eg', function ()
+    HELPER.presskeys('N50%')
+    HELPER.add_jumplist()
+  end, { remap = false, desc = 'file center.' })
   keymap.register(e_mode.NORMAL, 'e,', '<C-O>', { remap = false, desc = 'older entry.' })
   keymap.register(e_mode.NORMAL, 'e.', '<C-I>', { remap = false, desc = 'next entry.' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'ep', '<C-u>', { remap = false, desc = 'updown.' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'e;', '<C-d>', { remap = false, desc = 'backward.' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'EP', '<C-b>', { remap = false, desc = 'which_key_ignore' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'E:', '<C-f>', { remap = false, desc = 'which_key_ignore' })
 
   -- windows
   keymap.register(e_mode.NORMAL, 'rv', '<CMD>vsp<CR>', { desc = 'split window vertically.' })
@@ -344,9 +350,15 @@ local set_native_keymaps = function()
 
   -- cmdline
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '\\', ':', { remap = false, silent = false, desc = 'COMMON: enter command mode.' })
+  keymap.register(e_mode.COMMAND, '<A-p>', TOOLS.wrap_f(HELPER.feedkeys, '<UP>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-;>', TOOLS.wrap_f(HELPER.feedkeys, '<DOWN>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-l>', TOOLS.wrap_f(HELPER.feedkeys, '<LEFT>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-\'>', TOOLS.wrap_f(HELPER.feedkeys, '<RIGHT>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-q>', TOOLS.wrap_f(HELPER.feedkeys, '<C-LEFT>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-w>', TOOLS.wrap_f(HELPER.feedkeys, '<C-RIGHT>'), { remap = false, desc = 'which_key_ignore' })
 
   -- search command
-  keymap.register(e_mode.NORMAL, '.', function()
+  keymap.register(e_mode.NORMAL, '<C-.>', function()
     if vim.fn.getreg('/') == '' then
       return
     end
@@ -357,7 +369,7 @@ local set_native_keymaps = function()
       HELPER.clear_commandline()
     end
   end, { remap = false, desc = 'SEARCH: jump to next match pattern.' })
-  keymap.register(e_mode.NORMAL, ',', function()
+  keymap.register(e_mode.NORMAL, '<C-,>', function()
     if vim.fn.getreg('/') == '' then
       return
     end

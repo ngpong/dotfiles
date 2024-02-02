@@ -32,8 +32,6 @@ local fix_keymap_native = async.void(function()
       name = 'JUMPTO:',
       ['f'] = { name = 'TEXTOBJECT FUNCTION' },
       ['c'] = { name = 'TEXTOBJECT CLASS' },
-      ['P'] = { 'pageup.' },
-      [':'] = { 'pagedown.' },
     },
     ['E'] = {
       name = 'which_key_ignore',
@@ -95,8 +93,6 @@ local fix_keymap_native = async.void(function()
       name = 'JUMPTO:',
       ['f'] = { name = 'TEXTOBJECT FUNCTION' },
       ['c'] = { name = 'TEXTOBJECT CLASS' },
-      ['P'] = { 'pageup.' },
-      [':'] = { 'pagedown.' },
     },
   }, { mode = 'v', })
 end)

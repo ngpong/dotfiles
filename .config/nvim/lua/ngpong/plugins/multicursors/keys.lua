@@ -33,7 +33,7 @@ end
 local set_normal_keymaps = function(cfg)
   TOOLS.tbl_r_extend(cfg, {
     normal_keys = {
-      ['.'] = {
+      ['<C-.>'] = {
         method = function()
           HELPER.add_jumplist()
           mc_n.find_next()
@@ -41,7 +41,7 @@ local set_normal_keymaps = function(cfg)
         end,
         opts = { desc = 'MULTICURSORS: find next match.' }
       },
-      [','] = {
+      ['<C-,>'] = {
         method = function()
           HELPER.add_jumplist()
           mc_n.find_prev()

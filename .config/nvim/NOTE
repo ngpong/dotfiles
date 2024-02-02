@@ -12,7 +12,28 @@ lua版本5.1
 以下配置以 windows terimal 为例:
 {
   "actions": [
-     {
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[46;5u"
+      },
+      "keys": "ctrl+period"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[44;5u"
+      },
+      "keys": "ctrl+comma"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[80;5u"
+      },
+      "keys": "ctrl+shift+p"
+    },
+    {
       "command": {
         "action": "sendInput",
         "input": "\u001b[13;2u"
@@ -62,10 +83,16 @@ lua版本5.1
       "keys": "ctrl+shift+z"
     },
     {
-      "command": {
-        "action": "sendInput",
-        "input": "\u001b[80;5u"
-      }
+      "command": "unbound",
+      "keys": "alt+enter"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+c"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+v"
     },
     {
       "command": {
@@ -73,7 +100,7 @@ lua版本5.1
         "input": "\u001b[58;5u"
       },
       "keys": "ctrl+shift+;"
-    },
+    }
   ]
 }
 ----------------------------------------------------------------------------------

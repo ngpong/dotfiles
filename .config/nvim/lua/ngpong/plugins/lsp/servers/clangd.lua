@@ -84,7 +84,7 @@ local setup_server = function(cfg)
 
   lspcfg.clangd.setup({
     cmd = {
-      'clangd',
+      'clangd-18', -- mason 安装的 clangd 17.03 有bug，先暂时用os的
       '-j=16',
       '--clang-tidy',
       '--background-index',

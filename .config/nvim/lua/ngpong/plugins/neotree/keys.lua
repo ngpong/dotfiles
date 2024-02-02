@@ -137,6 +137,7 @@ local set_global_keymaps = function(...)
     ['Z']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['a']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
     ['u']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
+    ['U']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
     ['b']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['b.']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['b,']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },

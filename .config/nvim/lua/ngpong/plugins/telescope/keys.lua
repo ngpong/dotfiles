@@ -35,8 +35,10 @@ local set_plugin_keymaps = function()
   return {
     n = {
       -----------------------------disable keymap-----------------------------
-      ['e.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
-      ['e,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['P'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      [':'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<C-:>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<C-S-P>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['s'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['S'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['/'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -111,6 +113,8 @@ local set_plugin_keymaps = function()
       ['gg'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<BS>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['e'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['e,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['e.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['e;'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['ep'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['eP'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -123,6 +127,7 @@ local set_plugin_keymaps = function()
       ['ec.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['ec,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['et'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['eg'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ----------------------------------------------------------------------
 
       -----------------------------remap keymap-----------------------------
@@ -137,10 +142,10 @@ local set_plugin_keymaps = function()
       [';'] = wrap_keymap(this.api.actions.cycle_history_next, { desc = 'TELESCOPE: cycle next history.' }),
 
       -- preview
-      ['<C-p>'] = wrap_keymap(this.api.scroll_preview(-1, 1), { desc = 'TELESCOPE: scrolling pageup preview window.' }),
-      ['<C-;>'] = wrap_keymap(this.api.scroll_preview(1, 1), { desc = 'TELESCOPE: scrolling pagedown preview window.' }),
-      -- ['<C-l>'] = wrap_keymap(this.api.actions.preview_scrolling_left, { desc = 'TELESCOPE: scrolling left (horizontal)preview window.' }),
-      -- ['<C-\'>'] = wrap_keymap(this.api.actions.preview_scrolling_right, { desc = 'TELESCOPE: scrolling right (horizontal)preview window.' }),
+      ['<C-p>'] = wrap_keymap(this.api.scroll_preview(-1, 5), { desc = 'TELESCOPE: scrolling pageup preview window.' }),
+      ['<C-;>'] = wrap_keymap(this.api.scroll_preview(1, 5), { desc = 'TELESCOPE: scrolling pagedown preview window.' }),
+      -- ['L'] = wrap_keymap(this.api.actions.preview_scrolling_left, { desc = 'TELESCOPE: scrolling left (horizontal)preview window.' }),
+      -- ['"'] = wrap_keymap(this.api.actions.preview_scrolling_right, { desc = 'TELESCOPE: scrolling right (horizontal)preview window.' }),
 
       -- result
       -- NOTE: Open muilt files at onces is in roadmap. https://github.com/nvim-telescope/telescope.nvim/issues/1048
@@ -149,8 +154,8 @@ local set_plugin_keymaps = function()
       ['<Tab>'] = wrap_keymap(this.api.actions.toggle_selection, { desc = 'TELESCOPE: Toggle selection.' }),
       [','] = wrap_keymap(this.api.actions.move_selection_previous, { desc = 'TELESCOPE: move to prev selection.' }),
       ['.'] = wrap_keymap(this.api.actions.move_selection_next, { desc = 'TELESCOPE: move to next selection.' }),
-      ['<'] = wrap_keymap(this.api.scroll_result(-1, 3), { desc = 'TELESCOPE: scrolling pageup result entries.' }),
-      ['>'] = wrap_keymap(this.api.scroll_result(1, 3), { desc = 'TELESCOPE: scrolling pagedown result entries.' }),
+      ['<C-,>'] = wrap_keymap(this.api.scroll_result(-1, 3), { desc = 'TELESCOPE: scrolling pageup result entries.' }),
+      ['<C-.>'] = wrap_keymap(this.api.scroll_result(1, 3), { desc = 'TELESCOPE: scrolling pagedown result entries.' }),
       -- ['<nop>'] = wrap_keymap(this.api.scroll_result(-1, 3), { desc = 'TELESCOPE: scrolling up result entries.' }),
       -- ['<nop>'] = wrap_keymap(this.api.scroll_result(1, 3), { desc = 'TELESCOPE: scrolling down result entries.' }),
       -- ['<nop>'] = wrap_keymap(this.api.actions.move_to_top, { desc = 'result entries head.' }),

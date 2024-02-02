@@ -43,7 +43,7 @@ M.setup = function()
   }
 
   require('mason-lspconfig').setup {
-    ensure_installed = { 'lua_ls', 'bashls', 'jsonls', 'yamlls', 'cmake' }, -- clangd 17.03 有 bug，先用操作系统的
+    ensure_installed = { 'lua_ls', 'bashls', 'jsonls', 'yamlls', 'cmake', 'clangd' },
   }
 end
 
