@@ -45,7 +45,7 @@ M.send_symbols_2_qf = function(target, cb)
   async.run(function()
     while not HELPER.is_has_qflst() do
       if timespan >= 1000 then
-        return
+        break
       end
       timespan = timespan + 100
 
