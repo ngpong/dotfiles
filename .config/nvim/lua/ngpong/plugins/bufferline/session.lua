@@ -13,12 +13,13 @@ local this = PLGS.bufferline
 local e_events = events.e_name
 
 session.setup = function()
+  local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. HELPER.get_workspace_sha1() .. '.json')
+
   events.rg(e_events.VIM_LEAVE_PRE, async.void(function()
     if not this.api.is_plugin_loaded() then
       return
     end
 
-    local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. HELPER.get_workspace_sha1() .. '.json')
     if not file:exists() then
       file:touch({ parents = true })
     end
@@ -40,8 +41,6 @@ session.setup = function()
   end))
 
   events.rg(e_events.VIM_ENTER, async.void(function()
-    local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. HELPER.get_workspace_sha1() .. '.json')
-
     if not file:exists() then
       return
     end

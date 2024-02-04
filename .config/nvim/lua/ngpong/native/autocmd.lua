@@ -87,6 +87,14 @@ local setup_autocmd = function()
       events.emit(e_events.WIN_CLOSED, args)
     end
   })
+
+  vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'CursorHoldI', 'CursorHold' }, {
+    group = group_id,
+    pattern = { '*' },
+    callback = function(args)
+      events.emit(e_events.CURSOR, args)
+    end
+  })
 end
 
 M.setup = function()

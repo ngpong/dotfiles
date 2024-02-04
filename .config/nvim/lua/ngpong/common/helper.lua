@@ -504,12 +504,14 @@ helper.set_wincursor = function(winid, row, col)
 end
 
 helper.get_workspace = function()
-  local success, dir = pcall(vim.fn.getcwd)
-  if not success then
-    return ''
+  if helper.___workspace == nil then
+    local success, dir = pcall(vim.fn.getcwd)
+    if success then
+      helper.___workspace = dir
+    end
   end
 
-  return dir
+  return helper.___workspace
 end
 
 helper.get_workspace_sha1 = function()
