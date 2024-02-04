@@ -4,7 +4,7 @@ local execlude_fts = {
   'neo-tree',
 }
 
-local max_size = 1024 * 256 -- 500kb
+local max_size = 1024 * 512 -- 512kb
 
 local f1 = function()
   return execlude_fts

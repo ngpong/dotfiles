@@ -20,7 +20,7 @@ local execlude_fts = {
   'neo-tree-popup',
 }
 
-local max_size = 1024 * 256 -- 256kb
+local max_size = 1024 * 512 -- 512kb
 
 local f1 = function()
   return execlude_fts

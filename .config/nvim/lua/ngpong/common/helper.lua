@@ -15,6 +15,14 @@ helper.get_all_bufs = function()
   return vim.api.nvim_list_bufs()
 end
 
+helper.switch_buffer = function(bufnr)
+  if not bufnr then
+    return
+  end
+
+  pcall(vim.api.nvim_set_current_buf, bufnr)
+end
+
 helper.buffer_list = function()
   vim.cmd('ls!')
 end
@@ -502,6 +510,14 @@ helper.get_workspace = function()
   end
 
   return dir
+end
+
+helper.get_workspace_sha1 = function()
+  if helper.___workspace_sha1 == nil then
+    helper.___workspace_sha1 = require('sha1').sha1(helper.get_workspace())
+  end
+
+  return helper.___workspace_sha1
 end
 
 -- will causes a lazy loading with nvim-notify plugin.

@@ -5,6 +5,8 @@ local async     = lazy.require('plenary.async')
 local navic_lib = lazy.require('nvim-navic.lib')
 
 M.setup = function()
+  local __executing = false
+
   local __f = function()
     if not PLGS.is_loaded('barbecue.nvim') then
       return
@@ -28,13 +30,23 @@ M.setup = function()
       return
     end
 
-    navic_lib.request_symbol(bufnr, function(_bufnr, _symbols)
+    -- 防止一些慢速LS存在消息积压的情况
+    if __executing then
+      return
+    end
+
+    __executing = true
+    navic_lib.request_symbol(bufnr, async.void(function(_bufnr, _symbols)
+      async.util.scheduler()
+
       if not HELPER.is_buf_valid(_bufnr) then
         return
       end
 
       navic_lib.update_data(_bufnr, _symbols)
-    end, clis[1])
+
+      __executing = false
+    end), clis[1])
   end
 
   -- nvim-navic获取符号的时机是 { 'InsertLeave', 'BufEnter', 'CursorHold', 'AttachNavic' }，可能会有一些临界的情况漏掉，故这里是进行一个补充

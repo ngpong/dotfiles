@@ -32,6 +32,14 @@ local setup_autocmd = function()
     end
   })
 
+  vim.api.nvim_create_autocmd('VimLeavePre', {
+    group = group_id,
+    pattern = { '*' },
+    callback = function(args)
+      events.emit(e_events.VIM_LEAVE_PRE, args)
+    end
+  })
+
   vim.api.nvim_create_autocmd('BufNew', {
     group = group_id,
     pattern = { '*' },

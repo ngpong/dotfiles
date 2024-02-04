@@ -1,4 +1,4 @@
-local max_size = 1024 * 256 -- 500kb
+local max_size = 1024 * 512 -- 500kb
 
 local f = function()
   return function(lang, bufnr)

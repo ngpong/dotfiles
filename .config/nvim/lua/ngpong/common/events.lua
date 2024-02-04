@@ -16,6 +16,7 @@ events.e_name = {
   FILE_TYPE = 8,
   WIN_CLOSED = 9,
   BUFFER_ENTER_ONCE = 10,
+  VIM_LEAVE_PRE = 11,
 
   -- explore tree
   SETUP_NEOTREE = 20,

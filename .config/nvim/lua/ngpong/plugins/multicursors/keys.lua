@@ -96,6 +96,7 @@ local set_normal_keymaps = function(cfg)
         opts = { desc = 'MULTICURSORS: paste text.'  }
       },
 
+      [','] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['b'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['b.'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['b,'] = { method = nil, opts = { desc = 'which_key_ignore' } },
@@ -188,6 +189,7 @@ local set_normal_keymaps = function(cfg)
       ['<leader>l'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>q'] = { method = nil, opts = { desc = 'which_key_ignore' } },
 
+      ['.'] = { method = false },
       ['D'] = { method = false },
       ['n'] = { method = false },
       ['N'] = { method = false },

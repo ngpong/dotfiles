@@ -12,14 +12,20 @@ M.redraw = function()
   vim.cmd.redraw()
 end
 
-M.is_pinned = function(bufnr)
-  bufnr = bufnr or HELPER.get_cur_bufnr()
+M.is_pinned = function(arg)
+  if type(arg) == 'number' then
+    local bufnr = arg or HELPER.get_cur_bufnr()
 
-  for _, item in ipairs(buffline_state.components) do
-    local element = item:as_element()
-    if element.id == bufnr and buffline_groups._is_pinned(element) then
-      return true
+    for _, item in ipairs(buffline_state.components) do
+      local element = item:as_element()
+      if element.id == bufnr and buffline_groups._is_pinned(element) then
+        return true
+      end
     end
+  elseif type(arg) == 'table' then
+    local element = arg
+
+    return buffline_groups._is_pinned(element)
   end
 
   return false
@@ -59,6 +65,10 @@ M.select = function(_)
   if success then
     events.emit(e_events.SELECT_TARGET_BUFFER)
   end
+end
+
+M.is_plugin_loaded = function()
+  return PLGS.is_loaded('bufferline.nvim')
 end
 
 return M

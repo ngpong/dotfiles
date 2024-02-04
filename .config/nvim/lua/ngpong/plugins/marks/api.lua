@@ -90,7 +90,7 @@ M.send_marks_2_qf = function(bufnr, fetch_all, cb)
       if M.is_upper_mark(mark) then
         local row  = _data.pos[2]
         local col  = _data.pos[3]
-        local file = path:new(_data.file):expand(_data.file)
+        local file = path:new(_data.file):expand()
 
         if file ~= bufname and file:match(workspace) then
           table.insert(qf_opts.items, {
