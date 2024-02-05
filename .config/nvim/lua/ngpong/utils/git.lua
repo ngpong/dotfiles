@@ -70,9 +70,12 @@ gitter.status_diff = function()
 end
 
 gitter.if_has_diff = async.void(function(path, cb)
+  local job = Job.__get()
+
   local result
+
   local await_has_diff = async.wrap(function(callback)
-    Job:new({
+    job:new({
       command = 'git',
       args = { '-C', get_repository_root(TOOLS.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
       on_exit = function(j, _)
@@ -91,9 +94,12 @@ gitter.if_has_diff = async.void(function(path, cb)
 end)
 
 gitter.if_has_log = async.void(function(path, cb)
+  local job = Job.__get()
+
   local result
+
   local await_has_log = async.wrap(function(callback)
-    Job:new({
+    job:new({
       command = 'git',
       args = { '-C', get_repository_root(TOOLS.get_cwd()), 'log', '-1', '--pretty=format:"%h"', '--', path },
       on_exit = function(j, _)
@@ -112,10 +118,12 @@ gitter.if_has_log = async.void(function(path, cb)
 end)
 
 gitter.if_has_diff_or_untracked = async.void(function(path, cb)
+  local job = Job.__get()
+
   local result
 
   local await_is_untracked = async.wrap(function(callback)
-    Job:new({
+    job:new({
       command = 'git',
       args = { '-C', get_repository_root(TOOLS.get_cwd()), 'ls-files', '--exclude-standard', '--others', '--', path },
       on_exit = function(j, _)
@@ -133,7 +141,7 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb)
   end
 
   local await_has_diff = async.wrap(function(callback)
-    Job:new({
+    job:new({
       command = 'git',
       args = { '-C', get_repository_root(TOOLS.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
       on_exit = function(j, _)

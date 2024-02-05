@@ -503,25 +503,6 @@ helper.set_wincursor = function(winid, row, col)
   pcall(vim.api.nvim_win_set_cursor, winid, { row, col })
 end
 
-helper.get_workspace = function()
-  if helper.___workspace == nil then
-    local success, dir = pcall(vim.fn.getcwd)
-    if success then
-      helper.___workspace = dir
-    end
-  end
-
-  return helper.___workspace
-end
-
-helper.get_workspace_sha1 = function()
-  if helper.___workspace_sha1 == nil then
-    helper.___workspace_sha1 = require('sha1').sha1(helper.get_workspace())
-  end
-
-  return helper.___workspace_sha1
-end
-
 -- will causes a lazy loading with nvim-notify plugin.
 helper.notify = function(msg, title, opts, lv)
   vim.schedule(function()

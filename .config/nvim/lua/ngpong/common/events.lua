@@ -17,7 +17,7 @@ events.e_name = {
   WIN_CLOSED = 9,
   BUFFER_ENTER_ONCE = 10,
   VIM_LEAVE_PRE = 11,
-  CURSOR = 12,
+  CURSOR_NORMAL = 12,
 
   -- explore tree
   SETUP_NEOTREE = 20,

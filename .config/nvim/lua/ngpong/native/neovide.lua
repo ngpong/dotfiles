@@ -21,7 +21,7 @@ M.setup = function()
   -- 刷新率
   vim.g.neovide_refresh_rate = 144
 
-  -- 鼠标行为
+ -- 鼠标行为
   vim.g.neovide_cursor_animation_length = 0.06 -- 动画长度
   vim.g.neovide_cursor_trail_size = 0.3 -- 尾部拖拽长度
   vim.g.neovide_cursor_antialiasing = true -- 抗锯齿

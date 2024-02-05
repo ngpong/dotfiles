@@ -76,13 +76,7 @@ local del_buffer_keymaps = function(bufnr)
 end
 
 local set_buffer_keymaps = function(bufnr)
-  keymap.register(e_mode.NORMAL, '<CR>', function()
-    HELPER.add_jumplist()
-    this.api.actions.jump()
-    HELPER.add_jumplist()
-
-    vim.schedule(HELPER.keep_screen_center)
-  end, { remap = false, buffer = bufnr, desc = 'TOUBLE: open selected entry into buffer.' })
+  keymap.register(e_mode.NORMAL, '<CR>', this.api.jump, { remap = false, buffer = bufnr, desc = 'TOUBLE: open selected entry into buffer.' })
   keymap.register(e_mode.NORMAL, '<C-s>', this.api.actions.toggle_preview, { remap = false, buffer = bufnr, desc = 'TOUBLE: toggle preview(seek) with selected entry.' })
   keymap.register(e_mode.NORMAL, 'R', TOOLS.wrap_f(this.api.refresh), { remap = false, buffer = bufnr, desc = 'TOUBLE: refresh trouble list.' })
   -- keymap.register(e_mode.NORMAL, '<leader>i', this.api.actions.hover, { remap = false, buffer = bufnr, desc = 'hover selected entry.' })

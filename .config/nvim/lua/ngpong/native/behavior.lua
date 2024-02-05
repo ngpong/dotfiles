@@ -1,11 +1,12 @@
 local M = {}
 
+local filter    = require('ngpong.native.filter')
 local events    = require('ngpong.common.events')
 local json      = require('ngpong.utils.json')
 local timestamp = require('ngpong.utils.timestamp')
 local lazy      = require('ngpong.utils.lazy')
 local bouncer   = lazy.require('ngpong.utils.debounce')
-local path      = lazy.require('plenary.path')
+local Path      = lazy.require('plenary.path')
 local async     = lazy.require('plenary.async')
 
 local e_events = events.e_name
@@ -41,9 +42,11 @@ local setup_cleanup = function()
 end
 
 local setup_cursor_persist = function()
+  local path = Path.__get()
+
   local caches = {}
 
-  local file = path:new(vim.fn.stdpath('data') .. '/cursor_presist/' .. HELPER.get_workspace_sha1() .. '.json')
+  local file = path:new(vim.fn.stdpath('data') .. '/cursor_presist/' .. TOOLS.get_workspace_sha1() .. '.json')
 
   events.rg(e_events.VIM_ENTER, async.void(function(_)
     if not file:exists() then
@@ -51,6 +54,10 @@ local setup_cursor_persist = function()
     end
 
     local data = file:read()
+    if TOOLS.isempty(data) then
+      return
+    end
+
     caches = json.decode(data)
 
     -- 缓慢删除掉过期(一天未访问过的)的 key
@@ -72,7 +79,7 @@ local setup_cursor_persist = function()
     file:write(json.encode(caches), 'w')
   end)
 
-  events.rg(e_events.CURSOR, bouncer.throttle_trailing(500, true, async.void(function(args)
+  events.rg(e_events.CURSOR_NORMAL, bouncer.throttle_trailing(400, true, async.void(function(args)
     async.util.scheduler()
 
     local bufnr = HELPER.get_cur_bufnr()
@@ -80,8 +87,12 @@ local setup_cursor_persist = function()
       return
     end
 
-    local bufname = HELPER.get_buf_name(bufnr):gsub(HELPER.get_workspace() .. '/', '')
+    local bufname = HELPER.get_buf_name(bufnr):gsub(TOOLS.get_workspace() .. '/', '')
     if TOOLS.isempty(bufname) then
+      return
+    end
+
+    if filter(1, bufnr) then
       return
     end
 
@@ -90,14 +101,24 @@ local setup_cursor_persist = function()
     caches[bufname] = { row = row, col = col, ts = timestamp.get_utc() }
   end)))
 
-  events.rg(e_events.BUFFER_READ_POST, function(args)
-    local bufname = HELPER.get_buf_name(args.buf):gsub(HELPER.get_workspace() .. '/', '')
+  events.rg(e_events.BUFFER_READ_POST, async.void(function(args)
+    local event_bufnr = args.buf
+
+    async.util.scheduler()
+
+    -- 一些情况下创建的 buffer 则不设置，比如说通过 preview 打开的buffer
+    local currt_bufnr = HELPER.get_cur_bufnr()
+    if filter(1, currt_bufnr) then
+      return
+    end
+
+    local bufname = HELPER.get_buf_name(event_bufnr):gsub(TOOLS.get_workspace() .. '/', '')
 
     local cache = caches[bufname]
-    if cache ~= nil then
-      vim.api.nvim_win_set_cursor(0, { cache.row, cache.col })
+    if cache ~= nil and filter(2) then
+      HELPER.set_cursor(cache.row, cache.col)
     end
-  end)
+  end))
 end
 
 M.setup = function()

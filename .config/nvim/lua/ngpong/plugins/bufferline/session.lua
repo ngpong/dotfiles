@@ -4,7 +4,7 @@ local events           = require('ngpong.common.events')
 local lazy             = require('ngpong.utils.lazy')
 local json             = require('ngpong.utils.json')
 local async            = lazy.require('plenary.async')
-local path             = lazy.require('plenary.path')
+local Path             = lazy.require('plenary.path')
 local bufferline_state = lazy.require('bufferline.state')
 local bufferline_group = lazy.require('bufferline.groups')
 local bufferline_ui    = lazy.require("bufferline.ui")
@@ -13,7 +13,9 @@ local this = PLGS.bufferline
 local e_events = events.e_name
 
 session.setup = function()
-  local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. HELPER.get_workspace_sha1() .. '.json')
+  local path = Path.__get()
+
+  local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. TOOLS.get_workspace_sha1() .. '.json')
 
   events.rg(e_events.VIM_LEAVE_PRE, async.void(function()
     if not this.api.is_plugin_loaded() then

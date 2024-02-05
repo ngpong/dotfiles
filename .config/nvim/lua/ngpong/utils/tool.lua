@@ -66,6 +66,25 @@ tools.tbl_length = function(t)
   end
 end
 
+tools.get_workspace = function()
+  if tools.___workspace == nil then
+    local success, dir = pcall(vim.fn.getcwd)
+    if success then
+      tools.___workspace = dir
+    end
+  end
+
+  return tools.___workspace
+end
+
+tools.get_workspace_sha1 = function()
+  if tools.___workspace_sha1 == nil then
+    tools.___workspace_sha1 = require('sha1').sha1(tools.get_workspace())
+  end
+
+  return tools.___workspace_sha1
+end
+
 tools.curpath = function()
   return vim.fn.expand('%:p:h')
 end

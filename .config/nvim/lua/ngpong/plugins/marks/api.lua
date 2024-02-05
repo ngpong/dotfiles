@@ -2,7 +2,7 @@ local M = {}
 
 local lazy  = require('ngpong.utils.lazy')
 local marks = lazy.require('marks')
-local path  = lazy.require('plenary.path')
+local Path  = lazy.require('plenary.path')
 
 M.set = function(name)
   local compare = '\'' .. name
@@ -48,6 +48,8 @@ M.jump = function(name)
 end
 
 M.send_marks_2_qf = function(bufnr, fetch_all, cb)
+  local path = Path.__get()
+
   local cache = marks.mark_state.buffers
   if not next(cache) then
     return
@@ -82,7 +84,7 @@ M.send_marks_2_qf = function(bufnr, fetch_all, cb)
   end
 
   if fetch_all then
-    local workspace = HELPER.get_workspace()
+    local workspace = TOOLS.get_workspace()
 
     for _, _data in ipairs(vim.fn.getmarklist()) do
       local mark = _data.mark:sub(2,3)

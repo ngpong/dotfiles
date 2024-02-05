@@ -88,11 +88,11 @@ local setup_autocmd = function()
     end
   })
 
-  vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'CursorHoldI', 'CursorHold' }, {
+  vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertLeave', 'CursorHold' }, {
     group = group_id,
     pattern = { '*' },
     callback = function(args)
-      events.emit(e_events.CURSOR, args)
+      events.emit(e_events.CURSOR_NORMAL, args)
     end
   })
 end

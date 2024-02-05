@@ -3,6 +3,7 @@ local M = {}
 local icons   = require('ngpong.utils.icon')
 local lazy    = require('ngpong.utils.lazy')
 local bouncer = require('ngpong.utils.debounce')
+local async   = lazy.require('plenary.async')
 local trouble = lazy.require('trouble')
 local config  = lazy.require("trouble.config")
 
@@ -17,6 +18,20 @@ M.actions = setmetatable({}, {
     end
   end
 })
+
+M.jump = async.void(function()
+  HELPER.add_jumplist()
+  M.actions.jump()
+  HELPER.add_jumplist()
+
+  VAR.set('TroubleJumping', true)
+
+  async.util.scheduler()
+
+  HELPER.keep_screen_center()
+
+  VAR.unset('TroubleJumping')
+end)
 
 M.refresh = bouncer.throttle_leading(1000, function()
   if not M.is_open() then
