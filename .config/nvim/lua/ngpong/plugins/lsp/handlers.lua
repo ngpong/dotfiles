@@ -1,6 +1,43 @@
 local M = {}
 
 local icons = require('ngpong.utils.icon')
+local lazy  = require('ngpong.utils.lazy')
+local async = lazy.require('plenary.async')
+
+local setup_jumping = function()
+  local real_textDocument_definition = vim.lsp.handlers['textDocument/definition']
+  vim.lsp.handlers['textDocument/definition'] = async.void(function(...)
+    VAR.set('DisablePresistCursor', true)
+
+    real_textDocument_definition(...)
+
+    async.util.scheduler()
+
+    VAR.unset('DisablePresistCursor')
+  end)
+
+  local real_textDocument_references = vim.lsp.handlers['textDocument/references']
+  vim.lsp.handlers['textDocument/references'] = async.void(function(...)
+    VAR.set('DisablePresistCursor', true)
+
+    real_textDocument_references(...)
+
+    async.util.scheduler()
+
+    VAR.unset('DisablePresistCursor')
+  end)
+
+  local real_textDocument_declaration = vim.lsp.handlers['textDocument/declaration']
+  vim.lsp.handlers['textDocument/declaration'] = async.void(function(...)
+    VAR.set('DisablePresistCursor', true)
+
+    real_textDocument_declaration(...)
+
+    async.util.scheduler()
+
+    VAR.unset('DisablePresistCursor')
+  end)
+end
 
 local setup_diagnostics = function()
   -- 仅设置 publishDiagnostics handlers 所产生的 diagnostic
@@ -221,6 +258,8 @@ local setup_lsp_notify = function()
 end
 
 M.setup = function()
+  setup_jumping()
+
   setup_diagnostics()
 
   setup_hover()

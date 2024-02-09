@@ -15,6 +15,13 @@ lua版本5.1
     {
       "command": {
         "action": "sendInput",
+        "input": "\u001b[83;5u"
+      },
+      "keys": "ctrl+shift+S"
+    },
+    {
+      "command": {
+        "action": "sendInput",
         "input": "\u001b[46;5u"
       },
       "keys": "ctrl+period"

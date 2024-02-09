@@ -7,6 +7,14 @@ helper.get_cur_bufnr = function(_)
   return vim.api.nvim_get_current_buf and vim.api.nvim_get_current_buf() or vim.fn.bufnr()
 end
 
+helper.is_buf_hidden = function(bufnr)
+  if not helper.is_buf_valid(bufnr) then
+    return true
+  end
+
+  return not vim.bo[bufnr].buflisted
+end
+
 helper.is_buf_valid = function(bufnr)
   return vim.api.nvim_buf_is_valid(bufnr)
 end
@@ -255,6 +263,10 @@ helper.get_winid_by_path = function(path)
   return nil
 end
 
+helper.is_win_valid = function(winid)
+  return vim.api.nvim_win_is_valid(winid)
+end
+
 helper.is_floating_win = function(winid)
   winid = winid or helper.get_cur_winid()
   return vim.api.nvim_win_get_config(winid).relative ~= ''
@@ -461,7 +473,9 @@ helper.close_floating_wins = function(async)
   local ret = false
 
   for _, winid in pairs(HELPER.get_list_winids()) do
-    if HELPER.is_floating_win(winid) and not HELPER.is_notify_win(winid) then
+    if helper.is_win_valid(winid) and
+       helper.is_floating_win(winid) and
+       not helper.is_notify_win(winid) then
       if async then
         vim.schedule(function() HELPER.close_win(winid) end)
       else

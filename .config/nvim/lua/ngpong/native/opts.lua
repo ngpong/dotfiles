@@ -48,7 +48,9 @@ M.setup = function()
 
   -- 侧边显示行号
   vim.wo.number = true
-  vim.opt.relativenumber = true
+  vim.wo.relativenumber = true
+  -- vim.opt.nu = true
+  -- vim.opt.rnu = true
 
   -- 使用空格替代 <Tab>
   vim.opt.expandtab = true

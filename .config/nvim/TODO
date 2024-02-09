@@ -1,17 +1,18 @@
 有时间去实现一下，看上去挺简单 https://github.com/p00f/clangd_extensions.nvim/issues/33
 
-1. ,. 按键要不要换一下？
-2. neotree preview 不会换行
-3. 跳转表的问题，d.. m.. g..
-7. notify 转圈等待的感觉可以封装成一个函数
-9. marks 的 mM 需要考虑没有打开过的 buffer，能够实现；已实现，但是偶尔会报错
+1. neotree preview 不会换行
+2. 跳转表的问题，d.. m.. g..
+3. notify 转圈等待的感觉可以封装成一个函数
+
+4. <C-v> 一次复制多个存在问题
+5. telescope 的 bb 需要支持删除 buffer，这样会方便点，参考 require('telescope.actions').delete_buffer
+   但是需要考虑一个按键映射只用于 buffer 的问题，不要影响其它 picker
 
 1. nvim-lint？
 2. rmagatti/goto-preview？
 3. git_revert 需要加一个 yes or no 的选项？
-4. neovim-pair？
+4. neovim-pair？ neovim-surround？
 5. go.nvim？
-6. session 相关插件？
 
 一些参考的项目
 1. https://github.com/NvChad/NvChad

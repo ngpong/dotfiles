@@ -76,9 +76,9 @@ session.setup = function()
 
         if new_buffs[_data.file] ~= nil then
           bufnr = new_buffs[_data.file]
-          new_buffs[_data.file] = nil
         else
           bufnr = vim.fn.bufadd(_data.file)
+
           vim.bo[bufnr].buflisted = true
         end
 
@@ -94,7 +94,9 @@ session.setup = function()
       end
     end
     for _file, _bufnr in pairs(new_buffs) do
-      final_buffs[_bufnr] = { file = _file, is_pinned = false }
+      if final_buffs[_bufnr] == nil then
+        final_buffs[_bufnr] = { file = _file, is_pinned = false }
+      end
     end
 
     -- 擦除第一个默认打开的 [NONAME] BUFFERS

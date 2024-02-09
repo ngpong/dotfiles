@@ -200,6 +200,7 @@ local set_global_keymaps = function(...)
     ['<CR>']       = { command = 'ngpong_select_node', desc = 'NEOTREE: open selected node.' },
     ['<C-CR>']     = { command = 'toggle_node', desc = 'NEOTREE: toggle selected node.', config = { use_float = true } },
     ['<C-s>']      = { command = 'toggle_preview', desc = 'NEOTREE: preview(seek) selected node.', config = { use_float = true } },
+    ['<C-S-s>']    = { command = 'focus_preview', desc = 'NEOTREE: focus preview(seek) window.', config = { use_float = true } },
     -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/942
     ['<']          = { command = 'prev_source', desc = 'NEOTREE: switch to previous source.' },
     ['>']          = { command = 'next_source' , desc = 'NEOTREE: switch to next source.'},

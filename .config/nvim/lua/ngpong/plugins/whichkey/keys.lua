@@ -30,8 +30,11 @@ local fix_keymap_native = async.void(function()
 
     ['e'] = {
       name = 'JUMPTO:',
+      ['d'] = { name = 'TEXTOBJECT CONDITIONAL' },
       ['f'] = { name = 'TEXTOBJECT FUNCTION' },
+      ['l'] = { name = 'TEXTOBJECT LOOP' },
       ['c'] = { name = 'TEXTOBJECT CLASS' },
+      -- ['s'] = { name = 'TEXTOBJECT SCOPE' },
     },
     ['E'] = {
       name = 'which_key_ignore',

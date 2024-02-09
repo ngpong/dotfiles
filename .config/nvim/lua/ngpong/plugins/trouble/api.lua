@@ -20,17 +20,17 @@ M.actions = setmetatable({}, {
 })
 
 M.jump = async.void(function()
+  VAR.set('DisablePresistCursor', true)
+
   HELPER.add_jumplist()
   M.actions.jump()
   HELPER.add_jumplist()
-
-  VAR.set('TroubleJumping', true)
 
   async.util.scheduler()
 
   HELPER.keep_screen_center()
 
-  VAR.unset('TroubleJumping')
+  VAR.unset('DisablePresistCursor')
 end)
 
 M.refresh = bouncer.throttle_leading(1000, function()

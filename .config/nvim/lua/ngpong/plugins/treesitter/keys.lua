@@ -20,6 +20,22 @@ local set_native_keymaps = function()
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'ec,', function()
     require('nvim-treesitter.textobjects.move').goto_previous('@class.outer', 'textobjects')
   end, { remap = false, desc = 'prev @class.outer' })
+
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'el,', function()
+    require('nvim-treesitter.textobjects.move').goto_previous('@loop.outer', 'textobjects')
+  end, { remap = false, desc = 'prev @loop' })
+
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'el.', function()
+    require('nvim-treesitter.textobjects.move').goto_next('@loop.outer', 'textobjects')
+  end, { remap = false, desc = 'prev @loop' })
+
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'ed,', function()
+    require('nvim-treesitter.textobjects.move').goto_previous('@conditional.outer', 'textobjects')
+  end, { remap = false, desc = 'prev @conditional' })
+
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'ed.', function()
+    require('nvim-treesitter.textobjects.move').goto_next('@conditional.outer', 'textobjects')
+  end, { remap = false, desc = 'prev @conditional' })
 end
 
 M.setup = function()

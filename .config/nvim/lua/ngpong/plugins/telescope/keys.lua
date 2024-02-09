@@ -49,6 +49,7 @@ local set_plugin_keymaps = function()
       ['b<'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['b.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['b,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['bb'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['bp'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['bs'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['bc'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -92,7 +93,6 @@ local set_plugin_keymaps = function()
       ['f<leader>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['fs'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['fb'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
-      ['fl'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>e'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>l'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>q'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -174,11 +174,10 @@ end
 local set_native_keymaps = function()
   keymap.register(e_mode.NORMAL, 'f<leader>', '<CMD>Telescope<CR>', { remap = false, silent = true, desc = 'find builtin.' })
   keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
-  keymap.register(e_mode.NORMAL, 'fl', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=false<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
+  keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
   keymap.register(e_mode.NORMAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', { remap = false, silent = true, desc = 'find string with live grep mode.' })
   keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args({ default_text = HELPER.get_visual_selected() })<cr>', { silent = true, desc = 'which_key_ignore' })
   -- keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope-live-grep-args.shortcuts").grep_visual_selection()<cr>', { silent = true, desc = 'which_key_ignore' })
-  keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope buffers<CR>', { remap = false, silent = true, desc = 'find buffers.' })
 end
 
 M.setup = function()

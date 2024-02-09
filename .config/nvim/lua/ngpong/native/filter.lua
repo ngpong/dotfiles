@@ -25,7 +25,7 @@ local f1 = function(bufnr)
 end
 
 local f2 = function()
-  if VAR.get('TroubleJumping') then
+  if VAR.get('DisablePresistCursor') then
     return false
   else
     return true

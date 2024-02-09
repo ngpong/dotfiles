@@ -11,6 +11,7 @@ end
 local set_native_keymaps = function(_)
   keymap.register(e_mode.NORMAL, 'b.', this.api.cycle_next, { remap = false, desc = 'cycle next buffer.' })
   keymap.register(e_mode.NORMAL, 'b,', this.api.cycle_prev, { remap = false, desc = 'cycle prev buffer.' })
+  keymap.register(e_mode.NORMAL, 'bb', '<CMD>Telescope buffers<CR>', { remap = false, silent = true, desc = 'find buffers.' })
   keymap.register(e_mode.NORMAL, 'B>', this.api.move_next, { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'B<', this.api.move_prev, { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'bs', this.api.select, { remap = false, desc = 'select target buffer.' })
