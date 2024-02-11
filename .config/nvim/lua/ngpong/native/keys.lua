@@ -274,8 +274,20 @@ local set_native_keymaps = function()
   -- Left-Right-Up-Down montions
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'l', 'h', { remap = false, desc = 'MONTION: left.' })
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '\'', 'l', { remap = false, desc = 'MONTION: right.' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'p', 'k', { remap = false, desc = 'MONTION: top.' })
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, ';', 'j', { remap = false, desc = 'MONTION: down.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'p', function()
+    if vim.v.count > 0 then
+      return 'm\'' .. vim.v.count .. 'k'
+    else
+      return 'k'
+    end
+  end, { expr = true, remap = false, desc = 'MONTION: top.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, ';', function()
+    if vim.v.count > 0 then
+      return 'm\'' .. vim.v.count .. 'j'
+    else
+      return 'j'
+    end
+  end, { expr = true, remap = false, desc = 'MONTION: down.' })
   keymap.register(e_mode.INSERT, '<A-l>', '<LEFT>', { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.INSERT, '<A-\'>', '<RIGHT>', { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.INSERT, '<A-p>', '<UP>', { remap = false, desc = 'which_key_ignore' })
