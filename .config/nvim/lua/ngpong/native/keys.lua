@@ -368,6 +368,8 @@ local set_native_keymaps = function()
   keymap.register(e_mode.COMMAND, '<A-\'>', TOOLS.wrap_f(HELPER.feedkeys, '<RIGHT>'), { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.COMMAND, '<A-q>', TOOLS.wrap_f(HELPER.feedkeys, '<C-LEFT>'), { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.COMMAND, '<A-w>', TOOLS.wrap_f(HELPER.feedkeys, '<C-RIGHT>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-[>', TOOLS.wrap_f(HELPER.feedkeys, '<HOME>'), { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.COMMAND, '<A-]>', TOOLS.wrap_f(HELPER.feedkeys, '<END>'), { remap = false, desc = 'which_key_ignore' })
 
   -- search command
   keymap.register(e_mode.NORMAL, '<C-.>', function()

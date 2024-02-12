@@ -170,7 +170,7 @@ local module = {
     'filetype',
     component_name = 'filetype',
     padding = {
-      left = 1,
+      left = 0,
       right = 1,
     },
     colored = false,
@@ -192,18 +192,18 @@ local module = {
     end,
     component_name = 'fileformat',
     padding = {
-      left = 1,
+      left = 0,
       right = 1,
     },
     color = { fg = colors.dark4, gui = 'italic' }
   },
   encoding = {
     function()
-      return icons.text .. icons.space .. vim.opt.fileencoding:get()
+      return icons.files_2 .. icons.space .. vim.opt.fileencoding:get()
     end,
     component_name = 'encoding',
     padding = {
-      left = 1,
+      left = 0,
       right = 1,
     },
     color = { fg = colors.dark4, gui = 'italic' }

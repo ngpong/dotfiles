@@ -79,12 +79,18 @@ M.send_marks_2_qf = function(bufnr, fetch_all, cb)
       lnum = _data.line,
       col = _data.col,
       text = "mark " .. _mark .. ": " .. vim.api.nvim_buf_get_lines(bufnr, _data.line - 1, _data.line, true)[1],
-      priority = 0,
     })
   end
 
   if fetch_all then
     local workspace = TOOLS.get_workspace()
+
+    local bufnames = {}
+    for _, _bufnr in pairs(HELPER.get_all_bufs()) do
+      if not HELPER.is_buf_hidden(_bufnr) and HELPER.is_buf_valid(_bufnr) and not HELPER.is_unnamed_buf(_bufnr) then
+        bufnames[HELPER.get_buf_name(_bufnr)] = _bufnr
+      end
+    end
 
     for _, _data in ipairs(vim.fn.getmarklist()) do
       local mark = _data.mark:sub(2,3)
@@ -92,15 +98,22 @@ M.send_marks_2_qf = function(bufnr, fetch_all, cb)
       if M.is_upper_mark(mark) then
         local row  = _data.pos[2]
         local col  = _data.pos[3]
-        local file = path:new(_data.file):expand()
+        local file_path = path:new(_data.file):expand()
 
-        if file ~= bufname and file:match(workspace) then
+        if file_path ~= bufname and file_path:match(workspace) then
+          local line = ''
+          if bufnames[file_path] ~= nil then
+            line = vim.api.nvim_buf_get_lines(bufnames[file_path], row - 1, row, true)[1]
+          else
+            local lines = path:new(file_path):readlines()
+            line = (lines == nil and '' or lines[row])
+          end
+
           table.insert(qf_opts.items, {
-            filename = file,
+            filename = file_path,
             lnum = row,
             col = col,
-            text = "mark " .. mark .. ": " .. vim.api.nvim_buf_get_lines(bufnr, row - 1, row, true)[1],
-            priority = file == bufname and 0 or 1
+            text = "mark " .. mark .. ": " .. line,
           })
         end
       end
