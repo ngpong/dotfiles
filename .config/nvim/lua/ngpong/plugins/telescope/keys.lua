@@ -3,9 +3,10 @@ local M = {}
 local keymap = require('ngpong.common.keybinder')
 local events = require('ngpong.common.events')
 
-local this = PLGS.telescope
 local e_mode   = keymap.e_mode
 local e_events = events.e_name
+
+local this = PLGS.telescope
 
 local wrap_keymap = function(handler, opts)
   local final_opts = {
@@ -180,6 +181,12 @@ local set_native_keymaps = function()
   -- keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope-live-grep-args.shortcuts").grep_visual_selection()<cr>', { silent = true, desc = 'which_key_ignore' })
 end
 
+local set_buffer_keymaps = function(state)
+  if state.picker.prompt_title == 'Buffers' then
+    keymap.register(e_mode.NORMAL, '<C-CR>', TOOLS.wrap_f(this.api.delete_entries, state.bufnr), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: delete entries.' })
+  end
+end
+
 M.setup = function()
   del_native_keymaps()
   set_native_keymaps()
@@ -191,6 +198,10 @@ M.setup = function()
         default_mappings = set_plugin_keymaps(),
       },
     })
+  end)
+
+  events.rg(e_events.TELESCOPE_LOAD, function(state)
+    set_buffer_keymaps(state)
   end)
 end
 

@@ -26,9 +26,22 @@ M.is_pinned = function(arg)
     local element = arg
 
     return buffline_groups._is_pinned(element)
+  elseif type(arg) == 'string' and arg == 'all' then
+    for _, item in ipairs(buffline_state.components) do
+      local element = item:as_element()
+      if buffline_groups._is_pinned(element) then
+        return true
+      end
+    end
+
+    return false
   end
 
   return false
+end
+
+M.get_components = function()
+  return buffline_state.components
 end
 
 M.cycle_next = function(_)

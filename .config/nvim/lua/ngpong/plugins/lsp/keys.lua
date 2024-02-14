@@ -8,7 +8,8 @@ local icons  = require('ngpong.utils.icon')
 local e_mode   = keymap.e_mode
 local e_events = events.e_name
 
-local touble = PLGS.trouble
+local touble    = PLGS.trouble
+local telescope = PLGS.telescope
 
 local del_native_keymaps = function()
 end
@@ -30,7 +31,7 @@ end
 
 local set_buffer_keymaps = function(state)
   if state.cli.server_capabilities.documentSymbolProvider then
-    keymap.register(e_mode.NORMAL, 'dw', TOOLS.wrap_f(lazy.access('telescope.builtin', 'lsp_document_symbols'), {
+    keymap.register(e_mode.NORMAL, 'dw', TOOLS.wrap_f(telescope.api.builtin_picker, 'lsp_document_symbols', {
       show_line = true,
       symbol_type_width = 12,
       symbol_width = 50,

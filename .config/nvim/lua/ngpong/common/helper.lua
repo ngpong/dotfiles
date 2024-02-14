@@ -54,12 +54,12 @@ end
 
 helper.delete_buffer = function(bufnr, force, cond)
   if not require('bufdelete') then
-    return
+    return false
   end
 
   local async = require('plenary.async')
   if not async then
-    return
+    return false
   end
 
   bufnr = bufnr or HELPER.get_cur_bufnr()
@@ -67,7 +67,7 @@ helper.delete_buffer = function(bufnr, force, cond)
   cond  = cond or nil
 
   if cond and not cond(bufnr) then
-    return
+    return false
   end
 
   local success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
@@ -91,6 +91,8 @@ helper.delete_buffer = function(bufnr, force, cond)
   if success then
     async.run(wipeout_unnamed_buf)
   end
+
+  return success
 end
 
 helper.delete_all_buffers = function(force, cond)
@@ -101,7 +103,7 @@ end
 
 helper.wipeout_buffer = function(bufnr, force, cond)
   if not require('bufdelete') then
-    return
+    return false
   end
 
   bufnr = bufnr or helper.get_cur_bufnr()
@@ -109,10 +111,12 @@ helper.wipeout_buffer = function(bufnr, force, cond)
   cond  = cond  or nil
 
   if cond and not cond(bufnr) then
-    return
+    return false
   end
 
-  pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  local success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
+
+  return success
 end
 
 helper.wipeout_all_buffers = function(force, cond)

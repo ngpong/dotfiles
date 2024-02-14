@@ -2,8 +2,10 @@ local M = {}
 
 local keymap = require('ngpong.common.keybinder')
 
-local this   = PLGS.bufferline
 local e_mode = keymap.e_mode
+
+local this      = PLGS.bufferline
+local telescope = PLGS.telescope
 
 local del_native_keymaps = function(_)
 end
@@ -11,7 +13,22 @@ end
 local set_native_keymaps = function(_)
   keymap.register(e_mode.NORMAL, 'b.', this.api.cycle_next, { remap = false, desc = 'cycle next buffer.' })
   keymap.register(e_mode.NORMAL, 'b,', this.api.cycle_prev, { remap = false, desc = 'cycle prev buffer.' })
-  keymap.register(e_mode.NORMAL, 'bb', '<CMD>Telescope buffers<CR>', { remap = false, silent = true, desc = 'find buffers.' })
+  keymap.register(e_mode.NORMAL, 'bb', function()
+    local is_pinned  = this.api.is_pinned('all')
+    local components = this.api.get_components()
+
+    local sorted_cache = {}
+    for i = 1, #components do
+      sorted_cache[components[i]:as_element().id] = i
+    end
+
+    telescope.api.builtin_picker('buffers', {
+      is_have_pinned = is_pinned,
+      sort_buffers = function(l, r)
+        return sorted_cache[l] < sorted_cache[r]
+      end
+    })
+  end, { remap = false, silent = true, desc = 'find buffers.' })
   keymap.register(e_mode.NORMAL, 'B>', this.api.move_next, { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'B<', this.api.move_prev, { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'bs', this.api.select, { remap = false, desc = 'select target buffer.' })

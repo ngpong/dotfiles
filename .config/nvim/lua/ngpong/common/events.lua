@@ -1,7 +1,5 @@
 local events = {}
 
-local icons = require('ngpong.utils.icon')
-
 local event_handlers = {}
 
 events.e_name = {
@@ -18,6 +16,7 @@ events.e_name = {
   BUFFER_ENTER_ONCE = 10,
   VIM_LEAVE_PRE = 11,
   CURSOR_NORMAL = 12,
+  VIM_EXIT_PRE = 13,
 
   -- explore tree
   SETUP_NEOTREE = 20,
@@ -41,6 +40,8 @@ events.e_name = {
 
   -- telescope
   SETUP_TELESCOPE = 46,
+  TELESCOPE_PREVIEW_LOAD = 47,
+  TELESCOPE_LOAD = 48,
 
   -- lualine
   SETUP_LUALINE = 50,

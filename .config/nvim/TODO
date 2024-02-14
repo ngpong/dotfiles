@@ -5,8 +5,6 @@
 3. notify 转圈等待的感觉可以封装成一个函数
 
 4. <C-v> 一次复制多个存在问题
-5. telescope 的 bb 需要支持删除 buffer，这样会方便点，参考 require('telescope.actions').delete_buffer
-   但是需要考虑一个按键映射只用于 buffer 的问题，不要影响其它 picker
 
 1. nvim-lint？
 2. rmagatti/goto-preview？

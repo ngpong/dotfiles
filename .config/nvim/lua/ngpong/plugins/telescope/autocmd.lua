@@ -1,10 +1,12 @@
 local M = {}
 
 local autocmd = require('ngpong.common.autocmd')
+local events  = require('ngpong.common.events')
 local lazy    = require('ngpong.utils.lazy')
 local async   = lazy.require('plenary.async')
 
 local this = PLGS.telescope
+local e_events = events.e_name
 
 local unset_autocmds = function()
   autocmd.del_augroup('telescope')
@@ -15,11 +17,8 @@ local setup_autocmds = function()
 
   vim.api.nvim_create_autocmd('User', {
     pattern = 'TelescopePreviewerLoaded',
-    callback = function(_)
-      -- https://github.com/nvim-telescope/telescope.nvim/issues/2777
-      vim.opt.wrap = true
-      -- https://github.com/nvim-telescope/telescope.nvim/issues/1186
-      vim.opt.number = true
+    callback = function(args)
+      events.emit(e_events.TELESCOPE_PREVIEW_LOAD, args)
     end,
   })
 
@@ -27,29 +26,25 @@ local setup_autocmds = function()
     group = group_id,
     callback = function(args)
       local bufnr = args.buf
+
       async.run(function()
         async.util.scheduler()
-        if this.api.is_prompt_buf(bufnr) then
-          HELPER.feedkeys('g$')
+
+        if not PLGS.is_loaded('telescope.nvim') then
+          return
         end
+
+        if not this.api.is_prompt_buf(bufnr) then
+          return
+        end
+
+        local picker = this.api.get_current_picker(bufnr)
+        if not picker then
+          return
+        end
+
+        events.emit(e_events.TELESCOPE_LOAD, { bufnr = bufnr, picker = picker })
       end)
-    end,
-  })
-
-  vim.api.nvim_create_autocmd('ExitPre', {
-    group = group_id,
-    callback = function(args)
-      for _, tabpage in pairs(HELPER.get_list_tabpage()) do
-        for _, winid in pairs(HELPER.get_list_winids(tabpage)) do
-          local bufnr = HELPER.get_bufnr(winid)
-
-          if this.api.is_prompt_buf(bufnr) then
-            this.api.actions.close(bufnr)
-            vim.cmd('qall')
-            return
-          end
-        end
-      end
     end,
   })
 end

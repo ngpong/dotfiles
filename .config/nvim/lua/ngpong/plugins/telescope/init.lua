@@ -14,10 +14,12 @@ return {
     PLGS.record_seq('telescope.nvim init')
     PLGS.telescope.keys.setup()
     PLGS.telescope.highlight.setup()
+    PLGS.telescope.autocmd.setup()
+    PLGS.telescope.behavior.setup()
   end,
   config = function()
     PLGS.record_seq('telescope.nvim config')
-    PLGS.telescope.autocmd.setup()
+    PLGS.telescope.hacker.setup()
     PLGS.telescope.config.setup()
   end
 }
