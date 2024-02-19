@@ -217,7 +217,7 @@ local module = {
       right = 0,
     },
     separator = { left = icons.left_half_1, right = icons.right_half_1 },
-    color = { fg = colors.light1, bg = colors.dark2, gui = 'italic' },
+    color = { fg = colors.light1, bg = colors.dark2 },
   },
   searchcount_2 = {
     function()
