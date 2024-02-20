@@ -12,8 +12,8 @@ local del_native_keymaps = function()
 end
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'n,', TOOLS.wrap_f(lazy.access('todo-comments', 'jump_next')), { remap = false, desc = 'jump to prev.' })
-  keymap.register(e_mode.NORMAL, 'n.', TOOLS.wrap_f(lazy.access('todo-comments', 'jump_prev')), { remap = false, desc = 'jump to next.' })
+  keymap.register(e_mode.NORMAL, 'n,', TOOLS.wrap_f(lazy.access('todo-comments', 'jump_prev')), { remap = false, desc = 'jump to prev.' })
+  keymap.register(e_mode.NORMAL, 'n.', TOOLS.wrap_f(lazy.access('todo-comments', 'jump_next')), { remap = false, desc = 'jump to next.' })
   keymap.register(e_mode.NORMAL, 'nn', TOOLS.wrap_f(trouble.api.open, 'todo'), { silent = true, remap = false, desc = 'toggle todo list.' })
 end
 
