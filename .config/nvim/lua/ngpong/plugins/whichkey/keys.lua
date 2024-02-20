@@ -55,6 +55,10 @@ local fix_keymap_native = async.void(function()
       name = 'TABPAGE:',
     },
 
+    ['n'] = {
+      name = 'TODO:'
+    },
+
     ['m'] = {
       name = 'MARKS',
       ['e'] = {

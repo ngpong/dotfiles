@@ -6,6 +6,7 @@ local lazy          = require('ngpong.utils.lazy')
 local mc            = lazy.require('multicursors')
 local mc_n          = lazy.require('multicursors.normal_mode')
 local mc_i          = lazy.require('multicursors.insert_mode')
+local mc_e          = lazy.require('multicursors.extend_mode')
 local mc_utils      = lazy.require('multicursors.utils')
 local mc_selections = lazy.require('multicursors.selections')
 
@@ -24,7 +25,7 @@ local set_mode_keymaps = function(cfg)
     mode_keys = {
       append = { 'a', desc = 'MULTICURSORS: enter(head) inster mode.' },
       change = { 'c', desc = 'MULTICURSORS: cut character and enter insert mode.' },
-      extend = { ')', desc = 'which_key_ignore' },
+      extend = { 'Þ', desc = 'which_key_ignore' },
       insert = { 'A', desc = 'MULTICURSORS: enter(tail) inster mode.' },
     },
   })
@@ -35,33 +36,25 @@ local set_normal_keymaps = function(cfg)
     normal_keys = {
       ['<C-.>'] = {
         method = function()
-          HELPER.add_jumplist()
           mc_n.find_next()
-          HELPER.add_jumplist()
         end,
         opts = { desc = 'MULTICURSORS: find next match.' }
       },
       ['<C-,>'] = {
         method = function()
-          HELPER.add_jumplist()
           mc_n.find_prev()
-          HELPER.add_jumplist()
         end,
         opts = { desc = 'MULTICURSORS: find previous match.' }
       },
       ['<'] = {
         method = function()
-          HELPER.add_jumplist()
           mc_n.skip_find_prev()
-          HELPER.add_jumplist()
         end,
         opts = { desc = 'MULTICURSORS: skip current and find previous match.'  }
       },
       ['>'] = {
         method = function()
-          HELPER.add_jumplist()
           mc_n.skip_find_next()
-          HELPER.add_jumplist()
         end,
         opts = { desc = 'MULTICURSORS: skip current and find next match.'  }
       },
@@ -94,6 +87,30 @@ local set_normal_keymaps = function(cfg)
           mc_n.replace()
         end,
         opts = { desc = 'MULTICURSORS: paste text.'  }
+      },
+      ['<S-l>'] = {
+        method = mc_e.h_method,
+        opts = { desc = 'MULTICURSORS: select left.'  }
+      },
+      ['"'] = {
+        method = mc_e.l_method,
+        opts = { desc = 'MULTICURSORS: select right.'  }
+      },
+      ['{'] = {
+        method = mc_e.caret_method,
+        opts = { desc = 'MULTICURSORS: select to head of line.'  }
+      },
+      ['}'] = {
+        method = mc_e.dollar_method,
+        opts = { desc = 'MULTICURSORS: select to end of line.'  }
+      },
+      ['<S-w>'] = {
+        method = mc_e.w_method,
+        opts = { desc = 'MULTICURSORS: select world forward.'  }
+      },
+      ['<S-q>'] = {
+        method = mc_e.b_method,
+        opts = { desc = 'MULTICURSORS: select world backward.'  }
       },
 
       [','] = { method = nil, opts = { desc = 'which_key_ignore' } },
@@ -176,43 +193,25 @@ local set_normal_keymaps = function(cfg)
       ['ms'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['me'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['mm'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['n'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['n,'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['n.'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['nn'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['\\'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['/'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['?'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['V'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['U'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['v'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['X'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['z'] = { method = nil, opts = { desc = 'which_key_ignore' } },
+      ['Z'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<C-v>'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>c'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>e'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>p'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>l'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['<leader>q'] = { method = nil, opts = { desc = 'which_key_ignore' } },
-
-      ['.'] = { method = false },
-      ['D'] = { method = false },
-      ['n'] = { method = false },
-      ['N'] = { method = false },
-      ['z'] = { method = false },
-      ['Z'] = { method = false },
-      ['q'] = { method = false },
-      ['<C-n>'] = { method = false },
-      ['j'] = { method = false },
-      ['k'] = { method = false },
-      ['Q'] = { method = false },
-      ['}'] = { method = false },
-      ['{'] = { method = false },
-      [']'] = { method = false },
-      ['['] = { method = false },
-      ['p'] = { method = false },
-      ['P'] = { method = false },
-      ['@'] = { method = false },
-      [':'] = { method = false },
-      ['U'] = { method = false },
-      ['J'] = { method = false },
-      ['K'] = { method = false },
-      ['Y'] = { method = false },
-      ['yy'] = { method= false },
     },
   })
 end
@@ -258,42 +257,16 @@ local set_insert_keymaps = function(cfg)
         end,
         opts = { desc = 'which_key_ignore'  }
       },
-
-      ['<Right>'] = { method = false },
-      ['<Left>'] = { method = false },
-      ['<Down>'] = { method = false },
-      ['<Up>'] = { method = false },
-      ['<C-w>'] = { method = false },
-      ['<C-BS>'] = { method = false },
-      ['<C-u>'] = { method = false },
-      ['<C-j>'] = { method = false },
-      ['<C-Right>'] = { method = false },
-      ['<C-Left>'] = { method = false },
+      ['<BS>'] = { method = mc_i.BS_method, opts = { desc = 'which_key_ignore'  } },
+      ['<CR>'] = { method = mc_i.CR_method, opts = { desc = 'which_key_ignore'  } },
+      ['<Del>'] = { method = mc_i.Del_method, opts = { desc = 'which_key_ignore'  } },
     }
   })
 end
 
 local set_extend_keymaps = function(cfg)
-  -- extend 模式用于扩展选择的一些东西，需要的时候在研究 extend 模式的键，先暂时都保持默认
   TOOLS.tbl_r_extend(cfg, {
-    extend_keys = {
-      -- ['w'] = { method = false },
-      -- ['e'] = { method = false },
-      -- ['b'] = { method = false },
-      -- ['o'] = { method = false },
-      -- ['O'] = { method = false },
-      -- ['h'] = { method = false },
-      -- ['j'] = { method = false },
-      -- ['k'] = { method = false },
-      -- ['l'] = { method = false },
-      -- ['r'] = { method = false },
-      -- ['t'] = { method = false },
-      -- ['y'] = { method = false },
-      -- ['^'] = { method = false },
-      -- ['$'] = { method = false },
-      -- ['u'] = { method = false },
-      -- ['c'] = { method = false }
-    }
+    extend_keys = { }
   })
 end
 

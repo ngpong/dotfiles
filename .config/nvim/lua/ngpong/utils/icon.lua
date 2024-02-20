@@ -132,9 +132,11 @@ local icons = {
   vim = '',
   lua = '󰢱',
   yes = '✔',
+  yes_small = '',
   pinned_1 = '',
   pinned_2 = '',
   pinned_3 = '📌',
+  fire = '',
   spinner_frames = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
 }
 icons.lsp_kinds = {

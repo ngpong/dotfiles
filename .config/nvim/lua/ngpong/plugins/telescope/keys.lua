@@ -129,6 +129,10 @@ local set_plugin_keymaps = function()
       ['ec,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['et'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['eg'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['n'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['n,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['n.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['nn'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ----------------------------------------------------------------------
 
       -----------------------------remap keymap-----------------------------

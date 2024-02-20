@@ -26,4 +26,18 @@ M.get_cur_mode = function()
   end
 end
 
+M.set_first_time_enter_normal = function()
+  if M.get_cur_mode() == 'Normal' then
+    M.__set_first_time_enter_normal = true
+  end
+end
+
+M.unset_first_time_enter_normal = function()
+  M.__set_first_time_enter_normal = false
+end
+
+M.is_first_time_enter_normal = function()
+  return not M.__set_first_time_enter_normal
+end
+
 return M

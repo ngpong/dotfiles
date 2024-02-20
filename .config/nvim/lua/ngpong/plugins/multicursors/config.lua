@@ -4,6 +4,8 @@ local events = require('ngpong.common.events')
 
 local e_events = events.e_name
 
+local this = PLGS.multicursors
+
 M.setup = function()
   local cfg = {
     DEBUG_MODE = false,
@@ -29,11 +31,17 @@ M.setup = function()
       }
     },
     on_enter = function()
+      if this.api.is_first_time_enter_normal() then
+        HELPER.add_jumplist()
+        this.api.set_first_time_enter_normal()
+      end
+
       vim.schedule(function()
         PLGS.lualine.api.refresh()
       end)
     end,
     on_exit = function()
+      this.api.unset_first_time_enter_normal()
       vim.schedule(function()
         PLGS.lualine.api.refresh()
       end)

@@ -193,6 +193,10 @@ local set_global_keymaps = function(...)
     ['ef,']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['ec,']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['ec.']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['n']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['n,']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['n.']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['nn']        = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
 
     -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/940
     -- https://www.reddit.com/r/vim/comments/4ofv82/the_normal_command_is_really_cool/

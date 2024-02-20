@@ -73,6 +73,10 @@ local del_buffer_keymaps = function(bufnr)
   keymap.register(e_mode.NORMAL, 'ef', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'ec', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
   keymap.register(e_mode.NORMAL, 'g', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
+  keymap.register(e_mode.NORMAL, 'n', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
+  keymap.register(e_mode.NORMAL, 'n,', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
+  keymap.register(e_mode.NORMAL, 'n.', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
+  keymap.register(e_mode.NORMAL, 'nn', this.api.actions.nop, { buffer = bufnr, desc = 'which_key_ignore' })
 end
 
 local set_buffer_keymaps = function(bufnr)
