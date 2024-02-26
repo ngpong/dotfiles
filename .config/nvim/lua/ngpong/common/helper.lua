@@ -70,7 +70,12 @@ helper.delete_buffer = function(bufnr, force, cond)
     return false
   end
 
-  local success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  local success
+  if helper.is_loaded_buf(bufnr) then
+    success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufdelete(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  else
+    success, _ = pcall(vim.cmd, 'keepjumps bd ' .. bufnr)
+  end
 
   local wipeout_unnamed_buf = function()
     for _, _bufnr in pairs(helper.get_all_bufs()) do
@@ -114,7 +119,12 @@ helper.wipeout_buffer = function(bufnr, force, cond)
     return false
   end
 
-  local success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  local success
+  if helper.is_loaded_buf(bufnr) then
+    success, _ = pcall(vim.cmd, 'keepjumps lua require(\'bufdelete\').bufwipeout(' .. bufnr .. ', ' .. tostring(force) .. ')')
+  else
+    success, _ = pcall(vim.cmd, 'keepjumps bwipeout ' .. bufnr)
+  end
 
   return success
 end
