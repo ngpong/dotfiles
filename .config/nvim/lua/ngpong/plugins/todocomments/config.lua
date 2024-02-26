@@ -2,6 +2,8 @@ local M = {}
 
 local icons = require('ngpong.utils.icon')
 
+local this = PLGS.todocomments
+
 M.setup = function()
   require('todo-comments').setup {
     signs = false, -- show icons in the signs column
@@ -26,12 +28,12 @@ M.setup = function()
       bg = 'BOLD', -- The gui style to use for the bg highlight group.
     },
     colors = {
-      error = { 'DiagnosticError', 'ErrorMsg', '#DC2626' },
-      warning = { 'DiagnosticWarn', 'WarningMsg', '#FBBF24' },
-      info = { 'DiagnosticInfo', '#2563EB' },
-      hint = { 'DiagnosticHint', '#10B981' },
-      default = { 'GruvboxOrange', 'Identifier' },
-      test = { 'GruvboxPurple', 'Identifier' }
+      error = { 'DiagnosticError' },
+      warning = { 'DiagnosticWarn' },
+      info = { 'DiagnosticInfo' },
+      hint = { 'DiagnosticHint' },
+      default = { 'GruvboxOrange' },
+      test = { 'GruvboxPurple' }
     },
     merge_keywords = true, -- when true, custom keywords will be merged with the defaults
     -- highlighting of the line containing the todo comment
@@ -39,19 +41,19 @@ M.setup = function()
     -- * keyword: highlights of the keyword
     -- * after: highlights after the keyword (todo text)
     highlight = {
-      multiline = true, -- enable multine todo comments
-      multiline_pattern = '', -- lua pattern to match the next multiline from the start of the matched keyword
+      multiline = false, -- enable multine todo comments
+      multiline_pattern = '^.', -- lua pattern to match the next multiline from the start of the matched keyword
       multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
-      before = '', -- 'fg' or 'bg' or empty
-      keyword = 'wide', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-      after = '', -- 'fg' or 'bg' or empty
+      before = 'empty', -- 'fg' or 'bg' or empty
+      keyword = 'bg', -- 'fg', 'bg', 'wide', 'wide_bg', 'wide_fg' or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+      after = 'fg', -- 'fg' or 'bg' or empty
       pattern = {
         [[.*<(KEYWORDS)\s*:]],
         [[.*@(KEYWORDS)\s*:]],
       }, -- pattern or table of patterns, used for highlighting (vim regex)
       comments_only = true, -- uses treesitter to match keywords in comments only
       max_line_len = 400, -- ignore lines longer than this
-      exclude = {}, -- list of file types to exclude highlighting
+      exclude = this.filter(), -- list of file types to exclude highlighting
     },
   }
 end
