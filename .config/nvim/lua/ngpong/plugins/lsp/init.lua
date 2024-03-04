@@ -32,6 +32,7 @@ return {
       PLGS.lsp.config.yamlls.setup()
       PLGS.lsp.config.cmakels.setup()
       PLGS.lsp.config.bashls.setup()
+      PLGS.lsp.config.autotools_ls.setup()
     end
   }
 }
