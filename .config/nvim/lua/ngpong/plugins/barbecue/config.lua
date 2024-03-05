@@ -34,13 +34,15 @@ M.setup = function()
       modified = icons.circular_big,
       ellipsis = icons.ellipsis,
       separator = icons.separator,
+      dir = icons.directory,
     },
     theme = {
       normal = { fg = colors.light1, bold = false },
 
       ellipsis = { fg = colors.light4 },
       separator = { fg = colors.light4 },
-      dirname = { fg = colors.bright_blue, italic = true, bold = false },
+      dirname = { fg = colors.bright_blue },
+      diricon = { fg = colors.bright_yellow },
       modified = { fg = colors.light4 },
       basename = { bold = false, fg = colors.light1 },
 
