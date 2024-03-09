@@ -43,7 +43,7 @@ M.setup = function()
   }
 
   require('mason-lspconfig').setup {
-    ensure_installed = { 'lua_ls', 'bashls', 'jsonls', 'yamlls', 'cmake', 'clangd' },
+    ensure_installed = { 'lua_ls', 'bashls', 'jsonls', 'yamlls', 'cmake', 'clangd', 'asm_lsp', 'autotools_ls' },
   }
 end
 

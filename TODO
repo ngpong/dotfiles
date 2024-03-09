@@ -112,7 +112,7 @@ sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
 
-sudo apt install shellcheck sqlite3 libsqlite3-dev
+sudo apt install shellcheck sqlite3 libsqlite3-dev cargo
 
 sudo luarocks --lua-version=5.1 --global install luatz sqlite luv sha1
 
