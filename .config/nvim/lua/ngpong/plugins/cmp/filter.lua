@@ -33,6 +33,7 @@ local f3 = function()
   return function()
     local disabled = false
     disabled = disabled or (context.in_treesitter_capture('comment') and HELPER.get_cur_mode().mode == 'i')
+    disabled = disabled or (PLGS.luasnip.api.is_in_snippet())
     disabled = disabled or (vim.fn.reg_recording() ~= '')
     disabled = disabled or (vim.fn.reg_executing() ~= '')
     return not disabled

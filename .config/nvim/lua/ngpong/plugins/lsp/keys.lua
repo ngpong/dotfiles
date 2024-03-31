@@ -2,7 +2,6 @@ local M = {}
 
 local events = require('ngpong.common.events')
 local keymap = require('ngpong.common.keybinder')
-local lazy   = require('ngpong.utils.lazy')
 local icons  = require('ngpong.utils.icon')
 
 local e_mode   = keymap.e_mode

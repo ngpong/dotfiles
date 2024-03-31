@@ -34,6 +34,7 @@ M.setup = function()
       ['@parameter'] = { link = 'GruvboxFg2' },
       ['@conditional'] = { fg = gruvbox.palette.bright_red, italic = true },
       ['@lsp.type.parameter'] = { link = 'GruvboxFg1' },
+      ['@lsp.type.operator'] = { fg = nil },
       ['@punctuation.bracket'] = { link = 'GruvboxFg2' },
       ['@punctuation.delimiter'] = { link = 'GruvboxFg2' },
       ['@type.qualifier'] = { fg = gruvbox.palette.bright_red, italic = true },

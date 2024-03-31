@@ -20,4 +20,17 @@ M.unlink_current_if_expandable = function()
   luasnip.unlink_current()
 end
 
+M.locally_jumpable = function(idx)
+  return luasnip.locally_jumpable(idx)
+end
+
+M.jump = function(idx)
+  luasnip.jump(idx)
+
+end
+
+M.is_in_snippet = function()
+  return luasnip.in_snippet()
+end
+
 return M

@@ -5,7 +5,6 @@ local events  = require('ngpong.common.events')
 local lazy    = require('ngpong.utils.lazy')
 local cmp     = lazy.require('cmp')
 local cmp_cfg = lazy.require('cmp.config')
-local luasnip = lazy.require('luasnip')
 
 local this     = PLGS.cmp
 local ls       = PLGS.luasnip
@@ -39,8 +38,8 @@ local set_global_keymaps = function(...)
       if cmp.visible() and cmp.get_selected_entry() then
         ls.api.unlink_current_if_expandable()
         cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
-      elseif luasnip.locally_jumpable(1) then
-        luasnip.jump(1)
+      elseif ls.api.locally_jumpable(1) then
+        ls.api.jump(1)
       else
         fallback()
       end
