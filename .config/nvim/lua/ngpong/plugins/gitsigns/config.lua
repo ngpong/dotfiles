@@ -48,9 +48,6 @@ M.setup = function()
       row = 0,
       col = 1
     },
-    yadm = {
-      enable = false
-    },
     on_attach = function(bufnr)
       events.emit(e_events.ATTACH_GITSIGNS, { bufnr = bufnr })
     end

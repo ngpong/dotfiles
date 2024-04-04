@@ -24,26 +24,22 @@ keybinder.e_mode = {
   COMMAND = 'c'
 }
 
-keybinder.get_rhs = function(mode, lhs, bufnr)
-  local cb
-
+keybinder.get_keymap = function(mode, lhs, bufnr)
   if bufnr then
     for _, mapagr in ipairs(vim.api.nvim_buf_get_keymap(bufnr, mode)) do
       if mapagr.lhs == lhs then
-        cb = mapagr.callback
-        break
+        return mapagr
       end
     end
   else
     for _, mapagr in ipairs(vim.api.nvim_get_keymap(mode)) do
       if mapagr.lhs == lhs then
-        cb = mapagr.callback
-        break
+        return mapagr
       end
     end
   end
 
-  return cb
+  return nil
 end
 
 keybinder.hidegister = function(mode, key, opts)

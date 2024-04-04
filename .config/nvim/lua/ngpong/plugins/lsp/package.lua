@@ -40,6 +40,10 @@ M.setup = function()
         toggle_help = '?',
       },
     },
+    pip = {
+        upgrade_pip = false,
+        install_args = { "--proxy", "http://192.168.1.2:7890" },
+    },
   }
 
   require('mason-lspconfig').setup {

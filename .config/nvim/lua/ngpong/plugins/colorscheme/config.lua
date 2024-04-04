@@ -24,10 +24,10 @@ M.setup = function()
     palette_overrides = {},
     dim_inactive = false,
     overrides = {
-      NormalFloat = { bg = gruvbox.palette.dark0_soft, blend = 20 },
+      NormalFloat = { bg = gruvbox.palette.dark0_soft, blend = 0 },
       FloatTitle = { fg = gruvbox.palette.bright_green, italic = true },
       SignColumn = { bg = gruvbox.palette.dark0_soft, italic = true },
-      -- FloatBorder = { fg = gruvbox.palette.dark0_soft, blend = 100 },
+      -- FloatBorder = { fg = gruvbox.palette.dark2_soft, blend = 100 },
       -- DiagnosticInfo = { link = 'GruvboxGreen' },
       ['@operator'] = { link = 'GruvboxFg4' },
       ['@operators'] = { link = 'GruvboxFg2' },

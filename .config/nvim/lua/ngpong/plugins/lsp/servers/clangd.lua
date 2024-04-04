@@ -179,10 +179,11 @@ local setup_keymaps = function(_)
     keymap.hidegister(e_mode.NORMAL, 'dd', { buffer = state.buf })
     keymap.hidegister(e_mode.NORMAL, 'dD', { buffer = state.buf })
     keymap.hidegister(e_mode.NORMAL, 'dp', { buffer = state.buf })
-    local cb = keymap.get_rhs(e_mode.NORMAL, 'gd', state.buf)
-    if cb then
+
+    local maparg = keymap.get_keymap(e_mode.NORMAL, 'gd', state.buf)
+    if maparg then
       keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })
-      keymap.register(e_mode.NORMAL, 'de', cb, { buffer = state.buf, desc = 'jump to definition.' })
+      keymap.register(e_mode.NORMAL, 'de', maparg.callback, { buffer = state.buf, desc = 'jump to definition.' })
     end
   end))
 end

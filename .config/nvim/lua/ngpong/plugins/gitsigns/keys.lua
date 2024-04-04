@@ -18,14 +18,23 @@ local del_buffer_keymaps = function(bufnr)
   bufnr = bufnr or true
 end
 
-local set_buffer_extra_keymaps = function(bufnr)
+local set_buffer_diffthis_keymaps = function(bufnr)
   bufnr = bufnr or true
 
   keymap.register(e_mode.NORMAL, 'gd', this.api.toggle_diffthis, { buffer = bufnr, desc = 'toggle current file changed.' })
 end
 
+local set_buffer_popup_keymaps = function(bufnr)
+  bufnr = bufnr or true
+
+  local maparg = keymap.get_keymap(e_mode.NORMAL, 'q')
+  if maparg then
+    keymap.register(e_mode.NORMAL, 'q', maparg.callback, { buffer = bufnr, desc = maparg.desc, silent = maparg.silent, remap = not maparg.noremap })
+  end
+end
+
 local set_buffer_keymaps = function(bufnr)
-  set_buffer_extra_keymaps(bufnr)
+  set_buffer_diffthis_keymaps(bufnr)
 
   keymap.register(e_mode.NORMAL, 'g,', TOOLS.wrap_f(gitsigns.prev_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to prev hunk.' })
   keymap.register(e_mode.NORMAL, 'g.', TOOLS.wrap_f(gitsigns.next_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to next hunk.' })
@@ -43,7 +52,11 @@ M.setup = function()
   set_native_keymaps()
 
   events.rg(e_events.GITSIGNS_OPEN_DIFFTHIS, function(state)
-    set_buffer_extra_keymaps(state.bufnr)
+    set_buffer_diffthis_keymaps(state.bufnr)
+  end)
+
+  events.rg(e_events.GITSIGNS_OPEN_POPUP, function(state)
+    set_buffer_popup_keymaps(state.bufnr)
   end)
 
   events.rg(e_events.ATTACH_GITSIGNS, function(state)
