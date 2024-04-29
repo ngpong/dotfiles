@@ -59,7 +59,7 @@ M.laungh = function()
     local success, spec = pcall(require, 'ngpong.plugins.' .. dir)
     assert(success, 'Wrong plugin file structure definition, [' .. dir .. '].')
 
-    if vim.tbl_isarray(spec) then
+    if vim.isarray(spec) then
       for i = 0, #spec do
         table.insert(specs, spec[i])
       end

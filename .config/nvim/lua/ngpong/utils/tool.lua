@@ -27,7 +27,7 @@ end
 
 tools.tbl_r_extend = function(org, ...)
   local function can_merge(v)
-    return type(v) == 'table' and (vim.tbl_isempty(v) or not vim.tbl_isarray(v))
+    return type(v) == 'table' and (vim.tbl_isempty(v) or not vim.isarray(v))
   end
 
   if select('#', ...) <= 0 then
@@ -57,7 +57,7 @@ tools.tbl_unpack = function(t, i, j)
 end
 
 tools.tbl_length = function(t)
-  if vim.tbl_isarray(t) then
+  if vim.isarray(t) then
     return #t
   else
     local count = 0
