@@ -35,6 +35,9 @@ M.setup = function()
       -- stylua = {
       --   prepend_args = { '--config-path', TOOLS.path_join(TOOLS.get_homepath(), '.config/stylua/.stylua.toml') },
       -- },
+      ['clang-format'] = {
+        prepend_args = { '-style=file' },
+      }
     },
   })
 end
