@@ -108,4 +108,17 @@ M.setup = function()
   })
 end
 
+M.scope_set = function (cfg, cb)
+  local src = TOOLS.copy(require('dressing.config'))
+  local new = TOOLS.tbl_rr_extend(src, cfg)
+
+  require('dressing.config').update(new)
+
+  if cb ~= nil then
+    cb()
+  end
+
+  require('dressing.config').update(src)
+end
+
 return M

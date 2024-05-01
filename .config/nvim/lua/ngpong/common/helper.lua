@@ -1,7 +1,7 @@
 local helper = {}
 
-local timestamp = require('ngpong.utils.timestamp')
 local icons     = require('ngpong.utils.icon')
+local timestamp = require('ngpong.utils.timestamp')
 
 helper.get_cur_bufnr = function(_)
   return vim.api.nvim_get_current_buf and vim.api.nvim_get_current_buf() or vim.fn.bufnr()
@@ -64,7 +64,7 @@ helper.delete_buffer = function(bufnr, force, cond)
 
   bufnr = bufnr or HELPER.get_cur_bufnr()
   force = force == nil and true or force
-  cond  = cond or nil
+  cond = cond or nil
 
   if cond and not cond(bufnr) then
     return false
@@ -113,7 +113,7 @@ helper.wipeout_buffer = function(bufnr, force, cond)
 
   bufnr = bufnr or helper.get_cur_bufnr()
   force = force == nil and true or force
-  cond  = cond  or nil
+  cond = cond or nil
 
   if cond and not cond(bufnr) then
     return false
@@ -149,7 +149,7 @@ helper.clear_jumplist = function()
 end
 
 helper.ishide_cursor = function()
-  if vim.o.guicursor == "a:NGPONGHiddenCursor" then
+  if vim.o.guicursor == 'a:NGPONGHiddenCursor' then
     return true
   else
     return false
@@ -159,9 +159,9 @@ end
 helper.hide_cursor = function()
   local f = function()
     if not helper.ishide_cursor() then
-      if vim.o.termguicolors and vim.o.guicursor ~= "" then
+      if vim.o.termguicolors and vim.o.guicursor ~= '' then
         helper.guicursor = vim.o.guicursor
-        vim.o.guicursor = "a:NGPONGHiddenCursor"
+        vim.o.guicursor = 'a:NGPONGHiddenCursor'
       end
     end
   end
@@ -202,7 +202,7 @@ helper.feedkeys = function(key, mode)
 end
 
 helper.presskeys = function(key)
-  pcall(vim.cmd, "normal! " .. key)
+  pcall(vim.cmd, 'normal! ' .. key)
 end
 
 helper.keep_screen_center = function()
@@ -239,7 +239,7 @@ helper.get_cur_winid = function()
 end
 
 helper.get_last_winid = function(...)
-  local args = {...}
+  local args = { ... }
   local tabpage = #args > 0 and args[1] or helper.get_cur_tabpage()
 
   local winnr = vim.fn.winnr('#')
@@ -335,7 +335,7 @@ helper.get_filetype = function(bufnr)
 end
 
 helper.get_list_winids = function(...)
-  local args = {...}
+  local args = { ... }
   local tabpage = next(args) and args[1] or helper.get_cur_tabpage()
 
   local success, winids = pcall(vim.api.nvim_tabpage_list_wins, tabpage)
@@ -347,7 +347,7 @@ helper.get_list_winids = function(...)
 end
 
 helper.get_list_wininfos = function(...)
-  local args = {...}
+  local args = { ... }
   local tabpage = next(args) and args[1] or helper.get_cur_tabpage()
   local tabnr = helper.get_tabnr_by_tabpage(tabpage)
 
@@ -462,7 +462,7 @@ helper.reload_file_if_shown = function(path)
 
   local cur_winid = helper.get_cur_winid()
   for _, _winid in pairs(helper.get_list_winids(tabpage)) do
-    local bufnr   = helper.get_bufnr(_winid)
+    local bufnr = helper.get_bufnr(_winid)
     local bufname = helper.get_buf_name(bufnr)
     if bufname == path then
       helper.jump2_win(_winid)
@@ -487,11 +487,11 @@ helper.close_floating_wins = function(async)
   local ret = false
 
   for _, winid in pairs(HELPER.get_list_winids()) do
-    if helper.is_win_valid(winid) and
-       helper.is_floating_win(winid) and
-       not helper.is_notify_win(winid) then
+    if helper.is_win_valid(winid) and helper.is_floating_win(winid) and not helper.is_notify_win(winid) then
       if async then
-        vim.schedule(function() HELPER.close_win(winid) end)
+        vim.schedule(function()
+          HELPER.close_win(winid)
+        end)
       else
         HELPER.close_win(winid)
       end
@@ -551,8 +551,8 @@ helper.notify_info = function(msg, title, opts)
 end
 
 helper.get_visual_selected = function()
-  local _, ls, cs = unpack(vim.fn.getpos("v"))
-  local _, le, ce = unpack(vim.fn.getpos("."))
+  local _, ls, cs = unpack(vim.fn.getpos('v'))
+  local _, le, ce = unpack(vim.fn.getpos('.'))
 
   ls, le = math.min(ls, le), math.max(ls, le)
   cs, ce = math.min(cs, ce), math.max(cs, ce)
@@ -564,7 +564,7 @@ helper.dclock = {
   reset = function(self)
     self.begin = self.begin or 0
     self.begin = timestamp.get_microsecond()
-  end
+  end,
 }
 setmetatable(helper.dclock, {
   __call = function(self, key)
@@ -587,7 +587,7 @@ helper.debug = function()
     table.insert(datas, {
       bufnr = bufnr,
       ft = helper.get_filetype(bufnr),
-      name = helper.get_bufnr(winid)
+      name = helper.get_bufnr(winid),
     })
   end
 

@@ -8,13 +8,13 @@ return setmetatable({
     require('ngpong.plugins.bootstrap').laungh()
   end,
   is_loaded = function(plugin)
-    return require("lazy.core.config").plugins[plugin]._.loaded ~= nil
+    return require('lazy.core.config').plugins[plugin]._.loaded ~= nil
   end,
   record_seq = function(key)
     -- _G.plgs___seq = _G.plgs___seq or 0
     -- _G.plgs___seq = _G.plgs___seq + 1
     -- LOGGER.debug('Execute [' .. (key and key or '') .. '] ' .. _G.plgs___seq)
-  end
+  end,
 }, {
   __index = function(self, k)
     local path = 'ngpong.plugins.' .. k
@@ -32,5 +32,5 @@ return setmetatable({
 
     self[k] = plugin
     return plugin
-  end
+  end,
 })

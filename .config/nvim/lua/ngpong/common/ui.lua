@@ -73,7 +73,7 @@ ui.popup_fileinfo = function(bufnr)
     vim.api.nvim_set_option_value('modifiable', false, { buf = win.bufnr })
     vim.api.nvim_set_option_value('readonly', true, { buf = win.bufnr })
 
-    win:map('n', '<esc>', function(bufnr)
+    win:map('n', '<esc>', function(...) -- bufnr
       win:unmount()
     end, { noremap = true })
 

@@ -1,11 +1,11 @@
-local tools = {}
+local tool = {}
 
-tools.tbl_dump = function(o)
+tool.tbl_dump = function(o)
   if type(o) == 'table' then
     local s = '{ '
     for k, v in pairs(o) do
         if type(k) ~= 'number' then k = '"' .. k .. '"' end
-        s = s .. '[' .. k .. '] = ' .. tools.tbl_dump(v) .. ', '
+        s = s .. '[' .. k .. '] = ' .. tool.tbl_dump(v) .. ', '
     end
     return s .. '} '
   else
@@ -13,19 +13,19 @@ tools.tbl_dump = function(o)
   end
 end
 
-tools.tbl_contains = function(t, v)
+tool.tbl_contains = function(t, v)
   return vim.tbl_contains(t, v)
 end
 
-tools.equal = function(lhs, rhs)
+tool.equal = function(lhs, rhs)
   return vim.deep_equal(lhs, rhs)
 end
 
-tools.tbl_rr_extend = function(...)
+tool.tbl_rr_extend = function(...)
   return vim.tbl_deep_extend('force', ...)
 end
 
-tools.tbl_r_extend = function(org, ...)
+tool.tbl_r_extend = function(org, ...)
   local function can_merge(v)
     return type(v) == 'table' and (vim.tbl_isempty(v) or not vim.isarray(v))
   end
@@ -39,7 +39,7 @@ tools.tbl_r_extend = function(org, ...)
     if tbl then
       for k, v in pairs(tbl) do
         if can_merge(v) and can_merge(org[k]) then
-          tools.tbl_r_extend(org[k], v)
+          tool.tbl_r_extend(org[k], v)
         else
           org[k] = v
         end
@@ -48,15 +48,15 @@ tools.tbl_r_extend = function(org, ...)
   end
 end
 
-tools.tbl_pack = function(...)
+tool.tbl_pack = function(...)
   return { n = select("#", ...), ... }
 end
 
-tools.tbl_unpack = function(t, i, j)
+tool.tbl_unpack = function(t, i, j)
   return table.unpack(t, i or 1, j or t.n or table.maxn(t))
 end
 
-tools.tbl_length = function(t)
+tool.tbl_length = function(t)
   if vim.isarray(t) then
     return #t
   else
@@ -66,51 +66,51 @@ tools.tbl_length = function(t)
   end
 end
 
-tools.get_workspace = function()
-  if tools.___workspace == nil then
+tool.get_workspace = function()
+  if tool.___workspace == nil then
     local success, dir = pcall(vim.fn.getcwd)
     if success then
-      tools.___workspace = dir
+      tool.___workspace = dir
     end
   end
 
-  return tools.___workspace
+  return tool.___workspace
 end
 
-tools.get_workspace_sha1 = function()
-  if tools.___workspace_sha1 == nil then
-    tools.___workspace_sha1 = require('sha1').sha1(tools.get_workspace())
+tool.get_workspace_sha1 = function()
+  if tool.___workspace_sha1 == nil then
+    tool.___workspace_sha1 = require('sha1').sha1(tool.get_workspace())
   end
 
-  return tools.___workspace_sha1
+  return tool.___workspace_sha1
 end
 
-tools.curpath = function()
+tool.curpath = function()
   return vim.fn.expand('%:p:h')
 end
 
-tools.curpath_exist = function(path)
-  return string.find(tools.curpath(), path)
+tool.curpath_exist = function(path)
+  return string.find(tool.curpath(), path)
 end
 
-tools.enum = function(t)
+tool.enum = function(t)
   vim.tbl_add_reverse_lookup(t)
   return t
 end
 
-tools.enum_read = function(e)
+tool.enum_read = function(e)
   return e
 end
 
-tools.cur_thread = function()
+tool.cur_thread = function()
   return coroutine.running()
 end
 
-tools.tostring = function(key)
+tool.tostring = function(key)
   return vim.inspect(key)
 end
 
-tools.split = function(inputString, sep)
+tool.split = function(inputString, sep)
   local fields = {}
 
   local pattern = string.format('([^%s]+)', sep)
@@ -121,7 +121,7 @@ tools.split = function(inputString, sep)
   return fields
 end
 
-tools.get_cwd = function()
+tool.get_cwd = function()
   local success, cwd = pcall(vim.fn.getcwd)
   if success then
     return cwd
@@ -130,7 +130,7 @@ tools.get_cwd = function()
   end
 end
 
-tools.exec_cmd = function(cmd)
+tool.exec_cmd = function(cmd)
   local result = vim.fn.systemlist(cmd)
 
   -- An empty result is ok
@@ -141,7 +141,7 @@ tools.exec_cmd = function(cmd)
   end
 end
 
-tools.octal_to_utf8 = function(text)
+tool.octal_to_utf8 = function(text)
   local convert_octal_char = function(octal)
     return string.char(tonumber(octal, 8))
   end
@@ -155,13 +155,13 @@ tools.octal_to_utf8 = function(text)
   end
 end
 
-tools.to_path = function(p)
+tool.to_path = function(p)
   -- windows路径统一转换
   local fnl, _ = p:gsub('\\', '/')
   return fnl
 end
 
-tools.path_join = function(...)
+tool.path_join = function(...)
   local args = { ... }
   if #args == 0 then
     return ''
@@ -178,18 +178,18 @@ tools.path_join = function(...)
     if arg == '' and #all_parts == 0 then
       all_parts = { '' }
     else
-      local arg_parts = split(arg, path_separator)
+      local arg_parts = tool.split(arg, path_separator)
       vim.list_extend(all_parts, arg_parts)
     end
   end
   return table.concat(all_parts, path_separator)
 end
 
-tools.stdpath = function(what)
+tool.stdpath = function(what)
   return vim.api.nvim_call_function('stdpath', { what })
 end
 
-tools.uuid = function()
+tool.uuid = function()
   local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
   return string.gsub(template, '[xy]', function (c)
     local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
@@ -197,7 +197,7 @@ tools.uuid = function()
   end)
 end
 
-tools.scandir = function(directory)
+tool.scandir = function(directory)
   local i, t, popen = 0, {}, io.popen
 
   local pfile = popen('ls -a "'..directory..'"')
@@ -220,24 +220,24 @@ tools.scandir = function(directory)
   return t
 end
 
-tools.copy = function(obj)
+tool.copy = function(obj)
   return vim.deepcopy(obj)
 end
 
-tools.isempty = function(s)
+tool.isempty = function(s)
   return s == nil or s == ''
 end
 
-tools.is_callable = function(arg)
+tool.is_callable = function(arg)
   return type(arg) == 'function' or ((getmetatable(arg) or {}).__call ~= nil)
 end
 
-tools.is_fwrapper = function(arg)
-  return tools.is_callable(arg) and type(arg) == 'table' and next(arg.handlers or {})
+tool.is_fwrapper = function(arg)
+  return tool.is_callable(arg) and type(arg) == 'table' and next(arg.handlers or {})
 end
 
-tools.wrap_f = function(fc, ...)
-  assert(tools.is_callable(fc), debug.traceback())
+tool.wrap_f = function(fc, ...)
+  assert(tool.is_callable(fc), debug.traceback())
 
   local handler = { fc = fc, args = table.pack(...) }
 
@@ -251,14 +251,14 @@ tools.wrap_f = function(fc, ...)
   end
   setmetatable(wrapper, {
     __add = function(l, r)
-      assert(tools.is_fwrapper(l), debug.traceback())
-      assert(tools.is_fwrapper(r), debug.traceback())
+      assert(tool.is_fwrapper(l), debug.traceback())
+      assert(tool.is_fwrapper(r), debug.traceback())
 
       l.append(r.handlers)
       return l
     end,
     __call = function(self, ...)
-      assert(tools.is_fwrapper(self), debug.traceback())
+      assert(tool.is_fwrapper(self), debug.traceback())
 
       local call_args = table.pack(...)
 
@@ -278,29 +278,29 @@ tools.wrap_f = function(fc, ...)
   return wrapper
 end
 
-tools.inject_f = function(f, ...)
+tool.inject_f = function(f, ...)
   local args = { ... }
   local before = args[1]
   local after  = args[2]
 
   return function(...)
-    if before and tools.is_callable(before) then
+    if before and tool.is_callable(before) then
       before(...)
     end
 
     f(...)
 
-    if after and tools.is_callable(after) then
+    if after and tool.is_callable(after) then
       after(...)
     end
   end
 end
 
-tools.get_filename = function(path)
+tool.get_filename = function(path)
   return path:match('^.+/(.+)$')
 end
 
-tools.get_filestate = function(path)
+tool.get_filestate = function(path)
   local success, stats = pcall(vim.loop.fs_stat, path)
   if success and stats then
     return stats
@@ -309,4 +309,21 @@ tools.get_filestate = function(path)
   end
 end
 
-return tools
+tool.getenv = function(name)
+  local ret = os.getenv(name)
+  if ret == nil then
+    return ''
+  else
+    return ret
+  end
+end
+
+tool.get_homepath = function()
+  if (tool.__home_path == nil) then
+    tool.__home_path = tool.getenv('HOME')
+  end
+
+  return tool.__home_path;
+end
+
+return tool
