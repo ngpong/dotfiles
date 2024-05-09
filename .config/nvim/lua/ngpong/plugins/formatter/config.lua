@@ -10,13 +10,6 @@ M.setup = function()
       c = { 'clang-format', },
       cpp = { 'clang-format', },
       lua = { 'stylua', },
-      -- go = { 'goimports', 'gofmt' },
-      -- Conform will run multiple formatters sequentially
-      -- Use the '*' filetype to run formatters on all filetypes.
-      -- ['*'] = { 'codespell' },
-      -- Use the '_' filetype to run formatters on filetypes that don't
-      -- have other formatters configured.
-      -- ['_'] = { 'trim_whitespace' },
     },
     -- If this is set, Conform will run the formatter on save.
     -- It will pass the table to conform.format().
@@ -32,9 +25,6 @@ M.setup = function()
     notify_on_error = true,
     -- Custom formatters and changes to built-in formatters
     formatters = {
-      -- stylua = {
-      --   prepend_args = { '--config-path', TOOLS.path_join(TOOLS.get_homepath(), '.config/stylua/.stylua.toml') },
-      -- },
       ['clang-format'] = {
         prepend_args = { '-style=file' },
       }

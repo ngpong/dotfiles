@@ -74,7 +74,7 @@ M.open_tree = function()
   if M.is_opened(HELPER.get_cur_tabpage()) then
     vim.cmd('Neotree action=close')
   else
-    vim.cmd('Neotree action=focus')
+    vim.cmd('Neotree action=show')
   end
 end
 

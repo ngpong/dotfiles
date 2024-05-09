@@ -1,8 +1,8 @@
 local M = {}
 
-local keymap  = require('ngpong.common.keybinder')
-local helper  = require('ngpong.common.helper')
-local lazy    = require('ngpong.utils.lazy')
+local helper = require('ngpong.common.helper')
+local keymap = require('ngpong.common.keybinder')
+local lazy = require('ngpong.utils.lazy')
 local conform = lazy.require('conform')
 
 local e_mode = keymap.e_mode
@@ -21,7 +21,7 @@ local set_native_keymaps = function()
     }
 
     if helper.get_cur_mode().mode == 'n' then
-      dressing.config.scope_set({input = { relative = 'editor' }}, function ()
+      dressing.config.scope_set({ input = { relative = 'editor' } }, function()
         vim.ui.input({ prompt = 'This operation will format the entire file, yes(y) or no(n,...)?', default = '' }, function(res)
           if res ~= 'y' then
             return

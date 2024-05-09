@@ -92,7 +92,7 @@ M.setup = function()
     -- This is only relevant when you are using 'run_on_start'. It has no
     -- effect when running manually via ':MasonToolsInstall' etc....
     -- Default: nil
-    debounce_hours = nil,
+    debounce_hours = 168, -- 7天
   }
   vim.defer_fn(mason_tool_installer.check_install, 2000)
 end

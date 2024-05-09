@@ -361,7 +361,7 @@ local set_native_keymaps = function()
   keymap.register(e_mode.NORMAL, 'to', '<CMD>tabonly<CR>', { desc = 'close all tabpage except current.' })
 
   -- cmdline
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '\\', ':', { remap = false, silent = false, desc = 'COMMON: enter command mode.' })
+  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '|', ':', { remap = false, silent = false, desc = 'COMMON: enter command mode.' })
   keymap.register(e_mode.COMMAND, '<A-p>', TOOLS.wrap_f(HELPER.feedkeys, '<UP>'), { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.COMMAND, '<A-;>', TOOLS.wrap_f(HELPER.feedkeys, '<DOWN>'), { remap = false, desc = 'which_key_ignore' })
   keymap.register(e_mode.COMMAND, '<A-l>', TOOLS.wrap_f(HELPER.feedkeys, '<LEFT>'), { remap = false, desc = 'which_key_ignore' })
