@@ -238,6 +238,12 @@ local del_native_keymaps = function(_)
   -- https://neovim.io/doc/user/change.html#formatting
   keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL }, 'gq')
 
+  -- https://neovim.io/doc/user/lsp.html
+  keymap.unregister(e_mode.NORMAL, '<C-W>d')
+  keymap.unregister(e_mode.NORMAL, '<C-W><C-D>')
+  keymap.unregister(e_mode.NORMAL, '[d')
+  keymap.unregister(e_mode.NORMAL, ']d')
+
   -- 还不知道
   keymap.unregister(e_mode.INSERT, '<C-l>')
   keymap.unregister(e_mode.INSERT, '<C-;>')
@@ -255,6 +261,8 @@ local del_native_keymaps = function(_)
   keymap.unregister(e_mode.NORMAL, '<C-S-d>')
   keymap.unregister(e_mode.NORMAL, ',')
   keymap.unregister(e_mode.NORMAL, '.')
+  keymap.unregister(e_mode.NORMAL, '<S-CR>')
+  keymap.unregister(e_mode.NORMAL, '<C-CR>')
 end
 
 local set_native_keymaps = function()

@@ -1,0 +1,18 @@
+{
+  "picBed": {
+    "current": "github",
+    "github": {
+      "repo": "NGPONG/Blog",
+      "branch": "master",
+      "path": "img/",
+      "token": "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"
+    }
+  },
+  "picgoPlugins": {
+    "picgo-plugin-super-prefix": true
+  },
+  "picgo-plugin-super-prefix": {
+    "prefixFormat": "",
+    "fileFormat": "YYYY-MM-DD-HH-mm-ss"
+  }
+}
