@@ -30,7 +30,7 @@ session.setup = function()
     for _, _item in ipairs(bufferline_state.components) do
       local element = _item:as_element()
 
-      if not TOOLS.isempty(element.path) then
+      if element.name ~= 'COMMIT_EDITMSG' and not TOOLS.isempty(element.path) then
         table.insert(datas, {
           file = element.path,
           is_pinned = this.api.is_pinned(element),

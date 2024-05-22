@@ -266,7 +266,7 @@ end
 
 local set_extend_keymaps = function(cfg)
   TOOLS.tbl_r_extend(cfg, {
-    extend_keys = { }
+    extend_keys = {}
   })
 end
 

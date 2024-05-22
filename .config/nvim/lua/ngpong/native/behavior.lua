@@ -99,6 +99,9 @@ local setup_cursor_persist = function()
     if TOOLS.isempty(bufname) then
       return
     end
+    if bufname:match('COMMIT_EDITMSG') then
+      return
+    end
 
     -- 仅刷新指定文件类型的文件
     if filter(1, bufnr) then
