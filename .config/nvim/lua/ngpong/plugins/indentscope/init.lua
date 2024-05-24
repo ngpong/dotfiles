@@ -5,6 +5,7 @@ return {
   init = function ()
     PLGS.record_seq('mini.indentscope.nvim init')
     PLGS.indentscope.opts.setup()
+    PLGS.indentscope.keys.setup()
     PLGS.indentscope.highlight.setup()
   end,
   config = function()

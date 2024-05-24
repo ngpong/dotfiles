@@ -10,7 +10,7 @@ M.setup = function()
   end
 
   -- 设置 guifont
-  vim.go.guifont = 'CaskaydiaCove Nerd Font Mono'
+  vim.go.guifont = 'CaskaydiaCove Nerd Font Mono,FZQiTi-S14S' -- FZSongKeBenXiuKaiS-R-GB, Muyao-Softbrush, FZQiTi-S14S
 
   -- 控制行距
   vim.go.linespace = 0
@@ -21,7 +21,7 @@ M.setup = function()
   -- 刷新率
   vim.g.neovide_refresh_rate = 144
 
- -- 鼠标行为
+  -- 鼠标行为
   vim.g.neovide_cursor_animation_length = 0.06 -- 动画长度
   vim.g.neovide_cursor_trail_size = 0.3 -- 尾部拖拽长度
   vim.g.neovide_cursor_antialiasing = true -- 抗锯齿

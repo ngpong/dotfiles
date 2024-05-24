@@ -30,11 +30,11 @@ local fix_keymap_native = async.void(function()
 
     ['e'] = {
       name = 'JUMPTO:',
-      ['d'] = { name = 'TEXTOBJECT CONDITIONAL' },
-      ['f'] = { name = 'TEXTOBJECT FUNCTION' },
-      ['l'] = { name = 'TEXTOBJECT LOOP' },
-      ['c'] = { name = 'TEXTOBJECT CLASS' },
-      -- ['s'] = { name = 'TEXTOBJECT SCOPE' },
+      ['1'] = { name = 'INDENT' },
+      ['2'] = { name = 'FUNCTION' },
+      ['3'] = { name = 'CLASS' },
+      ['4'] = { name = 'LOOP' },
+      ['5'] = { name = 'CONDITIONAL' },
     },
     ['E'] = {
       name = 'which_key_ignore',
@@ -98,8 +98,11 @@ local fix_keymap_native = async.void(function()
   wk.register({
     ['e'] = {
       name = 'JUMPTO:',
-      ['f'] = { name = 'TEXTOBJECT FUNCTION' },
-      ['c'] = { name = 'TEXTOBJECT CLASS' },
+      ['1'] = { name = 'INDENT' },
+      ['2'] = { name = 'FUNCTION' },
+      ['3'] = { name = 'CLASS' },
+      ['4'] = { name = 'LOOP' },
+      ['5'] = { name = 'CONDITIONAL' },
     },
   }, { mode = 'v', })
 end)
