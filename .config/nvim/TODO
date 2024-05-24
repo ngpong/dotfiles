@@ -1,10 +1,9 @@
 有时间去实现一下，看上去挺简单 https://github.com/p00f/clangd_extensions.nvim/issues/33
 
 1. neotree preview 不会换行
-2. 跳转表的问题，d.. m.. g..
-3. notify 转圈等待的感觉可以封装成一个函数
-
-4. <C-v> 一次复制多个存在问题
+2. notify 转圈等待的感觉可以封装成一个函数
+3. <C-v> 一次复制多个存在问题
+4. lsp preivew 的 q 键覆盖一下
 
 1. nvim-lint？
 2. rmagatti/goto-preview？
