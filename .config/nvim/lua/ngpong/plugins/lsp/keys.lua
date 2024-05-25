@@ -18,11 +18,18 @@ local set_native_keymaps = function()
   keymap.register(e_mode.NORMAL, 'd,', TOOLS.wrap_f(vim.diagnostic.goto_prev, { float = false, wrap = false }), { remap = false, desc = 'jump to prev diagnostic.' })
   keymap.register(e_mode.NORMAL, 'dd', TOOLS.wrap_f(touble.api.open, 'document_diagnostics'), { silent = true, remap = false, desc = 'toggle document diagnostics list.' })
   keymap.register(e_mode.NORMAL, 'dD', TOOLS.wrap_f(touble.api.open, 'workspace_diagnostics'), { silent = true, remap = false, desc = 'toggle workspace diagnostics list.' })
-  keymap.register(e_mode.NORMAL, 'dp', TOOLS.wrap_f(vim.diagnostic.open_float, {
-    border = 'rounded',
-    relative = 'cursor',
-    noautocmd = true
-  }), { silent = true, remap = false, desc = 'show diagnostic(problems) preview.' })
+  keymap.register(e_mode.NORMAL, 'dp', function()
+    local bufnr, _ = vim.diagnostic.open_float({
+      border = 'rounded',
+      relative = 'cursor',
+      noautocmd = true
+    })
+
+    local maparg = keymap.get_keymap(e_mode.NORMAL, 'q')
+    if maparg then
+      keymap.register(e_mode.NORMAL, 'q', maparg.callback, { buffer = bufnr, desc = maparg.desc, silent = maparg.silent, remap = not maparg.noremap })
+    end
+  end, { silent = true, remap = false, desc = 'show diagnostic(problems) preview.' })
 end
 
 local del_buffer_keymaps = function(_)

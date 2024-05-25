@@ -416,7 +416,7 @@ local set_native_keymaps = function()
   keymap.register(e_mode.VISUAL, 'y', 'y', { remap = false, desc = 'TEXT: copy text.' })
   keymap.register(e_mode.NORMAL, 'u', 'p', { remap = false, desc = 'TEXT: paste(tail) text before.' })
   keymap.register(e_mode.NORMAL, 'U', 'P', { remap = false, desc = 'TEXT: paste(head) text.' })
-  keymap.register(e_mode.VISUAL, 'u', 'p', { remap = false, desc = 'which_key_ignore' })
+  keymap.register(e_mode.VISUAL, 'u', 'P', { remap = false, desc = 'which_key_ignore' })
 
   -- 文本剪切
   keymap.register(e_mode.VISUAL, 'c', 'c', { remap = false, desc = 'which_key_ignore' })
