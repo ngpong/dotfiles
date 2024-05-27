@@ -5,7 +5,7 @@ local icons = require('ngpong.utils.icon')
 local this = PLGS.todocomments
 
 M.setup = function()
-  require('todo-comments').setup {
+  require('todo-comments').setup({
     signs = false, -- show icons in the signs column
     sign_priority = 8, -- sign priority
     -- keywords recognized as todo comments
@@ -33,7 +33,7 @@ M.setup = function()
       info = { 'DiagnosticInfo' },
       hint = { 'DiagnosticHint' },
       default = { 'GruvboxOrange' },
-      test = { 'GruvboxPurple' }
+      test = { 'GruvboxPurple' },
     },
     merge_keywords = true, -- when true, custom keywords will be merged with the defaults
     -- highlighting of the line containing the todo comment
@@ -55,7 +55,18 @@ M.setup = function()
       max_line_len = 400, -- ignore lines longer than this
       exclude = this.filter(), -- list of file types to exclude highlighting
     },
-  }
+    search = {
+      args = {
+        '--color=never',
+        '--no-heading',
+        '--with-filename',
+        '--line-number',
+        '--column',
+        '--hidden',
+        '--no-ignore-vcs',
+      },
+    },
+  })
 end
 
 return M

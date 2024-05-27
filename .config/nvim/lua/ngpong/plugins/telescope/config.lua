@@ -37,13 +37,15 @@ M.setup = function()
         -- custom
         '--fixed-strings',
         '--sort=path',
+        "--hidden",
+        "--no-ignore-vcs",
       },
-      file_ignore_patterns = {
-        '^.git/',
-        '^.cache/',
-        '^scratch/',
-        '%.npz',
-      },
+      -- 由 .ignore 文件去控制
+      --  * '^.git/',
+      --  * '^.cache/',
+      --  * '^scratch/',
+      --  * '%.npz',
+      file_ignore_patterns = nil,
       preview = {
         -- filesize_limit = 25,
         -- treesitter = false,
@@ -83,6 +85,9 @@ M.setup = function()
 
   local picker_cfg = {
     pickers = {
+    find_files = {
+        hidden = true
+      }
       -- current_buffer_fuzzy_find = {
       --   preview = {
       --     hide_on_startup = false,
