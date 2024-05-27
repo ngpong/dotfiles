@@ -9,18 +9,18 @@ local e_mode = keymap.e_mode
 
 local set_native_keymaps = function()
   keymap.register(e_mode.NORMAL, '<leader>j', function()
-    comment_api.toggle.linewise.current()
+    comment_api.locked('toggle.linewise.current')
   end, { silent = true, remap = false, desc = 'toggle line-comment.' })
   keymap.register(e_mode.NORMAL, '<leader>J', function()
-    comment_api.toggle.blockwise.current()
+    comment_api.locked('toggle.blockwise.current')
   end, { silent = true, remap = false, desc = 'toggle block-comment.' })
   keymap.register(e_mode.VISUAL, '<leader>j', function()
     HELPER.feedkeys('<ESC>', 'nx')
-    comment_api.toggle.linewise(vim.fn.visualmode())
+    comment_api.locked('toggle.linewise')(vim.fn.visualmode())
   end, { silent = true, remap = false, desc = 'toggle line-comment.' })
   keymap.register(e_mode.VISUAL, '<leader>J', function()
     HELPER.feedkeys('<ESC>', 'nx')
-    comment_api.toggle.blockwise(vim.fn.visualmode())
+    comment_api.locked('toggle.blockwise')(vim.fn.visualmode())
   end, { silent = true, remap = false, desc = 'toggle block-comment.' })
 end
 
