@@ -26,6 +26,7 @@ M.setup = function()
     -- Custom formatters and changes to built-in formatters
     formatters = {
       ['clang-format'] = {
+        command = "clang-format-19",
         prepend_args = { '-style=file' },
       }
     },

@@ -68,7 +68,7 @@ local setup_cursor_persist = function()
     end
 
     -- 缓慢删除掉过期(一天未访问过的)的 key
-    local cur = timestamp.get_utc()
+    local cur = timestamp.get_utc() or 0
     local max = 1000 * 60 * 60 * 24 * 3 -- 3天
     for _k, _v in pairs(caches) do
       if cur - (_v.ts or 0) > max then

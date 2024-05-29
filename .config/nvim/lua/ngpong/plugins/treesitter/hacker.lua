@@ -17,7 +17,7 @@ M.setup = function()
 
   local real_detach_module = treesitter.detach_module
   treesitter.detach_module = async.void(function(mod_name, bufnr)
-    async.util.sleep(base)
+    async.util.sleep(cur)
 
     cur = cur + inc
     if cur > max then
@@ -33,7 +33,7 @@ M.setup = function()
 
   local real_attach_module = treesitter.attach_module
   treesitter.attach_module = async.void(function(mod_name, bufnr, lang)
-    async.util.sleep(base)
+    async.util.sleep(cur)
 
     cur = cur + inc
     if cur > max then

@@ -12,8 +12,9 @@ local p       = lazy.access('luasnip.extras', 'partial')
 local postfix = lazy.access('luasnip.extras.postfix', 'postfix')
 
 M.setup = function()
-  -- vscode snippets
+  -- custom snippets
   snippets.lazy_load {
+    paths  = './snippets',
     exclude = { 'lua' }, -- luals 不支持禁用内置 snippets，为了使完成更加存粹，禁用掉这里的
   }
 

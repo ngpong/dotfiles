@@ -37,15 +37,15 @@ M.setup = function()
         -- custom
         '--fixed-strings',
         '--sort=path',
-        "--hidden",
-        "--no-ignore-vcs",
+        '--hidden',
+        '--no-ignore-vcs',
       },
       -- 由 .ignore 文件去控制
       --  * '^.git/',
       --  * '^.cache/',
       --  * '^scratch/',
       --  * '%.npz',
-      file_ignore_patterns = nil,
+      file_ignore_patterns = {},
       preview = {
         -- filesize_limit = 25,
         -- treesitter = false,
@@ -64,7 +64,7 @@ M.setup = function()
           preview_cutoff = 1,
           preview_width = this.api.resolve_width(0.6),
           prompt_position = 'top',
-          width = this.api.resolve_width(0.9)
+          width = this.api.resolve_width(0.9),
         },
         center = {
           height = 0.4,
@@ -77,17 +77,22 @@ M.setup = function()
           height = 0.9,
           preview_cutoff = 10,
           prompt_position = 'bottom',
-          width = 0.8
-        }
+          width = 0.8,
+        },
       },
-    }
+    },
   }
 
   local picker_cfg = {
     pickers = {
-    find_files = {
-        hidden = true
-      }
+      find_files = {
+        find_command = {
+          'rg',
+          '--files',
+          '--hidden',
+          '--no-ignore-vcs',
+        },
+      },
       -- current_buffer_fuzzy_find = {
       --   preview = {
       --     hide_on_startup = false,
