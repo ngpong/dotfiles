@@ -42,19 +42,19 @@ local cmp_source = setmetatable({}, {
           keyword_length = 3,
           indexing_batch_size = 512,
           indexing_interval = 100,
-        }
+        },
       }
     end
 
     if k == 'path' then
       return {
-        name = 'async_path'
+        name = 'async_path',
       }
     end
 
     if k == 'luasnip' then
       return {
-        name = 'luasnip'
+        name = 'luasnip',
       }
     end
 
@@ -62,14 +62,14 @@ local cmp_source = setmetatable({}, {
       return {
         name = 'cmdline',
         option = {
-          ignore_cmds = { 'wq', 'w', '!' }
-        }
+          ignore_cmds = { 'wq', 'w', '!' },
+        },
       }
     end
 
     if k == 'nvim_lsp' then
       return {
-        name = 'nvim_lsp'
+        name = 'nvim_lsp',
       }
     end
   end,
@@ -84,7 +84,7 @@ local setup_global = function()
       end,
     },
     completion = {
-      completeopt = "menu,menuone",
+      completeopt = 'menu,menuone',
       autocomplete = {
         cmp_types.cmp.TriggerEvent.TextChanged,
       },
@@ -141,8 +141,9 @@ local setup_global = function()
       cmp_source.nvim_lsp,
       cmp_source.path,
       cmp_source.luasnip,
-    }, {
       cmp_source.buffer,
+    }, {
+      -- cmp_source.buffer,
     }),
   }
 
@@ -158,7 +159,7 @@ local setup_global = function()
       },
       docs = {
         auto_open = false,
-      }
+      },
     },
     formatting = {
       expandable_indicator = true,
@@ -181,7 +182,7 @@ local setup_global = function()
         end
 
         return item
-      end
+      end,
     },
   }
 
@@ -204,13 +205,13 @@ local setup_ft = function()
     sources = cmp.config.sources({
       cmp_source.path,
       cmp_source.buffer,
-    })
+    }),
   })
 
   cmp.setup.filetype({ 'neo-tree-popup' }, {
     sources = cmp.config.sources({
       cmp_source.path,
-    })
+    }),
   })
 end
 
@@ -224,9 +225,9 @@ local setup_cmdline = function()
     },
     sources = cmp.config.sources({
       cmp_source.path,
-      cmp_source.cmdline
+      cmp_source.cmdline,
     }),
-    mapping = {}
+    mapping = {},
   }
 
   events.emit(e_events.SETUP_CMP, { cfg = cfg, source = 'cmdline' })

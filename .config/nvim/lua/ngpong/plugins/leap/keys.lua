@@ -14,8 +14,6 @@ local function set_native_keymaps()
   end, { remap = false, desc = 'SEARCH: arbitrary jump with current windows.' })
 
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'S', function()
-    --
-
     leap.leap { target_windows = vim.tbl_filter(
       function (win) return this.filter(win) end,
       vim.api.nvim_tabpage_list_wins(0)

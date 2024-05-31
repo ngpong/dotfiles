@@ -10,7 +10,7 @@ M.setup = function()
   end
 
   -- 设置 guifont
-  vim.go.guifont = 'CaskaydiaCove Nerd Font Mono,FZQiTi-S14S' -- FZSongKeBenXiuKaiS-R-GB, Muyao-Softbrush, FZQiTi-S14S
+  vim.go.guifont = 'CaskaydiaCove Nerd Font Mono,FZXingKaiS,FZQiTi-S14S' -- FZSongKeBenXiuKaiS-R-GB, Muyao-Softbrush, FZQiTi-S14S
 
   -- 控制行距
   vim.go.linespace = 0

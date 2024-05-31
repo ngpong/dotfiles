@@ -38,28 +38,44 @@ local set_global_keymaps = function(...)
       if cmp.visible() and cmp.get_selected_entry() then
         ls.api.unlink_current_if_expandable()
         cmp.confirm({ select = false, behavior = cmp.ConfirmBehavior.insert })
-      elseif ls.api.locally_jumpable(1) then
-        ls.api.jump(1)
       else
         fallback()
       end
     end, { e_mode.INSERT, e_mode.SELECT }),
-    ['<A-,>'] = cmp.mapping(function(fallback)
+    ['<C-.>'] = cmp.mapping(function(_)
+      if ls.api.locally_jumpable(1) then
+        ls.api.jump(1)
+      else
+        HELPER.feedkeys('<C-.>')
+      end
+    end, { e_mode.INSERT, e_mode.SELECT }),
+    ['<C-,>'] = cmp.mapping(function(_)
+      if ls.api.locally_jumpable(-1) then
+        ls.api.jump(-1)
+      else
+        HELPER.feedkeys('<C-,>')
+      end
+    end, { e_mode.INSERT, e_mode.SELECT }),
+    ['<A-,>'] = cmp.mapping(function(_)
       if cmp.visible() then
         if #cmp.get_entries() > 1 then
           cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
         else
           cmp.close()
         end
+      else
+        HELPER.feedkeys('<A-,>')
       end
     end, { e_mode.INSERT }),
-    ['<A-.>'] = cmp.mapping(function(fallback)
+    ['<A-.>'] = cmp.mapping(function(_)
       if cmp.visible() then
         if #cmp.get_entries() > 1 then
           cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
         else
           cmp.close()
         end
+      else
+        HELPER.feedkeys('<A-.>')
       end
     end, { e_mode.INSERT }),
   }

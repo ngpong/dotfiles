@@ -15,7 +15,7 @@
     "for": {
         "prefix": "for",
         "body": [
-            "for (${1:std::size_t} ${2:i} = ${3:0}; $2 < ${4:length}; $2++) {",
+            "for (${1:std::size_t} ${2:i} = ${3:0}; $2 < ${4:end}; ++$2) {",
             "\t$0",
             "}"
         ],
@@ -24,7 +24,7 @@
     "forr": {
         "prefix": "forr",
         "body": [
-            "for (${1:std::size_t} ${2:i} = ${3:length} - 1; $2 >= ${4:0}; $2--) {",
+            "for (${1:std::size_t} ${2:i} = ${3:begin}; $2 >= ${4:0}; --$2) {",
             "\t$0",
             "}"
         ],
@@ -37,7 +37,7 @@
     },
     "while": {
         "prefix": "while",
-        "body": ["while ($1) {", "\t$2", "}"],
+        "body": ["while ($1) {", "\t$0", "}"],
         "description": ""
     },
     "foreach": {
