@@ -455,8 +455,16 @@ local set_buffer_keymaps = function(bufnr)
   keymap.register(e_mode.INSERT, '<A-[>', function()
     local byteidx = vim.fn.col('.')
     local sub = string.sub(vim.fn.getline('.'), 1, (byteidx == 1 and 1 or byteidx - 1))
-    return sub:match("%S") == nil and '<C-o><HOME>' or '<C-o>^'
-  end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
+
+    local row, _ = HELPER.get_cursor()
+
+    local pos = string.find(sub, '%S')
+    if not pos then
+      HELPER.set_cursor(row, 0)
+    else
+      HELPER.set_cursor(row, pos - 1)
+    end
+  end, { remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
   keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '[', function()
     local byteidx = vim.fn.col('.')
     local sub = string.sub(vim.fn.getline('.'), 1, (byteidx == 1 and 1 or byteidx - 1))
