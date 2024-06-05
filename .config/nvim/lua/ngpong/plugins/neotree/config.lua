@@ -196,8 +196,8 @@ M.setup = function()
       },
       git_status = {
         symbols = {
-          added     = '',
-          modified  = '',
+          added     = icons.git_add,
+          modified  = icons.git_change,
           deleted   = icons.git_delete,
           renamed   = icons.git_renamed,
           untracked = icons.git_untracked,

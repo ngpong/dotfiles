@@ -105,9 +105,11 @@ M.open = function(mod, source)
   mod = mod or ''
   source = source or ''
 
-  local success, _ = pcall(vim.cmd, 'Trouble ' .. mod)
+  local success, msg = pcall(vim.cmd, 'Trouble ' .. mod)
   if success then
     VAR.set('TroubleSource', source)
+  else
+    LOGGER.error(msg)
   end
 end
 

@@ -117,7 +117,7 @@ gitter.if_has_log = async.void(function(path, cb)
   end
 end)
 
-gitter.if_has_diff_or_untracked = async.void(function(path, cb)
+gitter.if_has_diff_or_untracked = async.void(function(path, cb_ok, cb_err)
   local job = Job.__get()
 
   local result
@@ -134,9 +134,9 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb)
   end, 1)
 
   await_is_untracked()
-  if next(result) and cb then
+  if next(result) and cb_ok then
     async.util.scheduler()
-    cb(result)
+    cb_ok(result)
     return
   end
 
@@ -152,10 +152,14 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb)
   end, 1)
 
   await_has_diff()
-  if next(result) and cb then
+  if next(result) and cb_ok then
     async.util.scheduler()
-    cb(result)
+    cb_ok(result)
     return
+  end
+
+  if cb_err then
+    cb_err()
   end
 end)
 

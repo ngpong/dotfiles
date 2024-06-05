@@ -38,24 +38,33 @@ end
 
 M.send_symbols_2_qf = function(target, cb)
   HELPER.clear_qflst()
-
   gitsigns.setqflist(target, { use_location_list = false, open = false })
 
-  local timespan = 0
-  async.run(function()
-    while not HELPER.is_has_qflst() do
-      if timespan >= 1000 then
-        break
+  local ok = function ()
+    local timespan = 0
+    async.run(function()
+      while not HELPER.is_has_qflst() do
+        if timespan >= 500 then
+          break
+        end
+        timespan = timespan + 5
+
+        async.util.sleep(5)
       end
-      timespan = timespan + 100
 
-      async.util.sleep(100)
-    end
+      if cb then
+        cb()
+      end
+    end)
+  end
 
-    if cb then
-      cb()
-    end
-  end)
+  local err = function ()
+    async.util.scheduler()
+    cb()
+  end
+
+  local path = HELPER.get_buf_name(HELPER.get_cur_bufnr())
+  gitter.if_has_diff_or_untracked(path, TOOLS.wrap_f(ok), TOOLS.wrap_f(err))
 end
 
 M.toggle_gitsymbols_list = function(target)
