@@ -16,7 +16,7 @@ M.setup = function()
 
   -- 调整 telescope 刚打开时候的鼠标位置
   events.rg(e_events.TELESCOPE_LOAD, function(state)
-    HELPER.feedkeys('g$')
+    HELPER.presskeys('g$')
   end)
 
   -- 在打开 telescope 退出 vim 的情况下不要报错
