@@ -9,23 +9,23 @@ return {
       'williamboman/mason.nvim',
     },
     init = function()
-      PLGS.record_seq('nvim-lspconfig init')
-      PLGS.lsp.opts.setup()
-      PLGS.lsp.keys.setup()
-      PLGS.lsp.highlight.setup()
+      Plgs.record_seq('nvim-lspconfig init')
+      Plgs.lsp.opts.setup()
+      Plgs.lsp.keys.setup()
+      Plgs.lsp.highlight.setup()
     end,
     config = function()
-      PLGS.record_seq('nvim-lspconfig config')
-      PLGS.lsp.handlers.setup()
-      PLGS.lsp.behavior.setup()
-      PLGS.lsp.config.clangd.setup()
-      PLGS.lsp.config.luals.setup()
-      PLGS.lsp.config.jsonls.setup()
-      PLGS.lsp.config.yamlls.setup()
-      PLGS.lsp.config.cmakels.setup()
-      PLGS.lsp.config.bashls.setup()
-      PLGS.lsp.config.asm_ls.setup()
-      PLGS.lsp.config.autotools_ls.setup()
+      Plgs.record_seq('nvim-lspconfig config')
+      Plgs.lsp.handlers.setup()
+      Plgs.lsp.behavior.setup()
+      Plgs.lsp.config.clangd.setup()
+      Plgs.lsp.config.luals.setup()
+      Plgs.lsp.config.jsonls.setup()
+      Plgs.lsp.config.yamlls.setup()
+      Plgs.lsp.config.cmakels.setup()
+      Plgs.lsp.config.bashls.setup()
+      Plgs.lsp.config.asm_ls.setup()
+      Plgs.lsp.config.autotools_ls.setup()
     end
   }
 }

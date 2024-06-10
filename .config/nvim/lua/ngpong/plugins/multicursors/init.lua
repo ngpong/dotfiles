@@ -5,12 +5,12 @@ return {
     'NGPONG/hydra.nvim',
   },
   init = function()
-    PLGS.record_seq('multicursors.nvim init')
-    PLGS.multicursors.keys.setup()
-    PLGS.multicursors.highlight.setup()
+    Plgs.record_seq('multicursors.nvim init')
+    Plgs.multicursors.keys.setup()
+    Plgs.multicursors.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('multicursors.nvim config')
-    PLGS.multicursors.config.setup()
+    Plgs.record_seq('multicursors.nvim config')
+    Plgs.multicursors.config.setup()
   end
 }

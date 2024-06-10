@@ -1,12 +1,13 @@
 local M = {}
 
-local events = require('ngpong.common.events')
+local Events = require('ngpong.common.events')
 
-local this = PLGS.indentscope
-local e_events = events.e_name
+local e_name = Events.e_name
+
+local this = Plgs.indentscope
 
 M.setup = function()
-  events.rg(e_events.FILE_TYPE, function(state)
+  Events.rg(e_name.FILE_TYPE, function(state)
     if not this.filter(state.buf) then
       return
     end

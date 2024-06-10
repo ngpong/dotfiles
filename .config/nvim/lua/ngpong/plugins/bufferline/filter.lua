@@ -10,7 +10,7 @@ local execlude_fts = {
   -- 'toggleterm',
   'TelescopePrompt',
   'neo-tree',
-  'Trouble',
+  'trouble',
   'ClangdTypeHierarchy',
   'ClangdAST',
   'lazy',
@@ -22,7 +22,7 @@ local execlude_fts = {
 
 local f = function()
   return function(bufnr, _)
-    return not TOOLS.tbl_contains(execlude_fts, HELPER.get_filetype(bufnr))
+    return not Tools.tbl_contains(execlude_fts, Helper.get_filetype(bufnr))
   end
 end
 

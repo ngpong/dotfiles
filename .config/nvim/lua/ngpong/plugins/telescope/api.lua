@@ -1,48 +1,52 @@
 local M = {}
 
-local lazy           = require('ngpong.utils.lazy')
-local state          = lazy.require('telescope.state')
-local builtin        = lazy.require('telescope.builtin')
-local actions        = lazy.require('telescope.actions')
-local actions_set    = lazy.require('telescope.actions.set')
-local actions_state  = lazy.require('telescope.actions.state')
-local actions_layout = lazy.require('telescope.actions.layout')
-local resolver       = lazy.require('telescope.config.resolve')
-local multiselect    = lazy.require('telescope.pickers.multi')
+-- stylua: ignore start
+local Lazy          = require('ngpong.utils.lazy')
+local State         = Lazy.require('telescope.state')
+local Builtin       = Lazy.require('telescope.builtin')
+local Actions       = Lazy.require('telescope.actions')
+local ActionsSet    = Lazy.require('telescope.actions.set')
+local ActionsState  = Lazy.require('telescope.actions.state')
+local ActionsLayout = Lazy.require('telescope.actions.layout')
+local Resolver      = Lazy.require('telescope.config.resolve')
+local Multiselect   = Lazy.require('telescope.pickers.multi')
+
+local trouble = Plgs.trouble
+-- stylua: ignore end
 
 M.actions = setmetatable({}, {
   __index = function(t, k)
-    return lazy.access('telescope.actions', k)
-  end
+    return Lazy.access('telescope.actions', k)
+  end,
 })
 
 M.get_current_picker = function(bufnr)
-  return actions_state.get_current_picker(bufnr)
+  return ActionsState.get_current_picker(bufnr)
 end
 
 M.append_to_history = function(bufnr)
-  local picker = actions_state.get_current_picker(bufnr)
+  local picker = ActionsState.get_current_picker(bufnr)
   if picker == nil then
     return
   end
 
-  local line = actions_state.get_current_line()
-  if TOOLS.isempty(line) then
+  local line = ActionsState.get_current_line()
+  if Tools.isempty(line) then
     return
   end
 
-  actions_state.get_current_history():append(line, picker)
+  ActionsState.get_current_history():append(line, picker)
 end
 
 M.close_telescope = function()
   return function(bufnr)
     M.append_to_history(bufnr)
-    actions.close(bufnr)
+    Actions.close(bufnr)
   end
 end
 
 M.toggle_preview = function(bufnr)
-  actions_layout.toggle_preview(bufnr)
+  ActionsLayout.toggle_preview(bufnr)
 end
 
 M.delete_entries = function(bufnr)
@@ -54,7 +58,7 @@ M.delete_entries = function(bufnr)
   end
 
   local original_selection_strategy = picker.selection_strategy
-  picker.selection_strategy = "row"
+  picker.selection_strategy = 'row'
 
   local delete_selections = picker._multi:get()
   local used_multi_select = true
@@ -78,15 +82,15 @@ M.delete_entries = function(bufnr)
   for _, index in ipairs(selection_index) do
     local delete_bufnr = picker.finder.results[index].bufnr
 
-    if HELPER.delete_buffer(delete_bufnr, false, function()
-      return not PLGS.bufferline.api.is_pinned(delete_bufnr)
+    if Helper.delete_buffer(delete_bufnr, false, function()
+      return not Plgs.bufferline.api.is_pinned(delete_bufnr)
     end) then
       table.remove(picker.finder.results, index)
     end
   end
 
   if used_multi_select then
-    picker._multi = multiselect:new()
+    picker._multi = Multiselect:new()
   end
 
   picker:refresh()
@@ -96,25 +100,43 @@ M.delete_entries = function(bufnr)
 end
 
 M.select_entries = function(bufnr)
-  local picker = actions_state.get_current_picker(bufnr)
+  local picker = ActionsState.get_current_picker(bufnr)
   if not picker then
     return
   end
 
   if next(picker:get_multi_selection()) ~= nil then
-    local wrap = TOOLS.wrap_f
+    M.open_multselected_trouble(picker, bufnr)
+  else
+    Actions.select_default(bufnr)
+    vim.schedule(Helper.keep_screen_center)
+  end
+end
 
-    local handler = wrap(HELPER.clear_qflst, picker.original_win_id) +
-                    wrap(actions.send_selected_to_qflist) +
-                    wrap(PLGS.trouble.api.open, 'quickfix', 'Telescope entries selected')
-    if not handler then
+M.open_multselected_trouble = function(picker, bufnr)
+  M.___last_open_type = M.___last_open_type or nil
+
+  if not picker then
+    if M.___last_open_type == 'Find Files' then
+      trouble.api.toggle('telescope_multi_selected_files')
+    elseif M.___last_open_type == 'Live Grep (Args)' then
+      trouble.api.toggle('telescope_multi_selected_lines')
+    elseif M.___last_open_type ~= nil then
+      trouble.api.toggle('telescope_multi_selected_files')
+    else
+      Helper.notify_warn('No results for telescope_multi_selected')
       return
     end
-
-    handler(bufnr)
   else
-    actions.select_default(bufnr)
-    vim.schedule(HELPER.keep_screen_center)
+    if picker.prompt_title == 'Find Files' then
+      require('trouble.sources.telescope').open(bufnr, { mode = 'telescope_multi_selected_files' })
+    elseif picker.prompt_title == 'Live Grep (Args)' then
+      require('trouble.sources.telescope').open(bufnr, { mode = 'telescope_multi_selected_lines' })
+    else
+      require('trouble.sources.telescope').open(bufnr, { mode = 'telescope_multi_selected_files' })
+    end
+
+    M.___last_open_type = picker.prompt_title
   end
 end
 
@@ -123,20 +145,20 @@ M.get_prompt_init_pos = function()
 end
 
 M.reset_prompt_pos = function()
-  HELPER.set_cursor(M.get_prompt_init_pos())
+  Helper.set_cursor(M.get_prompt_init_pos())
 end
 
 M.keep_cursor_outof_range = function(key)
   local _, col = M.get_prompt_init_pos()
 
   return function(...)
-    local _, cur = HELPER.get_cursor()
+    local _, cur = Helper.get_cursor()
 
     if cur == col then
       return
     else
       if key ~= nil then
-        HELPER.feedkeys(key)
+        Helper.feedkeys(key)
       else
         M.reset_prompt_pos()
       end
@@ -147,7 +169,7 @@ end
 M.scroll_result = function(direction, speed)
   -- REF: telescope.nvim/lua/telescope/actions/set.lua::scroll_results
   return function(bufnr)
-    local status = state.get_status(bufnr)
+    local status = State.get_status(bufnr)
 
     local input = direction > 0 and [[]] or [[]]
 
@@ -155,18 +177,18 @@ M.scroll_result = function(direction, speed)
       vim.cmd([[normal! ]] .. math.floor(speed) .. input)
     end)
 
-    actions_set.shift_selection(bufnr, math.floor(speed) * direction)
+    ActionsSet.shift_selection(bufnr, math.floor(speed) * direction)
   end
 end
 
 M.scroll_preview = function(direction, speed)
   -- REF: telescope.nvim/lua/telescope/actions/set.lua::scroll_previewer
   return function(bufnr)
-    local previewer = actions_state.get_current_picker(bufnr).previewer
-    local status = state.get_status(bufnr)
+    local previewer = ActionsState.get_current_picker(bufnr).previewer
+    local status = State.get_status(bufnr)
 
     local preview_winid = status.layout.preview and status.layout.preview.winid
-    if type(previewer) ~= "table" or previewer.scroll_fn == nil or preview_winid == nil then
+    if type(previewer) ~= 'table' or previewer.scroll_fn == nil or preview_winid == nil then
       return
     end
 
@@ -175,15 +197,15 @@ M.scroll_preview = function(direction, speed)
 end
 
 M.resolve_width = function(val)
-  return resolver.resolve_width(val)
+  return Resolver.resolve_width(val)
 end
 
 M.resolve_height = function(val)
-  return resolver.resolve_height(val)
+  return Resolver.resolve_height(val)
 end
 
 M.is_prompt_buf = function(bufnr)
-  if not HELPER.is_buf_valid(bufnr) then
+  if not Helper.is_buf_valid(bufnr) then
     return false
   end
 
@@ -192,7 +214,7 @@ M.is_prompt_buf = function(bufnr)
 end
 
 M.builtin_picker = function(picker, opts)
-  local f = builtin[picker]
+  local f = Builtin[picker]
   if f ~= nil and type(f) == 'function' then
     f(opts)
   end

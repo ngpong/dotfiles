@@ -1,19 +1,9 @@
 local M = {}
 
+local libP = require('ngpong.common.libp')
+
 local uv = vim.loop
 
-local async = require 'plenary.async'
-if async == nil then
-  return
-end
-
----@class Closeable
----@field close fun() # Perform cleanup and release the associated handle.
-
----@class ManagedFn : Closeable
----@operator call : unknown ...
-
----@param ... uv_handle_t
 function M.try_close(...)
   local args = { ... }
 
@@ -26,7 +16,6 @@ function M.try_close(...)
   end
 end
 
----@return ManagedFn
 local function wrap(timer, fn)
   return setmetatable({}, {
     __call = function(_, ...)
@@ -41,10 +30,6 @@ local function wrap(timer, fn)
   })
 end
 
----Debounces a function on the leading edge.
----@param ms integer Timeout in ms
----@param fn function Function to debounce
----@return ManagedFn # Debounced function.
 function M.debounce_leading(ms, fn)
   local timer = assert(uv.new_timer())
   local lock = false
@@ -62,11 +47,6 @@ function M.debounce_leading(ms, fn)
   end)
 end
 
----Debounces a function on the trailing edge.
----@param ms integer Timeout in ms
----@param rush_first boolean If the managed fn is called and it's not recovering from a debounce: call the fn immediately.
----@param fn function Function to debounce
----@return ManagedFn # Debounced function.
 function M.debounce_trailing(ms, rush_first, fn)
   local timer = assert(uv.new_timer())
   local lock = false
@@ -77,7 +57,7 @@ function M.debounce_trailing(ms, rush_first, fn)
       lock = true
       fn(...)
     else
-      args = TOOLS.tbl_pack(...)
+      args = Tools.tbl_pack(...)
     end
 
     timer:start(ms, 0, function()
@@ -86,7 +66,7 @@ function M.debounce_trailing(ms, rush_first, fn)
       if args then
         local a = args
         args = nil
-        fn(TOOLS.tbl_unpack(a))
+        fn(Tools.tbl_unpack(a))
       end
     end)
   end)
@@ -94,10 +74,6 @@ function M.debounce_trailing(ms, rush_first, fn)
   return debounced_fn
 end
 
----Throttles a function on the leading edge.
----@param ms integer Timeout in ms
----@param fn function Function to throttle
----@return ManagedFn # throttled function.
 function M.throttle_leading(ms, fn)
   local timer = assert(uv.new_timer())
   local lock = false
@@ -115,11 +91,6 @@ function M.throttle_leading(ms, fn)
   end)
 end
 
----Throttles a function on the trailing edge.
----@param ms integer Timeout in ms
----@param rush_first boolean If the managed fn is called and it's not recovering from a throttle: call the fn immediately.
----@param fn function Function to throttle
----@return function # throttled function.
 function M.throttle_trailing(ms, rush_first, fn)
   local timer = assert(uv.new_timer())
   local lock = false
@@ -127,7 +98,7 @@ function M.throttle_trailing(ms, rush_first, fn)
 
   throttled_fn = wrap(timer, function(...)
     if lock or (not rush_first and args == nil) then
-      args = TOOLS.tbl_pack(...)
+      args = Tools.tbl_pack(...)
     end
 
     if lock then return end
@@ -144,9 +115,9 @@ function M.throttle_trailing(ms, rush_first, fn)
         local a = args
         args = nil
         if rush_first then
-          throttled_fn(TOOLS.tbl_unpack(a))
+          throttled_fn(Tools.tbl_unpack(a))
         else
-          fn(TOOLS.tbl_unpack(a))
+          fn(Tools.tbl_unpack(a))
         end
       end
     end)
@@ -157,10 +128,6 @@ function M.throttle_trailing(ms, rush_first, fn)
   end
 end
 
----Throttle a function against a target framerate. The function will always be
----called when the editor is unlocked and writing to buffers is possible.
----@param framerate integer # Target framerate. Set to <= 0 to render whenever the scheduler is ready.
----@param fn function
 function M.throttle_render(framerate, fn)
   local lock = false
   local use_framerate = framerate > 0
@@ -168,13 +135,13 @@ function M.throttle_render(framerate, fn)
   local throttled_fn
   local args, last
 
-  throttled_fn = async.void(function(...)
-    args = TOOLS.tbl_pack(...)
+  throttled_fn = libP.async.void(function(...)
+    args = Tools.tbl_pack(...)
     if lock then return end
 
     lock = true
-    async.util.scheduler()
-    fn(TOOLS.tbl_unpack(args))
+    libP.async.util.scheduler()
+    fn(Tools.tbl_unpack(args))
     args = nil
 
     if use_framerate then
@@ -182,7 +149,7 @@ function M.throttle_render(framerate, fn)
 
       if last and now - last < period then
         local wait = period - (now - last)
-        async.util.sleep(wait / 1E6)
+        libP.async.util.sleep(wait / 1E6)
         last = last + period
       else
         last = now
@@ -192,17 +159,13 @@ function M.throttle_render(framerate, fn)
     lock = false
 
     if args ~= nil then
-      throttled_fn(TOOLS.tbl_unpack(args))
+      throttled_fn(Tools.tbl_unpack(args))
     end
   end)
 
   return throttled_fn
 end
 
----Repeatedly call `func` with a fixed time delay.
----@param func function
----@param delay integer # Delay between executions (ms)
----@return Closeable
 function M.set_interval(func, delay)
   local timer = assert(uv.new_timer())
 
@@ -223,10 +186,6 @@ function M.set_interval(func, delay)
   return ret
 end
 
----Call `func` after a fixed time delay.
----@param func function
----@param delay integer # Delay until execution (ms)
----@return Closeable
 function M.set_timeout(func, delay)
   local timer = assert(uv.new_timer())
 

@@ -1,15 +1,19 @@
 return {
-  'NGPONG/trouble.nvim',
+  'folke/trouble.nvim',
   lazy = true,
+  dependencies = {
+    'folke/todo-comments.nvim'
+  },
   cmd = { 'TroubleToggle', 'Trouble' },
   init = function()
-    PLGS.record_seq('trouble.nvim init')
-    PLGS.trouble.keys.setup()
-    PLGS.trouble.highlight.setup()
+    Plgs.record_seq('trouble.nvim init')
+    Plgs.trouble.keys.setup()
+    Plgs.trouble.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('trouble.nvim config')
-    PLGS.trouble.behavior.setup()
-    PLGS.trouble.config.setup()
+    Plgs.record_seq('trouble.nvim config')
+    Plgs.trouble.behavior.setup()
+    Plgs.trouble.config.setup()
+    Plgs.trouble.hacker.setup()
   end
 }

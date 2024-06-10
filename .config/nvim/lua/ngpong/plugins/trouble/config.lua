@@ -1,61 +1,212 @@
 local M = {}
 
-local icons = require('ngpong.utils.icon')
+local Icons = require('ngpong.utils.icon')
 
 M.setup = function()
-  require('trouble').setup {
-    position = 'bottom', -- position of the list can be: bottom, top, left, right
-    height = 10, -- height of the trouble list when position is top or bottom
-    width = 50, -- width of the list when position is left or right
-    icons = true, -- use devicons for filenames
-    mode = 'workspace_diagnostics', -- 'workspace_diagnostics', 'document_diagnostics', 'quickfix', 'lsp_references', 'loclist'
-    severity = nil, -- nil (ALL) or vim.diagnostic.severity.ERROR | WARN | INFO | HINT
-    fold_open = icons.expand, -- icon used for open folds
-    fold_closed = icons.closepand, -- icon used for closed folds
-    group = true, -- group results by file
-    padding = false, -- add an extra new line on top of the list
-    cycle_results = true, -- cycle item list when reaching beginning or end of list
-    action_keys = { -- key mappings for actions in the trouble list
-        -- map to {} to remove a mapping, for example: close = {},
-        close = {}, -- close the list
-        cancel = {}, -- cancel the preview and get back to your last window / buffer / cursor
-        refresh = {}, -- -- manually refresh
-        jump = {}, -- jump to the diagnostic or open / close folds
-        open_split = {}, -- open buffer in new split
-        open_vsplit = {}, -- open buffer in new vsplit
-        open_tab = {}, -- open buffer in new tab
-        jump_close = {}, -- jump to the diagnostic and close the list
-        toggle_mode = {}, -- toggle between 'workspace' and 'document' diagnostics mode
-        switch_severity = {}, -- switch 'diagnostics' severity filter level to HINT / INFO / WARN / ERROR
-        toggle_preview = {}, -- -- toggle auto_preview
-        hover = {}, -- opens a small popup with the full multiline message
-        preview = {}, -- preview the diagnostic location
-        open_code_href = {}, -- 'c', -- if present, open a URI with more information about the diagnostic error
-        close_folds = {}, -- close all folds
-        open_folds = {}, -- open all folds
-        toggle_fold = {}, -- toggle fold of current file
-        previous = {}, -- previous item
-        next = {}, -- next item
-        help = {}, -- help menu
-    },
-    signs = {
-      error = icons.diagnostic_err,
-      hint = icons.diagnostic_hint,
-      information = icons.diagnostic_info,
-      other = icons.arrow_right_2,
-      warning = icons.diagnostic_warn
-    },
+  require('trouble').setup({
+    auto_close = true, -- auto close when there are no items
+    auto_open = false, -- auto open when there are items
+    auto_preview = false, -- automatically open preview when on an item
+    auto_refresh = true, -- auto refresh when open
+    auto_jump = false, -- auto jump to the item when there's only one
+    focus = true, -- Focus the window when opened
+    restore = true, -- restores the last location in the list when opening
+    follow = false, -- Follow the current item
+    indent_guides = true, -- show indent guides
+    max_items = 9999, -- limit number of items that can be displayed per section
     multiline = true, -- render multi-line messages
-    indent_lines = true, -- add an indent guide below the fold icons
-    win_config = { border = 'double' }, -- window configuration for floating windows. See |nvim_open_win()|.
-    auto_open = false, -- automatically open the list when you have diagnostics
-    auto_close = false, -- automatically close the list when you have no diagnostics
-    auto_preview = false, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-    auto_fold = false, -- automatically fold a file trouble list at creation
-    auto_jump = {}, -- for the given modes, automatically jump if there is only a single result
-    include_declaration = { 'lsp_references', 'lsp_implementations', 'lsp_definitions'  }, -- for the given modes, include the declaration of the current symbol in the results
-    use_diagnostic_signs = true -- enabling this will use the signs defined in your lsp client
-  }
+    pinned = false, -- When pinned, the opened trouble window will be bound to the current buffer
+    warn_no_results = true, -- show a warning when there are no results
+    open_no_results = false, -- open the trouble window when there are no results
+    win = {}, -- window options for the results window. Can be a split or a floating window.
+    -- Window options for the preview window. Can be a split, floating window,
+    -- or `main` to show the preview in the main editor window.
+    preview = {
+      type = 'split',
+      relative = 'win',
+      position = 'right',
+      size = 0.5,
+      scratch = true,
+    },
+    -- Throttle/Debounce settings. Should usually not be changed.
+    throttle = {
+      refresh = 100, -- fetches new data when needed
+      update = 10, -- updates the window
+      render = 10, -- renders the window
+      follow = 100, -- follows the current item
+      preview = { ms = 20, debounce = true }, -- shows the preview for the current item
+    },
+    config = function(opts)
+      -- Key mappings can be set to the name of a builtin action,
+      -- or you can define your own custom action.
+      opts.keys = {}
+    end,
+    modes = {
+      lsp_base = {
+        groups = {
+          { 'filename', format = '{file_icon}{filename} {count}' },
+        },
+        format = '{text:ts} ({item.client}) {pos}',
+      },
+      lsp_definitions_extra = {
+        events = {},
+        auto_jump = true,
+        mode = 'lsp_base',
+        source = 'lsp.definitions',
+        desc = 'Lsp definitions',
+      },
+      lsp_references_extra = {
+        events = {},
+        params = {
+          include_declaration = false,
+        },
+        auto_jump = false,
+        mode = 'lsp_base',
+        source = 'lsp.references',
+        desc = 'Lsp references',
+      },
+      lsp_declarations_extra = {
+        events = {},
+        auto_jump = true,
+        mode = 'lsp_base',
+        source = 'lsp.declarations',
+        desc = 'Lsp declarations',
+      },
+      diagnostics = {
+        format = '{severity_icon}{message:md} {item.source} ({code}) {pos}',
+      },
+      document_diagnostics = {
+        mode = 'diagnostics',
+        filter = { buf = 0 },
+        groups = {
+          { 'severity', format = '{severity_icon}{severity} {count}' },
+        },
+        desc = 'Document diagnostics',
+      },
+      workspace_diagnostics = {
+        mode = 'diagnostics',
+        desc = 'Workspace diagnostics',
+        groups = {
+          { 'severity', format = '{severity_icon}{severity} {count}' },
+          { 'filename', format = '{file_icon}{filename} {count}' },
+        },
+      },
+      todo = {
+        groups = {
+          { 'tag', format = '{todo_icon}{tag}' },
+          { 'filename', format = '{file_icon}{filename} {count}' },
+        },
+        format = '{todo_icon}{text} {pos}',
+      },
+      document_todo = {
+        mode = 'todo',
+        desc = 'Document todo comments',
+        filter = {
+          any = {
+            buf = 0,
+          },
+        },
+        focus = false,
+      },
+      workspace_todo = {
+        mode = 'todo',
+        desc = 'Workspace todo comments',
+      },
+      document_mark = {
+        mode = 'mark',
+        desc = 'Document marks',
+        params = {
+          all = false,
+        },
+        focus = false,
+      },
+      workspace_mark = {
+        mode = 'mark',
+        desc = 'Workspace marks',
+        params = {
+          all = true,
+        },
+        focus = false,
+      },
+      document_git = {
+        mode = 'git',
+        desc = 'Document git diff.',
+      },
+      workspace_git = {
+        mode = 'git',
+        desc = 'Workspace git diff.',
+        params = {
+          target = 'all',
+        },
+      },
+      lsp_document_symbols_extra = {
+        desc = 'Lsp document symbols',
+        follow = true,
+        win = { position = 'right', size = 0.3 },
+        mode = 'lsp_document_symbols',
+        focus = false,
+        preview = {
+          type = 'main',
+          scratch = true,
+        },
+        filter = {
+          -- remove Package since luals uses it for control flow structures
+          ['not'] = { ft = 'lua', kind = 'Package' },
+        },
+        title = '{filename} {count}',
+        groups = {},
+      },
+      telescope_multi_selected_files = {
+        desc = 'Telescope multi-selected result',
+        source = 'telescope',
+        sort = { 'filename', 'pos' },
+        format = '{file_icon}{filename}',
+      },
+      telescope_multi_selected_lines = {
+        desc = 'Telescope multi-selected result',
+        source = 'telescope',
+        sort = { 'filename', 'pos' },
+        groups = {
+          { 'filename', format = '{file_icon} {filename} {count}' },
+        },
+        format = '{text:ts} {pos}',
+      },
+    },
+    -- stylua: ignore
+    icons = {
+      indent = {
+        last = '╰╴',
+      },
+      kinds = {
+        Array         = Icons.lsp_kinds.Array.val,
+        Boolean       = Icons.lsp_kinds.Boolean.val,
+        Class         = Icons.lsp_kinds.Class.val,
+        Constant      = Icons.lsp_kinds.Constant.val,
+        Constructor   = Icons.lsp_kinds.Constructor.val,
+        Enum          = Icons.lsp_kinds.Enum.val,
+        EnumMember    = Icons.lsp_kinds.EnumMember.val,
+        Event         = Icons.lsp_kinds.Event.val,
+        Field         = Icons.lsp_kinds.Field.val,
+        File          = Icons.lsp_kinds.File.val,
+        Function      = Icons.lsp_kinds.Function.val,
+        Interface     = Icons.lsp_kinds.Interface.val,
+        Key           = Icons.lsp_kinds.Key.val,
+        Method        = Icons.lsp_kinds.Method.val,
+        Module        = Icons.lsp_kinds.Module.val,
+        Namespace     = Icons.lsp_kinds.Namespace.val,
+        Null          = Icons.lsp_kinds.Null.val,
+        Number        = Icons.lsp_kinds.Number.val,
+        Object        = Icons.lsp_kinds.Object.val,
+        Operator      = Icons.lsp_kinds.Operator.val,
+        Package       = Icons.lsp_kinds.Package.val,
+        Property      = Icons.lsp_kinds.Property.val,
+        String        = Icons.lsp_kinds.String.val,
+        Struct        = Icons.lsp_kinds.Struct.val,
+        TypeParameter = Icons.lsp_kinds.TypeParameter.val,
+        Variable      = Icons.lsp_kinds.Variable.val,
+      },
+    },
+  })
 end
 
 return M

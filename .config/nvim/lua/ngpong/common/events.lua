@@ -87,8 +87,8 @@ events.emit = function(name, ...)
     local status, res = pcall(fn, ...)
     if not status then
       success = false
-      HELPER.notify_err('execute event error, please check log file for more information.', 'System: events')
-      LOGGER.error(res)
+      Helper.notify_err('execute event error, please check log file for more information.', 'System: events')
+      Logger.error(res)
     end
   end
   return success
@@ -123,7 +123,7 @@ events.track_events = function()
           end
         end
 
-        LOGGER.debug(msg)
+        Logger.debug(msg)
       end)
     end
   end

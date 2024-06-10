@@ -1,33 +1,33 @@
 local ui = {}
 
-local icons     = require('ngpong.utils.icon')
-local filesize  = require('ngpong.utils.filesize')
-local lazy      = require('ngpong.utils.lazy')
-local nui_popup = lazy.require('nui.popup')
-local nui_text  = lazy.require('nui.text')
+local Icons    = require('ngpong.utils.icon')
+local FileSize = require('ngpong.utils.filesize')
+local Lazy     = require('ngpong.utils.lazy')
+local NuiPopup = Lazy.require('nui.popup')
+local NuiText  = Lazy.require('nui.text')
 
 -- https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/popup
 -- https://github.com/nvim-neo-tree/neo-tree.nvim/blob/77d9f484b88fd380386b46ed9206e5374d69d9d8/lua/neo-tree/ui/popups.lua#L70
 
 ui.popup_fileinfo = function(bufnr)
-  bufnr = bufnr or HELPER.get_cur_bufnr()
+  bufnr = bufnr or Helper.get_cur_bufnr()
 
-  local path = HELPER.get_buf_name(bufnr)
+  local path = Helper.get_buf_name(bufnr)
 
-  local state = TOOLS.get_filestate(path)
+  local state = Tools.get_filestate(path)
   if not state then
-    HELPER.notify_err('Unable to get file state, bufnr [' .. bufnr .. ']', 'System: file')
+    Helper.notify_err('Unable to get file state, bufnr [' .. bufnr .. ']', 'System: file')
     return
   end
 
   local lines = {}
   table.insert(lines, '')
-  table.insert(lines, string.format('%9s: %s', 'Name', TOOLS.get_filename(path)))
+  table.insert(lines, string.format('%9s: %s', 'Name', Tools.get_filename(path)))
   table.insert(lines, string.format('%9s: %s', 'bufnr', tostring(bufnr)))
   table.insert(lines, string.format('%9s: %s', 'Path', path))
   table.insert(lines, string.format('%9s: %s', 'Type', state.type))
   if state.size then
-    table.insert(lines, string.format('%9s: %s', 'Size', filesize(state.size, { output = 'string' })))
+    table.insert(lines, string.format('%9s: %s', 'Size', FileSize(state.size, { output = 'string' })))
     table.insert(lines, string.format('%9s: %s', 'Created', os.date('%Y-%m-%d %I:%M %p', state.birthtime.sec)))
     table.insert(lines, string.format('%9s: %s', 'Modified', os.date('%Y-%m-%d %I:%M %p', state.mtime.sec)))
   end
@@ -50,7 +50,7 @@ ui.popup_fileinfo = function(bufnr)
     },
     border = {
       text = {
-        top = nui_text(icons.space .. 'File info' .. icons.space, 'FloatTitle'),
+        top = NuiText(Icons.space .. 'File info' .. Icons.space, 'FloatTitle'),
       },
       style = 'rounded',
     },
@@ -65,7 +65,7 @@ ui.popup_fileinfo = function(bufnr)
     zindex = 60,
   }
 
-  local win = nui_popup(popup_options)
+  local win = NuiPopup(popup_options)
   win:mount()
 
   local success, msg = pcall(vim.api.nvim_buf_set_lines, win.bufnr, 0, 0, false, lines)
@@ -85,7 +85,7 @@ ui.popup_fileinfo = function(bufnr)
     -- why is this necessary?
     vim.api.nvim_set_current_win(win.winid)
   else
-    LOGGER.error(msg)
+    Logger.error(msg)
     win:unmount()
   end
 end

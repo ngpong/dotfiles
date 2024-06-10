@@ -1,7 +1,8 @@
 local helper = {}
 
-local icons     = require('ngpong.utils.icon')
-local timestamp = require('ngpong.utils.timestamp')
+local libP      = require('ngpong.common.libp')
+local Icons     = require('ngpong.utils.icon')
+local Timestamp = require('ngpong.utils.timestamp')
 
 helper.get_cur_bufnr = function(_)
   return vim.api.nvim_get_current_buf and vim.api.nvim_get_current_buf() or vim.fn.bufnr()
@@ -57,12 +58,7 @@ helper.delete_buffer = function(bufnr, force, cond)
     return false
   end
 
-  local async = require('plenary.async')
-  if not async then
-    return false
-  end
-
-  bufnr = bufnr or HELPER.get_cur_bufnr()
+  bufnr = bufnr or Helper.get_cur_bufnr()
   force = force == nil and true or force
   cond = cond or nil
 
@@ -94,7 +90,7 @@ helper.delete_buffer = function(bufnr, force, cond)
   end
 
   if success then
-    async.run(wipeout_unnamed_buf)
+    libP.async.run(wipeout_unnamed_buf)
   end
 
   return success
@@ -166,13 +162,8 @@ helper.hide_cursor = function()
     end
   end
 
-  local async = require('plenary.async')
-  if not async then
-    return
-  end
-
-  async.run(function()
-    async.util.scheduler() f()
+  libP.async.async.run(function()
+    libP.async.util.scheduler() f()
   end)
 end
 
@@ -183,13 +174,8 @@ helper.unhide_cursor = function()
     end
   end
 
-  local async = require('plenary.async')
-  if not async then
-    return
-  end
-
-  async.run(function()
-    async.util.scheduler() f()
+  libP.async.run(function()
+    libP.async.util.scheduler() f()
   end)
 end
 
@@ -226,7 +212,7 @@ end
 helper.get_bufsize = function(bufnr, cb)
   local path = vim.api.nvim_buf_get_name(bufnr or helper.get_cur_bufnr())
 
-  local state = TOOLS.get_filestate(path)
+  local state = Tools.get_filestate(path)
   if state then
     return state.size
   else
@@ -288,7 +274,7 @@ end
 
 helper.is_notify_win = function(winid)
   winid = winid or helper.get_cur_winid()
-  return HELPER.get_filetype(HELPER.get_bufnr(winid)) == 'notify'
+  return Helper.get_filetype(Helper.get_bufnr(winid)) == 'notify'
 end
 
 helper.get_tabnr_by_tabpage = function(tabpage)
@@ -420,7 +406,7 @@ helper.get_buf_name = function(bufnr)
 
   local success, result = pcall(vim.api.nvim_buf_get_name, bufnr)
   if not success then
-    LOGGER.error(debug.traceback())
+    Logger.error(debug.traceback())
     return nil
   else
     return result
@@ -476,7 +462,7 @@ helper.reload_file_if_shown = function(path)
 end
 
 helper.get_cursor = function()
-  return TOOLS.tbl_unpack(vim.api.nvim_win_get_cursor(0))
+  return Tools.tbl_unpack(vim.api.nvim_win_get_cursor(0))
 end
 
 helper.close_win = function(winid)
@@ -486,14 +472,14 @@ end
 helper.close_floating_wins = function(async)
   local ret = false
 
-  for _, winid in pairs(HELPER.get_list_winids()) do
+  for _, winid in pairs(Helper.get_list_winids()) do
     if helper.is_win_valid(winid) and helper.is_floating_win(winid) and not helper.is_notify_win(winid) then
       if async then
         vim.schedule(function()
-          HELPER.close_win(winid)
+          Helper.close_win(winid)
         end)
       else
-        HELPER.close_win(winid)
+        Helper.close_win(winid)
       end
 
       ret = true
@@ -535,19 +521,19 @@ end
 helper.notify = function(msg, title, opts, lv)
   vim.schedule(function()
     local final_opts = { title = title or 'System' }
-    TOOLS.tbl_r_extend(final_opts, opts or {})
+    Tools.tbl_r_extend(final_opts, opts or {})
 
     vim.notify(tostring(msg), lv, final_opts)
   end)
 end
 helper.notify_err = function(msg, title, opts)
-  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_err }, opts or {}), vim.log.levels.ERROR)
+  helper.notify(tostring(msg), title, Tools.tbl_r_extend({ icon = Icons.diagnostic_err }, opts or {}), vim.log.levels.ERROR)
 end
 helper.notify_warn = function(msg, title, opts)
-  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_warn }, opts or {}), vim.log.levels.WARN)
+  helper.notify(tostring(msg), title, Tools.tbl_r_extend({ icon = Icons.diagnostic_warn }, opts or {}), vim.log.levels.WARN)
 end
 helper.notify_info = function(msg, title, opts)
-  helper.notify(tostring(msg), title, TOOLS.tbl_r_extend({ icon = icons.diagnostic_info }, opts or {}), vim.log.levels.INFO)
+  helper.notify(tostring(msg), title, Tools.tbl_r_extend({ icon = Icons.diagnostic_info }, opts or {}), vim.log.levels.INFO)
 end
 
 helper.get_visual_selected = function()
@@ -563,14 +549,14 @@ end
 helper.dclock = {
   reset = function(self)
     self.begin = self.begin or 0
-    self.begin = timestamp.get_microsecond()
+    self.begin = Timestamp.get_microsecond()
   end,
 }
 setmetatable(helper.dclock, {
   __call = function(self, key)
-    local ended = timestamp.get_microsecond() - helper.dclock.begin
+    local ended = Timestamp.get_microsecond() - helper.dclock.begin
     local text = (key ~= nil and (key .. ': ') or '') .. ended
-    LOGGER.info(text)
+    Logger.info(text)
   end,
 })
 
@@ -591,7 +577,7 @@ helper.debug = function()
     })
   end
 
-  LOGGER.info(datas)
+  Logger.info(datas)
 end
 
 return helper

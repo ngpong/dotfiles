@@ -1,10 +1,9 @@
 local M = {}
 
-local events = require('ngpong.common.events')
-local lazy   = require('ngpong.utils.lazy')
-local async  = lazy.require('plenary.async')
+local libP   = require('ngpong.common.libp')
+local Events = require('ngpong.common.events')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 M.setup = function()
   local patterns = {
@@ -14,25 +13,25 @@ M.setup = function()
     ['neo%-tree document_symbols'] = 'document_symbols',
   }
 
-  events.rg(e_events.FILE_TYPE, async.void(function(state)
+  Events.rg(e_name.FILE_TYPE, libP.async.void(function(state)
     if state.match ~= 'neo-tree' then
       return
     end
 
-    async.util.scheduler()
+    libP.async.util.scheduler()
 
-    if not HELPER.is_buf_valid(state.buf) then
+    if not Helper.is_buf_valid(state.buf) then
       return
     end
 
-    local bufname = HELPER.get_buf_name(state.buf)
-    if TOOLS.isempty(bufname) then
+    local bufname = Helper.get_buf_name(state.buf)
+    if Tools.isempty(bufname) then
       return
     end
 
     for _pattern, _source in pairs(patterns) do
       if bufname:match(_pattern) then
-        events.emit(e_events.CREATE_NEOTREE_SOURCE, { bufnr = state.buf, source = _source })
+        Events.emit(e_name.CREATE_NEOTREE_SOURCE, { bufnr = state.buf, source = _source })
         return
       end
     end

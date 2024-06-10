@@ -12,8 +12,8 @@ end
 
 local f2 = function()
   return function()
-    local bufnr = HELPER.get_cur_bufnr()
-    local size  = HELPER.get_bufsize(bufnr)
+    local bufnr = Helper.get_cur_bufnr()
+    local size  = Helper.get_bufsize(bufnr)
 
     if size >= 0 then
       if size > max_size then
@@ -28,19 +28,19 @@ local f2 = function()
 end
 
 local f3 = function()
-  local context = require('cmp.config.context')
+  local Context = require('cmp.config.context')
 
   return function()
     local disabled = false
-    disabled = disabled or (context.in_treesitter_capture('comment') and HELPER.get_cur_mode().mode == 'i')
-    -- disabled = disabled or (PLGS.luasnip.api.is_in_snippet())
+    disabled = disabled or (Context.in_treesitter_capture('comment') and Helper.get_cur_mode().mode == 'i')
+    -- disabled = disabled or (Plgs.luasnip.api.is_in_snippet())
     disabled = disabled or (vim.fn.reg_recording() ~= '')
     disabled = disabled or (vim.fn.reg_executing() ~= '')
 
-    -- LOGGER.info('1:' .. tostring(context.in_treesitter_capture('comment') and HELPER.get_cur_mode().mode == 'i'))
-    -- LOGGER.info('2:' .. tostring(PLGS.luasnip.api.is_in_snippet()))
-    -- LOGGER.info('3:' .. tostring(vim.fn.reg_recording() ~= ''))
-    -- LOGGER.info('4:' .. tostring(vim.fn.reg_executing() ~= ''))
+    -- Logger.info('1:' .. tostring(context.in_treesitter_capture('comment') and Helper.get_cur_mode().mode == 'i'))
+    -- Logger.info('2:' .. tostring(Plgs.luasnip.api.is_in_snippet()))
+    -- Logger.info('3:' .. tostring(vim.fn.reg_recording() ~= ''))
+    -- Logger.info('4:' .. tostring(vim.fn.reg_executing() ~= ''))
     return not disabled
   end
 end

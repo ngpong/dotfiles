@@ -1,23 +1,23 @@
 local M = {}
 
-local icons  = require('ngpong.utils.icon')
-local lazy   = require('ngpong.utils.lazy')
-local notify = lazy.require('notify')
+local Icons  = require('ngpong.utils.icon')
+local Lazy   = require('ngpong.utils.lazy')
+local Notify = Lazy.require('notify')
 
 M.setup = function()
-  notify.setup {
+  Notify.setup {
     -- level = vim.log.levels.INFO,
     timeout = 4000,
     max_width = nil,
     max_height = nil,
-    stages = (HELPER.is_neovide() and 'fade' or 'static'), -- fade_in_slide_out, fade, slide, static
+    stages = (Helper.is_neovide() and 'fade' or 'static'), -- fade_in_slide_out, fade, slide, static
     render = 'default', -- default, minimal, simple, compact
     background_colour = 'NotifyBackground',
     on_open = function(win, opts)
       vim.api.nvim_win_set_config(win, { zindex = 175 })
 
       -- We need to wait for the VeryLazyFile event to be emitted
-      if not PLGS.is_loaded('nvim-treesitter') then
+      if not Plgs.is_loaded('nvim-treesitter') then
         return
       end
 
@@ -39,11 +39,11 @@ M.setup = function()
       notification = '%X',
     },
     icons = {
-      ERROR = icons.diagnostic_err,
-      WARN = icons.diagnostic_warn,
-      INFO = icons.diagnostic_info,
-      DEBUG = icons.debugger,
-      TRACE = icons.pen,
+      ERROR = Icons.diagnostic_err,
+      WARN = Icons.diagnostic_warn,
+      INFO = Icons.diagnostic_info,
+      DEBUG = Icons.debugger,
+      TRACE = Icons.pen,
     },
   }
 end

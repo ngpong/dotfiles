@@ -1,17 +1,17 @@
 local M = {}
 
-local events = require('ngpong.common.events')
-local keymap = require('ngpong.common.keybinder')
-local lazy   = require('ngpong.utils.lazy')
-local async  = lazy.require('plenary.async')
-local wk     = lazy.require('which-key')
+local libP   = require('ngpong.common.libp')
+local Events = require('ngpong.common.events')
+local Keymap = require('ngpong.common.keybinder')
+local Lazy   = require('ngpong.utils.lazy')
+local WK     = Lazy.require('which-key')
 
-local e_mode   = keymap.e_mode
-local e_events = events.e_name
+local e_mode   = Keymap.e_mode
+local e_name = Events.e_name
 
-local fix_keymap_native = async.void(function()
-  async.util.scheduler()
-  wk.register({
+local fix_keymap_native = libP.async.void(function()
+  libP.async.util.scheduler()
+  WK.register({
     ['v'] = { 'COMMON: enter visual mode.' },
     ['V'] = { 'COMMON: enter line-visual mode.' },
 
@@ -94,8 +94,8 @@ local fix_keymap_native = async.void(function()
     },
   })
 
-  async.util.scheduler()
-  wk.register({
+  libP.async.util.scheduler()
+  WK.register({
     ['e'] = {
       name = 'JUMPTO:',
       ['1'] = { name = 'INDENT' },
@@ -107,9 +107,9 @@ local fix_keymap_native = async.void(function()
   }, { mode = 'v', })
 end)
 
-local fix_keymap_neotree = async.void(function(bufnr)
-  async.util.scheduler()
-  wk.register({
+local fix_keymap_neotree = libP.async.void(function(bufnr)
+  libP.async.util.scheduler()
+  WK.register({
     ['f'] = {
       name = 'NEOTREE FILE:',
       ['r'] = {
@@ -123,9 +123,9 @@ local fix_keymap_neotree = async.void(function(bufnr)
   }, { buffer = bufnr })
 end)
 
-local fix_keymap_gitsigns = async.void(function(bufnr)
-  async.util.scheduler()
-  wk.register({
+local fix_keymap_gitsigns = libP.async.void(function(bufnr)
+  libP.async.util.scheduler()
+  WK.register({
     ['g'] = {
       name = 'GIT:',
       ['h'] = {
@@ -136,21 +136,21 @@ local fix_keymap_gitsigns = async.void(function(bufnr)
 end)
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, '<leader>k', '<CMD>WhichKey<CR>', { remap = false, silent = true, desc = 'open keymap config.' })
+  Keymap.register(e_mode.NORMAL, '<leader>k', '<CMD>WhichKey<CR>', { remap = false, silent = true, desc = 'open keymap config.' })
 end
 
 local setup = function()
   set_native_keymaps()
 
-  events.rg(e_events.SETUP_WHICHKEY, function()
+  Events.rg(e_name.SETUP_WHICHKEY, function()
     fix_keymap_native()
   end)
 
-  events.rg(e_events.ATTACH_GITSIGNS, function(state)
+  Events.rg(e_name.ATTACH_GITSIGNS, function(state)
     fix_keymap_gitsigns(state.bufnr)
   end)
 
-  events.rg(e_events.CREATE_NEOTREE_SOURCE, function(state)
+  Events.rg(e_name.CREATE_NEOTREE_SOURCE, function(state)
     if 'filesystem' == state.source then
       fix_keymap_neotree(state.bufnr)
     elseif 'git_status' == state.source then

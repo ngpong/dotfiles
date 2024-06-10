@@ -1,10 +1,10 @@
 local M = {}
 
-local events = require('ngpong.common.events')
+local Events = require('ngpong.common.events')
 
-local e_events = events.e_name
+local this = Plgs.multicursors
 
-local this = PLGS.multicursors
+local e_name = Events.e_name
 
 M.setup = function()
   local cfg = {
@@ -32,23 +32,23 @@ M.setup = function()
     },
     on_enter = function()
       if this.api.is_first_time_enter_normal() then
-        HELPER.add_jumplist()
+        Helper.add_jumplist()
         this.api.set_first_time_enter_normal()
       end
 
       vim.schedule(function()
-        PLGS.lualine.api.refresh()
+        Plgs.lualine.api.refresh()
       end)
     end,
     on_exit = function()
       this.api.unset_first_time_enter_normal()
       vim.schedule(function()
-        PLGS.lualine.api.refresh()
+        Plgs.lualine.api.refresh()
       end)
     end,
   }
 
-  events.emit(e_events.SETUP_MULTICURSORS, cfg)
+  Events.emit(e_name.SETUP_MULTICURSORS, cfg)
 
   require('multicursors').setup(cfg)
 end

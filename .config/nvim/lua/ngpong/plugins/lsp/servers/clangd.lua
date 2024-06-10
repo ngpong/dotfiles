@@ -1,21 +1,20 @@
 local M = {}
 
-local events      = require('ngpong.common.events')
-local keymap      = require('ngpong.common.keybinder')
-local icons       = require('ngpong.utils.icon')
-local lazy        = require('ngpong.utils.lazy')
-local async       = lazy.require('plenary.async')
-local lspcfg      = lazy.require('lspconfig')
-local extensions  = lazy.require('clangd_extensions')
-local inlay_hints = lazy.require('clangd_extensions.inlay_hints')
+local libP       = require('ngpong.common.libp')
+local Events     = require('ngpong.common.events')
+local Keymap     = require('ngpong.common.keybinder')
+local Lazy       = require('ngpong.utils.lazy')
+local Lspcfg     = Lazy.require('lspconfig')
+local Extensions = Lazy.require('clangd_extensions')
+local InlayHints = Lazy.require('clangd_extensions.inlay_hints')
 
-local e_mode   = keymap.e_mode
-local e_events = events.e_name
+local e_mode   = Keymap.e_mode
+local e_name = Events.e_name
 
 local is_open_extensions = function(source)
-  for _, winid in pairs(HELPER.get_list_winids()) do
-    local bufnr = HELPER.get_bufnr(winid)
-    if HELPER.get_filetype(bufnr) == source then
+  for _, winid in pairs(Helper.get_list_winids()) do
+    local bufnr = Helper.get_bufnr(winid)
+    if Helper.get_filetype(bufnr) == source then
       return winid
     end
   end
@@ -23,7 +22,7 @@ local is_open_extensions = function(source)
 end
 
 local setup_server = function(cfg)
-  extensions.setup({
+  Extensions.setup({
     inlay_hints = {
       inline = vim.fn.has('nvim-0.10') == 1,
       only_current_line = false,
@@ -82,7 +81,7 @@ local setup_server = function(cfg)
     },
   })
 
-  lspcfg.clangd.setup({
+  Lspcfg.clangd.setup({
     cmd = {
       'clangd',
       '-j=16',
@@ -112,21 +111,12 @@ local setup_server = function(cfg)
 end
 
 local setup_keymaps = function(_)
-  keymap.register(e_mode.NORMAL, '<ESC>', function()
-    local winid = is_open_extensions('ClangdTypeHierarchy')
-    if winid < 0 then
-      return
-    end
-
-    HELPER.close_win(winid)
-  end, { remap = false, mixture = 'lsp_clangd', desc = 'which_key_ignore' })
-
-  events.rg(e_events.ATTACH_LSP, function(state)
+  Events.rg(e_name.ATTACH_LSP, function(state)
     if state.cli.name ~= 'clangd' then
       return
     end
 
-    keymap.register(e_mode.NORMAL, 'dh', function()
+    Keymap.register(e_mode.NORMAL, 'dh', function()
       if M.__dh_key_executing then
         return
       end
@@ -137,7 +127,7 @@ local setup_keymaps = function(_)
 
       M.__dh_key_executing = true
 
-      async.run(function()
+      libP.async.run(function()
         vim.go.splitbelow = true
 
         vim.cmd('ClangdTypeHierarchy')
@@ -145,12 +135,12 @@ local setup_keymaps = function(_)
         local timespan = 0
         while is_open_extensions('ClangdTypeHierarchy') < 0 do
           if timespan > 10000 then
-            HELPER.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
+            Helper.notify_warn('Type hierarchy not found or timeout.', 'LSP: clangd')
             break
           end
           timespan = timespan + 500
 
-          async.util.sleep(500)
+          libP.async.util.sleep(500)
         end
 
         vim.go.splitbelow = false
@@ -158,33 +148,44 @@ local setup_keymaps = function(_)
         M.__dh_key_executing = false
       end)
     end, { silent = true, buffer = state.bufnr, remap = false, desc = 'show type hierarchy.' })
-    keymap.register(e_mode.NORMAL, 'dm', TOOLS.wrap_f(vim.cmd, 'ClangdMemoryUsage'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show clangd memory usage.' })
-    keymap.register(e_mode.NORMAL, 'ds', TOOLS.wrap_f(vim.cmd, 'ClangdSwitchSourceHeader'), { silent = true, buffer = state.bufnr, remap = false, desc = 'switch between source/header file.' })
-    keymap.register(e_mode.NORMAL, 'da', TOOLS.wrap_f(vim.cmd, 'ClangdAST'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show AST.' })
+    Keymap.register(e_mode.NORMAL, 'dm', Tools.wrap_f(vim.cmd, 'ClangdMemoryUsage'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show clangd memory usage.' })
+    Keymap.register(e_mode.NORMAL, 'ds', Tools.wrap_f(vim.cmd, 'ClangdSwitchSourceHeader'), { silent = true, buffer = state.bufnr, remap = false, desc = 'switch between source/header file.' })
+    Keymap.register(e_mode.NORMAL, 'da', Tools.wrap_f(vim.cmd, 'ClangdAST'), { silent = true, buffer = state.bufnr, remap = false, desc = 'show AST.' })
   end)
 
-  events.rg(e_events.BUFFER_ENTER_ONCE, async.void(function(state)
-    async.util.scheduler()
+  Events.rg(e_name.BUFFER_ENTER_ONCE, libP.async.void(function(state)
+    libP.async.util.scheduler()
 
-    if not HELPER.is_buf_valid(state.buf) then
+    if not Helper.is_buf_valid(state.buf) then
       return
     end
 
-    if HELPER.get_filetype(state.buf) ~= 'ClangdTypeHierarchy' then
+    if Helper.get_filetype(state.buf) ~= 'ClangdTypeHierarchy' then
       return
     end
 
-    keymap.hidegister(e_mode.NORMAL, 'd.', { buffer = state.buf })
-    keymap.hidegister(e_mode.NORMAL, 'd,', { buffer = state.buf })
-    keymap.hidegister(e_mode.NORMAL, 'dd', { buffer = state.buf })
-    keymap.hidegister(e_mode.NORMAL, 'dD', { buffer = state.buf })
-    keymap.hidegister(e_mode.NORMAL, 'dp', { buffer = state.buf })
+    Keymap.hidegister(e_mode.NORMAL, 'd.', { buffer = state.buf })
+    Keymap.hidegister(e_mode.NORMAL, 'd,', { buffer = state.buf })
+    Keymap.hidegister(e_mode.NORMAL, 'dd', { buffer = state.buf })
+    Keymap.hidegister(e_mode.NORMAL, 'dD', { buffer = state.buf })
+    Keymap.hidegister(e_mode.NORMAL, 'dp', { buffer = state.buf })
 
-    local maparg = keymap.get_keymap(e_mode.NORMAL, 'gd', state.buf)
+    Keymap.unregister(e_mode.NORMAL, 'rc', { buffer = state.buf })
+
+    local maparg = Keymap.get_keymap(e_mode.NORMAL, 'gd', state.buf)
     if maparg then
-      keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })
-      keymap.register(e_mode.NORMAL, 'de', maparg.callback, { buffer = state.buf, desc = 'jump to definition.' })
+      Keymap.unregister(e_mode.NORMAL, 'gd', { buffer = state.buf })
+      Keymap.register(e_mode.NORMAL, 'de', maparg.callback, { buffer = state.buf, desc = 'jump to definition.' })
     end
+
+    Keymap.register(e_mode.NORMAL, '<ESC>', function()
+      local winid = is_open_extensions('ClangdTypeHierarchy')
+      if winid < 0 then
+        return
+      end
+
+      Helper.close_win(winid)
+    end, { remap = false, buffer = state.buf })
   end))
 end
 

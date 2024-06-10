@@ -49,7 +49,7 @@ keybinder.hidegister = function(mode, key, opts)
     desc = 'which_key_ignore'
   }
 
-  TOOLS.tbl_r_extend(final_opts, opts or {})
+  Tools.tbl_r_extend(final_opts, opts or {})
 
   vim.keymap.set(mode, key, function() end, final_opts)
 end
@@ -60,7 +60,7 @@ keybinder.unregister = function(mode, key, opts)
     silent = true,
   }
 
-  TOOLS.tbl_r_extend(final_opts, opts or {})
+  Tools.tbl_r_extend(final_opts, opts or {})
 
   vim.keymap.set(mode, key, '<NOP>', final_opts)
 end
@@ -71,10 +71,10 @@ keybinder.register = function(mode, lhs, rhs, opts)
     remap = true,
     silent = true,
   }
-  TOOLS.tbl_r_extend(final_opts, opts or {})
+  Tools.tbl_r_extend(final_opts, opts or {})
 
   -- fix rhs variable
-  if (TOOLS.is_fwrapper(rhs)) then
+  if (Tools.is_fwrapper(rhs)) then
     local wrapper = rhs
     rhs = function(...)
       wrapper(...)
@@ -112,7 +112,7 @@ keybinder.register = function(mode, lhs, rhs, opts)
         end
 
         table.insert(self.handlers, 1, { source = source, rhs = rhs })
-        TOOLS.tbl_r_extend(self.opts, opts or {})
+        Tools.tbl_r_extend(self.opts, opts or {})
       end,
       loop = function(self)
         for _, _handler in ipairs(self.handlers) do
@@ -122,7 +122,7 @@ keybinder.register = function(mode, lhs, rhs, opts)
               return
             end
           else
-            HELPER.feedkeys(_handler.rhs)
+            Helper.feedkeys(_handler.rhs)
           end
         end
       end,

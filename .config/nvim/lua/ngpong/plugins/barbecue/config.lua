@@ -1,18 +1,18 @@
 local M = {}
 
-local events      = require('ngpong.common.events')
-local icons       = require('ngpong.utils.icon')
-local lazy        = require('ngpong.utils.lazy')
-local navic       = lazy.require('nvim-navic')
-local barbecue    = lazy.require('barbecue')
-local barbecue_ui = lazy.require('barbecue.ui')
+local Events     = require('ngpong.common.events')
+local Icons      = require('ngpong.utils.icon')
+local Lazy       = require('ngpong.utils.lazy')
+local Navic      = Lazy.require('nvim-navic')
+local Barbecue   = Lazy.require('barbecue')
+local BarbecueUI = Lazy.require('barbecue.ui')
 
-local this = PLGS.barbecue
-local colors = PLGS.colorscheme.colors
-local e_events = events.e_name
+local this   = Plgs.barbecue
+local colors = Plgs.colorscheme.colors
+local e_name = Events.e_name
 
 M.setup = function()
-  barbecue.setup {
+  Barbecue.setup {
     attach_navic = false,
     create_autocmd = false,
     include_buftypes = { '' },
@@ -29,12 +29,12 @@ M.setup = function()
     lead_custom_section = function() return '' end,
     custom_section = function() return '' end,
     context_follow_icon_color = false,
-    context_suffix = icons.space,
+    context_suffix = Icons.space,
     symbols = {
-      modified = icons.circular_big,
-      ellipsis = icons.ellipsis,
-      separator = icons.separator,
-      dir = icons.directory,
+      modified = Icons.circular_big,
+      ellipsis = Icons.ellipsis,
+      separator = Icons.separator,
+      dir = Icons.directory,
     },
     theme = {
       normal = { fg = colors.light1, bold = false },
@@ -46,76 +46,76 @@ M.setup = function()
       modified = { fg = colors.light4 },
       basename = { bold = false, fg = colors.light1 },
 
-      context_file = { link = icons.lsp_kinds.File.hl_link },
-      context_module = { link = icons.lsp_kinds.Module.hl_link },
-      context_namespace = { link = icons.lsp_kinds.Namespace.hl_link },
-      context_package = { link = icons.lsp_kinds.Package.hl_link },
-      context_class = { link = icons.lsp_kinds.Class.hl_link },
-      context_method = { link = icons.lsp_kinds.Method.hl_link },
-      context_property = { link = icons.lsp_kinds.Property.hl_link },
-      context_field = { link = icons.lsp_kinds.Field.hl_link },
-      context_constructor = { link = icons.lsp_kinds.Constructor.hl_link },
-      context_enum = { link = icons.lsp_kinds.Enum.hl_link },
-      context_interface = { link = icons.lsp_kinds.Interface.hl_link },
-      context_function = { link = icons.lsp_kinds.Function.hl_link },
-      context_variable = { link = icons.lsp_kinds.Variable.hl_link },
-      context_constant = { link = icons.lsp_kinds.Constant.hl_link },
-      context_string = { link = icons.lsp_kinds.String.hl_link },
-      context_number = { link = icons.lsp_kinds.Number.hl_link },
-      context_boolean = { link = icons.lsp_kinds.Boolean.hl_link },
-      context_array = { link = icons.lsp_kinds.Array.hl_link },
-      context_object = { link = icons.lsp_kinds.Object.hl_link },
-      context_key = { link = icons.lsp_kinds.Key.hl_link },
-      context_null = { link = icons.lsp_kinds.Null.hl_link },
-      context_enum_member = { link = icons.lsp_kinds.EnumMember.hl_link },
-      context_struct = { link = icons.lsp_kinds.Struct.hl_link },
-      context_event = { link = icons.lsp_kinds.Event.hl_link },
-      context_operator = { link = icons.lsp_kinds.Operator.hl_link },
-      context_type_parameter = { link = icons.lsp_kinds.TypeParameter.hl_link },
+      context_file = { link = Icons.lsp_kinds.File.hl_link },
+      context_module = { link = Icons.lsp_kinds.Module.hl_link },
+      context_namespace = { link = Icons.lsp_kinds.Namespace.hl_link },
+      context_package = { link = Icons.lsp_kinds.Package.hl_link },
+      context_class = { link = Icons.lsp_kinds.Class.hl_link },
+      context_method = { link = Icons.lsp_kinds.Method.hl_link },
+      context_property = { link = Icons.lsp_kinds.Property.hl_link },
+      context_field = { link = Icons.lsp_kinds.Field.hl_link },
+      context_constructor = { link = Icons.lsp_kinds.Constructor.hl_link },
+      context_enum = { link = Icons.lsp_kinds.Enum.hl_link },
+      context_interface = { link = Icons.lsp_kinds.Interface.hl_link },
+      context_function = { link = Icons.lsp_kinds.Function.hl_link },
+      context_variable = { link = Icons.lsp_kinds.Variable.hl_link },
+      context_constant = { link = Icons.lsp_kinds.Constant.hl_link },
+      context_string = { link = Icons.lsp_kinds.String.hl_link },
+      context_number = { link = Icons.lsp_kinds.Number.hl_link },
+      context_boolean = { link = Icons.lsp_kinds.Boolean.hl_link },
+      context_array = { link = Icons.lsp_kinds.Array.hl_link },
+      context_object = { link = Icons.lsp_kinds.Object.hl_link },
+      context_key = { link = Icons.lsp_kinds.Key.hl_link },
+      context_null = { link = Icons.lsp_kinds.Null.hl_link },
+      context_enum_member = { link = Icons.lsp_kinds.EnumMember.hl_link },
+      context_struct = { link = Icons.lsp_kinds.Struct.hl_link },
+      context_event = { link = Icons.lsp_kinds.Event.hl_link },
+      context_operator = { link = Icons.lsp_kinds.Operator.hl_link },
+      context_type_parameter = { link = Icons.lsp_kinds.TypeParameter.hl_link },
     },
     kinds = {
-      File          = icons.lsp_kinds.File.val,
-      Module        = icons.lsp_kinds.Module.val,
-      Namespace     = icons.lsp_kinds.Namespace.val,
-      Package       = icons.lsp_kinds.Package.val,
-      Class         = icons.lsp_kinds.Class.val,
-      Method        = icons.lsp_kinds.Method.val,
-      Property      = icons.lsp_kinds.Property.val,
-      Field         = icons.lsp_kinds.Field.val,
-      Constructor   = icons.lsp_kinds.Constructor.val,
-      Enum          = icons.lsp_kinds.Enum.val,
-      Interface     = icons.lsp_kinds.Interface.val,
-      Function      = icons.lsp_kinds.Function.val,
-      Variable      = icons.lsp_kinds.Variable.val,
-      Constant      = icons.lsp_kinds.Constant.val,
-      String        = icons.lsp_kinds.String.val,
-      Number        = icons.lsp_kinds.Number.val,
-      Boolean       = icons.lsp_kinds.Boolean.val,
-      Array         = icons.lsp_kinds.Array.val,
-      Object        = icons.lsp_kinds.Object.val,
-      Key           = icons.lsp_kinds.Key.val,
-      Null          = icons.lsp_kinds.Null.val,
-      EnumMember    = icons.lsp_kinds.EnumMember.val,
-      Struct        = icons.lsp_kinds.Struct.val,
-      Event         = icons.lsp_kinds.Event.val,
-      Operator      = icons.lsp_kinds.Operator.val,
-      TypeParameter = icons.lsp_kinds.TypeParameter.val,
+      File          = Icons.lsp_kinds.File.val,
+      Module        = Icons.lsp_kinds.Module.val,
+      Namespace     = Icons.lsp_kinds.Namespace.val,
+      Package       = Icons.lsp_kinds.Package.val,
+      Class         = Icons.lsp_kinds.Class.val,
+      Method        = Icons.lsp_kinds.Method.val,
+      Property      = Icons.lsp_kinds.Property.val,
+      Field         = Icons.lsp_kinds.Field.val,
+      Constructor   = Icons.lsp_kinds.Constructor.val,
+      Enum          = Icons.lsp_kinds.Enum.val,
+      Interface     = Icons.lsp_kinds.Interface.val,
+      Function      = Icons.lsp_kinds.Function.val,
+      Variable      = Icons.lsp_kinds.Variable.val,
+      Constant      = Icons.lsp_kinds.Constant.val,
+      String        = Icons.lsp_kinds.String.val,
+      Number        = Icons.lsp_kinds.Number.val,
+      Boolean       = Icons.lsp_kinds.Boolean.val,
+      Array         = Icons.lsp_kinds.Array.val,
+      Object        = Icons.lsp_kinds.Object.val,
+      Key           = Icons.lsp_kinds.Key.val,
+      Null          = Icons.lsp_kinds.Null.val,
+      EnumMember    = Icons.lsp_kinds.EnumMember.val,
+      Struct        = Icons.lsp_kinds.Struct.val,
+      Event         = Icons.lsp_kinds.Event.val,
+      Operator      = Icons.lsp_kinds.Operator.val,
+      TypeParameter = Icons.lsp_kinds.TypeParameter.val,
     },
   }
 
-  navic.setup {
+  Navic.setup {
     lazy_update_context = true
   }
 
-  barbecue_ui.toggle(true)
+  BarbecueUI.toggle(true)
 
-  events.rg(e_events.ATTACH_LSP, function(state)
+  Events.rg(e_name.ATTACH_LSP, function(state)
     if this.filter(2, state) then
-      navic.attach(state.cli, state.bufnr)
+      Navic.attach(state.cli, state.bufnr)
 
       vim.b[state.bufnr].barbecu_enable = true
 
-      events.emit(e_events.ATTACH_NAVIC, state)
+      Events.emit(e_name.ATTACH_NAVIC, state)
     else
       vim.b[state.bufnr].barbecu_enable = false
     end

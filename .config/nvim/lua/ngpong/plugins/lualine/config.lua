@@ -1,41 +1,42 @@
 local M = {}
 
-local events  = require('ngpong.common.events')
-local icons   = require('ngpong.utils.icon')
-local lazy    = require('ngpong.utils.lazy')
-local lualine = lazy.require('lualine')
+local Events = require('ngpong.common.events')
+local Icons = require('ngpong.utils.icon')
+local Lazy = require('ngpong.utils.lazy')
+local Lualine = Lazy.require('lualine')
 
-local colors = PLGS.colorscheme.colors
+local this = Plgs.lualine
+local mc = Plgs.multicursors
+local colors = Plgs.colorscheme.colors
+local trouble = Plgs.trouble
 
-local this = PLGS.lualine
-local mc = PLGS.multicursors
-local e_events = events.e_name
+local e_name = Events.e_name
 
 local module = {
   space = {
     function()
-      return icons.space
+      return Icons.space
     end,
     padding = {
       left = 0,
       right = 0,
-    }
+    },
   },
   mode_1 = {
-    function ()
+    function()
       return '('
     end,
     component_name = 'mode_1',
-    color = { gui = 'bold', fg = colors.dark0, },
+    color = { gui = 'bold', fg = colors.dark0 },
     padding = {
       left = 1,
       right = 1,
     },
-    separator = { left = icons.left_half_1 },
+    separator = { left = Icons.left_half_1 },
   },
   mode_2 = {
-    function ()
-      return icons.rabbit
+    function()
+      return Icons.rabbit
     end,
     component_name = 'mode_2',
     color = { fg = '#ffffff' },
@@ -45,8 +46,8 @@ local module = {
     },
   },
   mode_3 = {
-    function ()
-      return icons.cat
+    function()
+      return Icons.cat
     end,
     component_name = 'mode_3',
     color = { fg = colors.dark0 },
@@ -56,8 +57,8 @@ local module = {
     },
   },
   mode_4 = {
-    function ()
-      return icons.cat
+    function()
+      return Icons.cat
     end,
     component_name = 'mode_4',
     color = { fg = '#f2d896' },
@@ -67,15 +68,15 @@ local module = {
     },
   },
   mode_5 = {
-    function ()
+    function()
       return ')'
     end,
     component_name = 'mode_5',
-    color = { gui = 'bold', fg = colors.dark0, },
+    color = { gui = 'bold', fg = colors.dark0 },
     padding = {
       left = 0,
       right = 1,
-    }
+    },
   },
   mode_6 = {
     'mode',
@@ -83,12 +84,12 @@ local module = {
       if mc.api.is_active() then
         return '󰳽'
       else
-        return str:sub(1,1)
+        return str:sub(1, 1)
       end
     end,
     component_name = 'mode_6',
-    separator = { right = icons.right_half_1 },
-    color = { gui = 'italic,bold', fg = colors.dark0, },
+    separator = { right = Icons.right_half_1 },
+    color = { gui = 'italic,bold', fg = colors.dark0 },
     padding = {
       left = 0,
       right = 1,
@@ -97,40 +98,40 @@ local module = {
   git_1 = {
     'branch',
     component_name = 'git_1',
-    icon = { icons.git, color = { fg = colors.bright_orange } },
+    icon = { Icons.git, color = { fg = colors.bright_orange } },
     padding = {
       left = 1,
       right = 1,
     },
     color = { bg = colors.dark3, fg = colors.light1 },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
   git_2 = {
     'diff',
     component_name = 'git_2',
     symbols = {
-      added = icons.git_add .. icons.space,
-      modified = icons.git_change .. icons.space,
-      removed = icons.git_delete .. icons.space,
+      added = Icons.git_add .. Icons.space,
+      modified = Icons.git_change .. Icons.space,
+      removed = Icons.git_delete .. Icons.space,
     },
     padding = {
       left = 0,
       right = 1,
     },
-    source = function ()
+    source = function()
       local gitsigns = vim.b.gitsigns_status_dict
       if gitsigns then
         return {
           added = gitsigns.added,
           modified = gitsigns.changed,
-          removed = gitsigns.removed
+          removed = gitsigns.removed,
         }
       end
-    end
+    end,
   },
   lsp_1 = {
     function()
-      local clis = vim.lsp.get_clients({ bufnr = HELPER.get_cur_bufnr() })
+      local clis = vim.lsp.get_clients({ bufnr = Helper.get_cur_bufnr() })
       if next(clis) then
         return clis[1].name
       else
@@ -138,13 +139,13 @@ local module = {
       end
     end,
     component_name = 'lsp_1',
-    icon = { icons.activets, color = { fg = colors.bright_green } },
+    icon = { Icons.activets, color = { fg = colors.bright_green } },
     padding = {
       left = 1,
       right = 1,
     },
     color = { bg = colors.dark2, fg = colors.light1 },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
   lsp_2 = {
     'diagnostics',
@@ -156,10 +157,10 @@ local module = {
     sources = { 'nvim_diagnostic' },
     sections = { 'error', 'warn', 'info', 'hint' },
     symbols = {
-      error = icons.diagnostic_err .. icons.space,
-      warn = icons.diagnostic_warn .. icons.space,
-      info = icons.diagnostic_info .. icons.space,
-      hint = icons.diagnostic_hint .. icons.space,
+      error = Icons.diagnostic_err .. Icons.space,
+      warn = Icons.diagnostic_warn .. Icons.space,
+      info = Icons.diagnostic_info .. Icons.space,
+      hint = Icons.diagnostic_hint .. Icons.space,
     },
     color = { bg = colors.dark1 },
     colored = true,
@@ -174,18 +175,18 @@ local module = {
       right = 1,
     },
     colored = false,
-    color = { fg = colors.dark4, gui = 'italic' }
+    color = { fg = colors.dark4, gui = 'italic' },
   },
   fileformat = {
-    function ()
+    function()
       local format = vim.bo.fileformat
 
       if format == 'unix' then
-        return icons.unix .. icons.space .. format
+        return Icons.unix .. Icons.space .. format
       elseif format == 'dos' then
-        return icons.windows.. icons.space .. format
+        return Icons.windows .. Icons.space .. format
       elseif format == 'mac' then
-        return icons.mac.. icons.space .. format
+        return Icons.mac .. Icons.space .. format
       else
         return ''
       end
@@ -195,33 +196,33 @@ local module = {
       left = 0,
       right = 1,
     },
-    color = { fg = colors.dark4, gui = 'italic' }
+    color = { fg = colors.dark4, gui = 'italic' },
   },
   encoding = {
     function()
-      return icons.files_2 .. icons.space .. vim.opt.fileencoding:get()
+      return Icons.files_2 .. Icons.space .. vim.opt.fileencoding:get()
     end,
     component_name = 'encoding',
     padding = {
       left = 0,
       right = 1,
     },
-    color = { fg = colors.dark4, gui = 'italic' }
+    color = { fg = colors.dark4, gui = 'italic' },
   },
   searchcount_1 = {
     'searchcount',
     component_name = 'searchcount',
-    icon = { icons.search, color = { fg = colors.bright_yellow } },
+    icon = { Icons.search, color = { fg = colors.bright_yellow } },
     padding = {
       left = 0,
       right = 0,
     },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
     color = { fg = colors.light1, bg = colors.dark2 },
   },
   searchcount_2 = {
     function()
-      return icons.space
+      return Icons.space
     end,
     component_name = 'searchcount_2',
     cond = function()
@@ -230,19 +231,19 @@ local module = {
     padding = {
       left = 0,
       right = 0,
-    }
+    },
   },
   datetime = {
     function()
-      return os.date("%A %H:%M")
+      return os.date('%A %H:%M')
     end,
-    icon = { icons.alarm, color = { fg = colors.bright_aqua } },
+    icon = { Icons.alarm, color = { fg = colors.bright_aqua } },
     component_name = 'datetime',
     padding = {
       left = 0,
       right = 0,
     },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
     color = { fg = colors.light1, bg = colors.dark2, gui = 'italic' },
   },
   progress_2 = {
@@ -257,14 +258,14 @@ local module = {
   progress_1 = {
     function()
       -- return '%#GruvboxPurple#%#GruvboxPurple#%#GruvboxPurple# 1' -- 设置颜色的方法
-      return icons.progress
+      return Icons.progress
     end,
     component_name = 'progress_1',
     padding = {
       left = 0,
       right = 1,
     },
-    separator = { left = icons.left_half_1 },
+    separator = { left = Icons.left_half_1 },
     color = { bg = colors.bright_yellow },
   },
   location_2 = {
@@ -282,79 +283,66 @@ local module = {
   },
   location_1 = {
     function()
-      return icons.location
+      return Icons.location
     end,
     component_name = 'location_1',
     padding = {
       left = 0,
       right = 1,
     },
-    separator = { left = icons.left_half_1 },
+    separator = { left = Icons.left_half_1 },
     color = { bg = colors.bright_green },
   },
   touble_type = {
-    function ()
-      local trouble_source = VAR.get('TroubleSource')
-
-      if not TOOLS.isempty(trouble_source) then
-        return trouble_source
-      else
-        local opts = require('trouble.config').options
-
-        local words = vim.split(opts.mode, '[%W]')
-        for i, word in ipairs(words) do
-          words[i] = word:sub(1, 1):upper() .. word:sub(2)
-        end
-
-        return table.concat(words, ' ')
-      end
+    function()
+      return trouble.api.get_cur_view_name()
     end,
     component_name = 'touble_type',
-    color = { gui = 'italic,bold', fg = colors.dark0, },
+    color = { gui = 'italic,bold', fg = colors.dark0 },
     padding = {
       left = 1,
       right = 1,
     },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
   clangd_extensions = function(source)
     return {
-      function ()
+      function()
         return source
       end,
       component_name = 'clangd_extensions',
-      color = { gui = 'italic,bold', fg = colors.dark0, },
+      color = { gui = 'italic,bold', fg = colors.dark0 },
       padding = {
         left = 1,
         right = 1,
       },
-      separator = { left = icons.left_half_1, right = icons.right_half_1 },
+      separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
     }
   end,
   lazy_indicator = {
-    function ()
+    function()
       return 'Lazy plugins manager'
     end,
     component_name = 'lazy_indicator',
-    color = { gui = 'italic,bold', fg = colors.dark0, },
+    color = { gui = 'italic,bold', fg = colors.dark0 },
     padding = {
       left = 1,
       right = 1,
     },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
   mason_indicator = {
-    function ()
+    function()
       return 'Mason package manager'
     end,
     component_name = 'mason_indicator',
-    color = { gui = 'italic,bold', fg = colors.dark0, },
+    color = { gui = 'italic,bold', fg = colors.dark0 },
     padding = {
       left = 1,
       right = 1,
     },
-    separator = { left = icons.left_half_1, right = icons.right_half_1 },
-  }
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
+  },
 }
 
 local extension = {
@@ -373,16 +361,16 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'TelescopePrompt' }
+    filetypes = { 'TelescopePrompt' },
   },
   neotree = {
     sections = {
@@ -401,21 +389,21 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'neo-tree' }
+    filetypes = { 'neo-tree' },
   },
   trouble = {
     sections = {
       lualine_a = {
-        module.touble_type
+        module.touble_type,
       },
       lualine_x = {
         module.searchcount_1,
@@ -423,21 +411,21 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'Trouble' }
+    filetypes = { 'trouble' },
   },
   clangd_typehierarchy = {
     sections = {
       lualine_a = {
-        module.clangd_extensions('Clangd type hierarchy')
+        module.clangd_extensions('Clangd type hierarchy'),
       },
       lualine_x = {
         module.searchcount_1,
@@ -445,21 +433,21 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'ClangdTypeHierarchy' }
+    filetypes = { 'ClangdTypeHierarchy' },
   },
   lazy = {
     sections = {
       lualine_a = {
-        module.lazy_indicator
+        module.lazy_indicator,
       },
       lualine_x = {
         module.searchcount_1,
@@ -467,21 +455,21 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'lazy' }
+    filetypes = { 'lazy' },
   },
   mason = {
     sections = {
       lualine_a = {
-        module.mason_indicator
+        module.mason_indicator,
       },
       lualine_x = {
         module.searchcount_1,
@@ -489,17 +477,17 @@ local extension = {
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
+      },
     },
-    filetypes = { 'mason' }
-  }
+    filetypes = { 'mason' },
+  },
 }
 
 M.setup = function()
@@ -509,7 +497,7 @@ M.setup = function()
       component_separators = { left = '', right = '' },
       disabled_filetypes = {
         statusline = {}, -- only ignores the ft for statusline.
-        winbar = {},     -- only ignores the ft for winbar.
+        winbar = {}, -- only ignores the ft for winbar.
       },
       always_divide_middle = true,
       globalstatus = true,
@@ -517,8 +505,8 @@ M.setup = function()
         statusline = 2000,
         tabline = 2000,
         winbar = 2000,
-      }
-    }
+      },
+    },
   }
 
   local theme_cfg = {
@@ -554,8 +542,8 @@ M.setup = function()
           b = { bg = colors.dark1, fg = colors.light4 },
           c = { bg = colors.dark1, fg = colors.light4 },
         },
-      }
-    }
+      },
+    },
   }
 
   local extensions_cfg = {
@@ -566,7 +554,7 @@ M.setup = function()
       extension.clangd_typehierarchy,
       extension.lazy,
       extension.mason,
-    }
+    },
   }
 
   local inactive_section_cfg = {
@@ -576,7 +564,7 @@ M.setup = function()
       lualine_c = {},
       lualine_x = {},
       lualine_y = {},
-      lualine_z = {}
+      lualine_z = {},
     },
   }
 
@@ -593,7 +581,7 @@ M.setup = function()
         module.lsp_1,
       },
       lualine_b = {
-        module.space
+        module.space,
       },
       lualine_c = {
         module.git_2,
@@ -608,25 +596,26 @@ M.setup = function()
         module.datetime,
       },
       lualine_y = {
-        module.space
+        module.space,
       },
       lualine_z = {
         module.location_1,
         module.location_2,
         module.progress_1,
         module.progress_2,
-      }
-    }
+      },
+    },
   }
 
-  TOOLS.tbl_r_extend(cfg, theme_cfg,
+  -- stylua: ignore
+  Tools.tbl_r_extend(cfg, theme_cfg,
                           active_section_cfg,
                           inactive_section_cfg,
                           extensions_cfg)
 
-  events.emit(e_events.SETUP_LUALINE, cfg)
+  Events.emit(e_name.SETUP_LUALINE, cfg)
 
-  lualine.setup(cfg)
+  Lualine.setup(cfg)
 end
 
 return M

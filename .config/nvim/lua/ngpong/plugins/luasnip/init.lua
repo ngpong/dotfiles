@@ -3,9 +3,9 @@ return {
   lazy = true,
   build = 'make install_jsregexp',
   config = function()
-    PLGS.record_seq('LuaSnip config')
-    PLGS.luasnip.config.setup()
-    PLGS.luasnip.autocmd.setup()
-    PLGS.luasnip.snippets.setup()
+    Plgs.record_seq('LuaSnip config')
+    Plgs.luasnip.config.setup()
+    Plgs.luasnip.autocmd.setup()
+    Plgs.luasnip.snippets.setup()
   end
 }

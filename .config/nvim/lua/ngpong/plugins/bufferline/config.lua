@@ -1,9 +1,9 @@
 local M = {}
 
-local icons = require('ngpong.utils.icon')
+local Icons = require('ngpong.utils.icon')
 
-local this   = PLGS.bufferline
-local colors = PLGS.colorscheme.colors
+local this   = Plgs.bufferline
+local colors = Plgs.colorscheme.colors
 
 M.setup = function()
   require('bufferline').setup({
@@ -16,8 +16,8 @@ M.setup = function()
       --   return string.format('%s·%s', opts.ordinal, opts.lower(opts.id))
       -- end,
       numbers = nil,
-      left_trunc_marker = icons.arrow_left_1,
-      right_trunc_marker = icons.arrow_right_2,
+      left_trunc_marker = Icons.arrow_left_1,
+      right_trunc_marker = Icons.arrow_right_2,
       indicator = {
         -- icon = '▎',
         style = 'underline',
@@ -41,7 +41,7 @@ M.setup = function()
       },
       groups = {
         items = {
-          require('bufferline.groups').builtin.pinned:with({ icon = icons.pinned_3 })
+          require('bufferline.groups').builtin.pinned:with({ icon = Icons.pinned_3 })
         }
       },
       custom_filter = this.filter()

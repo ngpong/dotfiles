@@ -8,18 +8,18 @@ return {
       build = 'make'
     },
     'nvim-telescope/telescope-smart-history.nvim',
-    'NGPONG/telescope-live-grep-args.nvim' ,
+    'NGPONG/telescope-live-grep-args.nvim',
   },
   init = function()
-    PLGS.record_seq('telescope.nvim init')
-    PLGS.telescope.keys.setup()
-    PLGS.telescope.highlight.setup()
-    PLGS.telescope.autocmd.setup()
-    PLGS.telescope.behavior.setup()
+    Plgs.record_seq('telescope.nvim init')
+    Plgs.telescope.keys.setup()
+    Plgs.telescope.highlight.setup()
+    Plgs.telescope.autocmd.setup()
+    Plgs.telescope.behavior.setup()
   end,
   config = function()
-    PLGS.record_seq('telescope.nvim config')
-    PLGS.telescope.hacker.setup()
-    PLGS.telescope.config.setup()
+    Plgs.record_seq('telescope.nvim config')
+    Plgs.telescope.hacker.setup()
+    Plgs.telescope.config.setup()
   end
 }

@@ -1,12 +1,25 @@
 local M = {}
 
-local keymap = require('ngpong.common.keybinder')
-local events = require('ngpong.common.events')
+local Events = require('ngpong.common.events')
+local Keymap = require('ngpong.common.keybinder')
 
-local e_mode   = keymap.e_mode
-local e_events = events.e_name
+local this = Plgs.telescope
 
-local this = PLGS.telescope
+local e_mode = Keymap.e_mode
+local e_name = Events.e_name
+
+local wrap_handler = function(handler)
+  local final_handler = nil
+  if type(handler) == 'string' then
+    final_handler = handler
+  elseif type(handler) == 'table' or type(handler) == 'function' then
+    final_handler = function()
+      handler(Helper.get_cur_bufnr())
+    end
+  end
+
+  return final_handler
+end
 
 local wrap_keymap = function(handler, opts)
   local final_opts = {
@@ -14,19 +27,11 @@ local wrap_keymap = function(handler, opts)
     silent = true,
     nowait = true,
   }
-  TOOLS.tbl_r_extend(final_opts, opts or {})
+  Tools.tbl_r_extend(final_opts, opts or {})
 
-  local final_handler = nil
-  if type(handler) == 'string' then
-    final_handler = handler
-  elseif type(handler) == 'table' or type(handler) == 'function' then
-    final_handler = function()
-      handler(HELPER.get_cur_bufnr())
-    end
-  end
 
   return {
-    final_handler,
+    wrap_handler(handler),
     type = 'command',
     opts = final_opts,
   }
@@ -66,7 +71,6 @@ local set_plugin_keymaps = function()
       ['t.'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['t,'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['r'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
-      ['ro'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['rc'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['r;'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['rl'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -177,43 +181,62 @@ local set_plugin_keymaps = function()
       ----------------------------------------------------------------------
     },
     i = {
-      ['<ESC>'] = wrap_keymap(function() HELPER.feedkeys('<ESC>l') end, { desc = 'which_key_ignore' }),
-    }
+      ['<ESC>'] = wrap_keymap(function()
+        Helper.feedkeys('<ESC>l')
+      end, { desc = 'which_key_ignore' }),
+    },
   }
 end
 
-local del_native_keymaps = function()
-end
+local del_native_keymaps = function() end
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'f<leader>', '<CMD>Telescope<CR>', { remap = false, silent = true, desc = 'find builtin.' })
-  keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
-  keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
-  keymap.register(e_mode.NORMAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', { remap = false, silent = true, desc = 'find string with live grep mode.' })
-  keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args({ default_text = HELPER.get_visual_selected() })<cr>', { silent = true, desc = 'which_key_ignore' })
-  -- keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope-live-grep-args.shortcuts").grep_visual_selection()<cr>', { silent = true, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'f<leader>', '<CMD>Telescope<CR>', { remap = false, silent = true, desc = 'find builtin.' })
+  Keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
+  Keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
+  Keymap.register(e_mode.NORMAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', { remap = false, silent = true, desc = 'find string with live grep mode.' })
+  Keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args({ default_text = Helper.get_visual_selected() })<cr>', { silent = true, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'fl', this.api.open_multselected_trouble, { silent = true, desc = 'open last multi-selected trouble list.' })
 end
 
 local set_buffer_keymaps = function(state)
   if state.picker.prompt_title == 'Buffers' then
-    keymap.register(e_mode.NORMAL, '<C-CR>', TOOLS.wrap_f(this.api.delete_entries, state.bufnr), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: delete entries.' })
+    Keymap.register(e_mode.NORMAL, '<C-CR>', Tools.wrap_f(this.api.delete_entries, state.bufnr), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: delete entries.' })
   end
+
+  if state.picker.prompt_title == 'Git Status' then
+    Keymap.register(e_mode.NORMAL, '<Tab>', wrap_handler(this.api.actions.git_staging_toggle), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: toggle git staging.' })
+  end
+end
+
+local set_config_keymaps = function(cfg)
+  Tools.tbl_r_extend(cfg, {
+    defaults = {
+      -- completely remove all default mappings
+      default_mappings = set_plugin_keymaps(),
+    },
+    -- 下面的配置无法显示 desc，参考这篇：https://github.com/nvim-telescope/telescope.nvim/issues/2981
+    -- pickers = {
+    --   buffers = {
+    --     mappings = {
+    --       n = {
+    --         ['<C-CR>'] = { function() vim.cmd [[ stopinsert ]] end, opts = { desc = "asdasdasd" } },
+    --       },
+    --     },
+    --   },
+    -- },
+  })
 end
 
 M.setup = function()
   del_native_keymaps()
   set_native_keymaps()
 
-  events.rg(e_events.SETUP_TELESCOPE, function(cfg)
-    TOOLS.tbl_r_extend(cfg, {
-      defaults = {
-        -- completely remove all default mappings
-        default_mappings = set_plugin_keymaps(),
-      },
-    })
+  Events.rg(e_name.SETUP_TELESCOPE, function(cfg)
+    set_config_keymaps(cfg)
   end)
 
-  events.rg(e_events.TELESCOPE_LOAD, function(state)
+  Events.rg(e_name.TELESCOPE_LOAD, function(state)
     set_buffer_keymaps(state)
   end)
 end

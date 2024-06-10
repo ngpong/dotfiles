@@ -10,7 +10,7 @@ local execlude_fts = {
   -- 'toggleterm',
   'TelescopePrompt',
   'neo-tree',
-  'Trouble',
+  'trouble',
   'ClangdTypeHierarchy',
   'ClangdAST',
   'lazy',
@@ -27,7 +27,7 @@ local f1 = function()
 end
 
 local f2 = function(state)
-  local size = HELPER.get_bufsize(state.bufnr)
+  local size = Helper.get_bufsize(state.bufnr)
 
   return size < max_size and state.cli.server_capabilities.documentSymbolProvider
 end

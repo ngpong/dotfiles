@@ -1,8 +1,8 @@
 local M = {}
 
-local icons = require('ngpong.utils.icon')
+local Icons = require('ngpong.utils.icon')
 
-local this = PLGS.todocomments
+local this = Plgs.todocomments
 
 M.setup = function()
   require('todo-comments').setup({
@@ -11,17 +11,17 @@ M.setup = function()
     -- keywords recognized as todo comments
     keywords = {
       FIX = {
-        icon = icons.debugger .. icons.space, -- icon used for the sign, and in search results
+        icon = Icons.debugger .. Icons.space, -- icon used for the sign, and in search results
         color = 'error', -- can be a hex color, or a named color (see below)
         alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, -- a set of other keywords that all map to this FIX keywords
         -- signs = false, -- configure signs for some keywords individually
       },
-      TODO = { icon = icons.yes_small .. icons.space, color = 'info' },
-      HACK = { icon = icons.fire .. icons.space, color = 'error' },
-      WARN = { icon = icons.diagnostic_warn .. icons.space, color = 'warning', alt = { 'WARNING', 'XXX' } },
-      PERF = { icon = icons.diagnostic .. icons.space, alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
-      NOTE = { icon = icons.diagnostic_hint .. icons.space, color = 'hint', alt = { 'INFO' } },
-      TEST = { icon = icons.clock .. icons.space, color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
+      TODO = { icon = Icons.yes_small .. Icons.space, color = 'info' },
+      HACK = { icon = Icons.fire .. Icons.space, color = 'error' },
+      WARN = { icon = Icons.diagnostic_warn .. Icons.space, color = 'warning', alt = { 'WARNING', 'XXX' } },
+      PERF = { icon = Icons.diagnostic .. Icons.space, alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
+      NOTE = { icon = Icons.diagnostic_hint .. Icons.space, color = 'hint', alt = { 'INFO' } },
+      TEST = { icon = Icons.clock .. Icons.space, color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
     },
     gui_style = {
       fg = 'NONE', -- The gui style to use for the fg highlight group.
@@ -41,7 +41,7 @@ M.setup = function()
     -- * keyword: highlights of the keyword
     -- * after: highlights after the keyword (todo text)
     highlight = {
-      multiline = true, -- enable multine todo comments
+      multiline = false, -- enable multine todo comments
       multiline_pattern = '^.', -- lua pattern to match the next multiline from the start of the matched keyword
       multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
       before = 'empty', -- 'fg' or 'bg' or empty

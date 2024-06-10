@@ -1,11 +1,11 @@
 local M = {}
 
-local keymap = require('ngpong.common.keybinder')
+local Keymap = require('ngpong.common.keybinder')
 
-local e_mode = keymap.e_mode
+local e_mode = Keymap.e_mode
 
 M.setup = function()
-  if not HELPER.is_neovide() then
+  if not Helper.is_neovide() then
     return
   end
 
@@ -16,7 +16,7 @@ M.setup = function()
   vim.go.linespace = 0
 
   -- 启动鼠标控制
-  -- vim.go.mouse = 'a'
+  vim.go.mouse = 'a'
 
   -- 刷新率
   vim.g.neovide_refresh_rate = 144
@@ -49,12 +49,12 @@ M.setup = function()
   vim.g.neovide_underline_stroke_scale = 1.0
 
   -- 模拟终端中的复制粘贴行为
-  keymap.register(e_mode.INSERT, '<C-S-v>', '<C-o>P', { remap = false, silent = false, desc = 'which_key_ignore' })
-  keymap.register(e_mode.NORMAL, '<C-S-v>', 'p', { remap = false, silent = false, desc = 'which_key_ignore' })
-  keymap.register(e_mode.COMMAND, '<C-S-v>', '<C-R>*', { silent = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<C-S-v>', '<C-o>P', { remap = false, silent = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, '<C-S-v>', 'p', { remap = false, silent = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<C-S-v>', '<C-R>*', { silent = false, desc = 'which_key_ignore' })
 
   -- 最大化
-  keymap.register(e_mode.NORMAL, '<f11>', function()
+  Keymap.register(e_mode.NORMAL, '<f11>', function()
     vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
   end, { desc = 'which_key_ignore' })
 
@@ -67,11 +67,11 @@ M.setup = function()
     end
     vim.g.neovide_scale_factor = temp
   end
-  keymap.register(e_mode.NORMAL, '<C-=>', TOOLS.wrap_f(scale, 0.1), { desc = 'which_key_ignore' })
-  keymap.register(e_mode.NORMAL, '<C-->', TOOLS.wrap_f(scale, -0.1), { desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, '<C-=>', Tools.wrap_f(scale, 0.1), { desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, '<C-->', Tools.wrap_f(scale, -0.1), { desc = 'which_key_ignore' })
 
   -- neovide 的鼠标使用有问题，为了方便后续排查问题映射一些 debug 使用的 key
-  keymap.register(e_mode.INSERT, '<f6>', function()
+  Keymap.register(e_mode.INSERT, '<f6>', function()
     vim.api.nvim_command_output('messages')
   end, { remap = false, desc = 'which_key_ignore' })
 end

@@ -6,12 +6,12 @@ return {
     'SmiteshP/nvim-navic'
   },
   init = function()
-    PLGS.record_seq('barbecue.nvim init')
-    PLGS.barbecue.handler.setup()
-    PLGS.barbecue.autocmd.setup()
+    Plgs.record_seq('barbecue.nvim init')
+    Plgs.barbecue.handler.setup()
+    Plgs.barbecue.autocmd.setup()
   end,
   config = function()
-    PLGS.record_seq('barbecue.nvim config')
-    PLGS.barbecue.config.setup()
+    Plgs.record_seq('barbecue.nvim config')
+    Plgs.barbecue.config.setup()
   end
 }

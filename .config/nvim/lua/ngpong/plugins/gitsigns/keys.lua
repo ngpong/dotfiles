@@ -1,17 +1,18 @@
 local M = {}
 
-local keymap   = require('ngpong.common.keybinder')
-local events   = require('ngpong.common.events')
-local lazy     = require('ngpong.utils.lazy')
-local gitsigns = lazy.require('gitsigns')
+local Keymap   = require('ngpong.common.keybinder')
+local Events   = require('ngpong.common.events')
+local Lazy     = require('ngpong.utils.lazy')
+local Gitsigns = Lazy.require('gitsigns')
 
-local this = PLGS.gitsigns
-local e_mode = keymap.e_mode
-local e_events = events.e_name
+local this      = Plgs.gitsigns
+local telescope = Plgs.telescope
+
+local e_mode = Keymap.e_mode
+local e_name = Events.e_name
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, 'gg', TOOLS.wrap_f(this.api.toggle_gitsymbols_list), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
-  keymap.register(e_mode.NORMAL, 'gG', TOOLS.wrap_f(this.api.toggle_gitsymbols_list, 'all'), { silent = true, remap = false, desc = 'toggle workspace buffer gitsigns list.' })
+  Keymap.register(e_mode.NORMAL, 'gg', Tools.wrap_f(telescope.api.builtin_picker, 'git_status'), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
 end
 
 local del_buffer_keymaps = function(bufnr)
@@ -21,45 +22,45 @@ end
 local set_buffer_diffthis_keymaps = function(bufnr)
   bufnr = bufnr or true
 
-  keymap.register(e_mode.NORMAL, 'gd', this.api.toggle_diffthis, { buffer = bufnr, desc = 'toggle current file changed.' })
+  Keymap.register(e_mode.NORMAL, 'gd', this.api.toggle_diffthis, { buffer = bufnr, desc = 'toggle current file changed.' })
 end
 
 local set_buffer_popup_keymaps = function(bufnr)
   bufnr = bufnr or true
 
-  local maparg = keymap.get_keymap(e_mode.NORMAL, 'q')
+  local maparg = Keymap.get_keymap(e_mode.NORMAL, 'q')
   if maparg then
-    keymap.register(e_mode.NORMAL, 'q', maparg.callback, { buffer = bufnr, desc = maparg.desc, silent = maparg.silent, remap = not maparg.noremap })
+    Keymap.register(e_mode.NORMAL, 'q', maparg.callback, { buffer = bufnr, desc = maparg.desc, silent = maparg.silent, remap = not maparg.noremap })
   end
 end
 
 local set_buffer_keymaps = function(bufnr)
   set_buffer_diffthis_keymaps(bufnr)
 
-  keymap.register(e_mode.NORMAL, 'g,', TOOLS.wrap_f(gitsigns.prev_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to prev hunk.' })
-  keymap.register(e_mode.NORMAL, 'g.', TOOLS.wrap_f(gitsigns.next_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to next hunk.' })
-  keymap.register(e_mode.NORMAL, 'ghs', gitsigns.select_hunk, { buffer = bufnr, desc = 'select current hunk.' })
-  keymap.register(e_mode.NORMAL, 'gha', gitsigns.stage_hunk, { buffer = bufnr, desc = 'staged current hunk.' })
-  keymap.register(e_mode.NORMAL, 'ghr', gitsigns.reset_hunk, { buffer = bufnr, desc = 'restore current hunk.' })
-  keymap.register(e_mode.NORMAL, 'gr', gitsigns.reset_buffer, { buffer = bufnr, desc = 'restore current file.' })
-  keymap.register(e_mode.NORMAL, 'gu', gitsigns.reset_buffer_index, { buffer = bufnr, desc = 'unstage current file.' })
-  keymap.register(e_mode.NORMAL, 'ga', gitsigns.stage_buffer, { buffer = bufnr, desc = 'stage current file.' })
-  keymap.register(e_mode.NORMAL, 'gb', TOOLS.wrap_f(this.api.blame_line), { buffer = bufnr, desc = 'show blame line for current hunk.' })
-  keymap.register(e_mode.NORMAL, 'gp', TOOLS.wrap_f(this.api.preview_hunk), { buffer = bufnr, desc = 'preview current hunk changed.' })
+  Keymap.register(e_mode.NORMAL, 'g,', Tools.wrap_f(Gitsigns.prev_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to prev hunk.' })
+  Keymap.register(e_mode.NORMAL, 'g.', Tools.wrap_f(Gitsigns.next_hunk, { wrap = false }), { buffer = bufnr, desc = 'jump to next hunk.' })
+  Keymap.register(e_mode.NORMAL, 'ghs', Gitsigns.select_hunk, { buffer = bufnr, desc = 'select current hunk.' })
+  Keymap.register(e_mode.NORMAL, 'gha', Gitsigns.stage_hunk, { buffer = bufnr, desc = 'staged current hunk.' })
+  Keymap.register(e_mode.NORMAL, 'ghr', Gitsigns.reset_hunk, { buffer = bufnr, desc = 'restore current hunk.' })
+  Keymap.register(e_mode.NORMAL, 'gr', Gitsigns.reset_buffer, { buffer = bufnr, desc = 'restore current file.' })
+  Keymap.register(e_mode.NORMAL, 'gu', Gitsigns.reset_buffer_index, { buffer = bufnr, desc = 'unstage current file.' })
+  Keymap.register(e_mode.NORMAL, 'ga', Gitsigns.stage_buffer, { buffer = bufnr, desc = 'stage current file.' })
+  Keymap.register(e_mode.NORMAL, 'gb', Tools.wrap_f(this.api.blame_line), { buffer = bufnr, desc = 'show blame line for current hunk.' })
+  Keymap.register(e_mode.NORMAL, 'gp', Tools.wrap_f(this.api.preview_hunk), { buffer = bufnr, desc = 'preview current hunk changed.' })
 end
 
 M.setup = function()
   set_native_keymaps()
 
-  events.rg(e_events.GITSIGNS_OPEN_DIFFTHIS, function(state)
+  Events.rg(e_name.GITSIGNS_OPEN_DIFFTHIS, function(state)
     set_buffer_diffthis_keymaps(state.bufnr)
   end)
 
-  events.rg(e_events.GITSIGNS_OPEN_POPUP, function(state)
+  Events.rg(e_name.GITSIGNS_OPEN_POPUP, function(state)
     set_buffer_popup_keymaps(state.bufnr)
   end)
 
-  events.rg(e_events.ATTACH_GITSIGNS, function(state)
+  Events.rg(e_name.ATTACH_GITSIGNS, function(state)
     del_buffer_keymaps(state.bufnr)
     set_buffer_keymaps(state.bufnr)
   end)

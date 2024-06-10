@@ -1,6 +1,6 @@
 local M = {}
 
-local colors = PLGS.colorscheme.colors
+local colors = Plgs.colorscheme.colors
 
 M.setup = function()
   vim.api.nvim_set_hl(0, 'NeoTreeFileIcon', { link = 'DevIconDefault' })

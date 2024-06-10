@@ -10,7 +10,7 @@ local execlude_fts = {
   -- 'toggleterm',
   'TelescopePrompt',
   'neo-tree',
-  'Trouble',
+  'trouble',
   'ClangdTypeHierarchy',
   'ClangdAST',
   'lazy',

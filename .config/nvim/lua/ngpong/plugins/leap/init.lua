@@ -2,12 +2,12 @@ return {
   'NGPONG/leap.nvim',
   lazy = true,
   init = function()
-    PLGS.record_seq('leap.nvim init')
-    PLGS.leap.keys.setup()
-    PLGS.leap.highlight.setup()
+    Plgs.record_seq('leap.nvim init')
+    Plgs.leap.keys.setup()
+    Plgs.leap.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('leap.nvim config')
-    PLGS.leap.config.setup()
+    Plgs.record_seq('leap.nvim config')
+    Plgs.leap.config.setup()
   end
 }

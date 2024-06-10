@@ -1,14 +1,15 @@
 local M = {}
 
-local events      = require('ngpong.common.events')
-local icons       = require('ngpong.utils.icon')
-local lazy        = require('ngpong.utils.lazy')
-local cmp         = lazy.require('cmp')
-local cmp_types   = lazy.require('cmp.types')
-local cmp_context = lazy.require('cmp.config.context')
+local Events     = require('ngpong.common.events')
+local Icons      = require('ngpong.utils.icon')
+local Lazy       = require('ngpong.utils.lazy')
+local Cmp        = Lazy.require('cmp')
+local CmpTypes   = Lazy.require('cmp.types')
+local CmpContext = Lazy.require('cmp.config.context')
 
-local this = PLGS.cmp
-local e_events = events.e_name
+local e_name = Events.e_name
+
+local this = Plgs.cmp
 
 local cmp_compare = setmetatable({}, {
   __index = function(_, k)
@@ -86,12 +87,12 @@ local setup_global = function()
     completion = {
       completeopt = 'menu,menuone',
       autocomplete = {
-        cmp_types.cmp.TriggerEvent.TextChanged,
+        CmpTypes.cmp.TriggerEvent.TextChanged,
       },
       keyword_length = 1,
     },
     confirmation = {
-      default_behavior = cmp_types.cmp.ConfirmBehavior.Insert,
+      default_behavior = CmpTypes.cmp.ConfirmBehavior.Insert,
       get_commit_characters = function(commit_characters)
         return commit_characters
       end,
@@ -99,7 +100,7 @@ local setup_global = function()
     experimental = {
       ghost_text = false,
     },
-    preselect = cmp_types.cmp.PreselectMode.Item,
+    preselect = CmpTypes.cmp.PreselectMode.Item,
   }
 
   local performance_cfg = {
@@ -137,7 +138,7 @@ local setup_global = function()
   }
 
   local source_cfg = {
-    sources = cmp.config.sources({
+    sources = Cmp.config.sources({
       cmp_source.nvim_lsp,
       cmp_source.path,
       cmp_source.luasnip,
@@ -149,8 +150,8 @@ local setup_global = function()
 
   local appearance_cfg = {
     window = {
-      completion = cmp.config.window.bordered({ winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None' }),
-      documentation = cmp.config.window.bordered({ winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None' }),
+      completion = Cmp.config.window.bordered({ winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None' }),
+      documentation = Cmp.config.window.bordered({ winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None' }),
     },
     view = {
       entries = {
@@ -166,17 +167,17 @@ local setup_global = function()
       fields = { 'abbr', 'kind', 'menu' },
       format = function(entry, item)
         -- setup menu
-        item.menu = icons.lsp_menus[entry.source.name]
+        item.menu = Icons.lsp_menus[entry.source.name]
 
         -- setup kind
-        item.kind = icons.lsp_kinds[item.kind].val
+        item.kind = Icons.lsp_kinds[item.kind].val
 
         -- setup content(fixed width)
         -- https://github.com/hrsh7th/nvim-cmp/discussions/609
         local content = item.abbr
         local length = #content
         if length > 35 then
-          item.abbr = vim.fn.strcharpart(content, 0, 35) .. icons.ellipsis
+          item.abbr = vim.fn.strcharpart(content, 0, 35) .. Icons.ellipsis
         else
           item.abbr = content .. (' '):rep(35 - length)
         end
@@ -186,30 +187,30 @@ local setup_global = function()
     },
   }
 
-  TOOLS.tbl_r_extend(cfg, performance_cfg,
+  Tools.tbl_r_extend(cfg, performance_cfg,
                           sort_cfg,
                           source_cfg,
                           appearance_cfg)
 
-  events.emit(e_events.SETUP_CMP, { cfg = cfg, source = 'global' })
+  Events.emit(e_name.SETUP_CMP, { cfg = cfg, source = 'global' })
 
-  cmp.setup(cfg)
+  Cmp.setup(cfg)
 end
 
 local setup_ft = function()
-  cmp.setup.filetype(this.filter(1), {
+  Cmp.setup.filetype(this.filter(1), {
     enabled = false,
   })
 
-  cmp.setup.filetype({ 'markdown', 'help' }, {
-    sources = cmp.config.sources({
+  Cmp.setup.filetype({ 'markdown', 'help' }, {
+    sources = Cmp.config.sources({
       cmp_source.path,
       cmp_source.buffer,
     }),
   })
 
-  cmp.setup.filetype({ 'neo-tree-popup' }, {
-    sources = cmp.config.sources({
+  Cmp.setup.filetype({ 'neo-tree-popup' }, {
+    sources = Cmp.config.sources({
       cmp_source.path,
     }),
   })
@@ -223,16 +224,16 @@ local setup_cmdline = function()
     completion = {
       keyword_length = 2,
     },
-    sources = cmp.config.sources({
+    sources = Cmp.config.sources({
       cmp_source.path,
       cmp_source.cmdline,
     }),
     mapping = {},
   }
 
-  events.emit(e_events.SETUP_CMP, { cfg = cfg, source = 'cmdline' })
+  Events.emit(e_name.SETUP_CMP, { cfg = cfg, source = 'cmdline' })
 
-  cmp.setup.cmdline(':', cfg)
+  Cmp.setup.cmdline(':', cfg)
 end
 
 M.setup = function()

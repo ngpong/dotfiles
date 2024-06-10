@@ -1,12 +1,12 @@
 local M = {}
 
-local lazy                 = require('ngpong.utils.lazy')
-local mason                = lazy.require('mason')
-local mason_lspconfig      = lazy.require('mason-lspconfig')
-local mason_tool_installer = lazy.require('mason-tool-installer')
+local Lazy                 = require('ngpong.utils.lazy')
+local Mason                = Lazy.require('mason')
+local MasonLspconfig      = Lazy.require('mason-lspconfig')
+local MasonToolInstaller = Lazy.require('mason-tool-installer')
 
 M.setup = function()
-  mason.setup {
+  Mason.setup {
     log_level = vim.log.levels.OFF,
     ui = {
       -- Whether to automatically check for new versions when opening the :Mason window.
@@ -51,9 +51,9 @@ M.setup = function()
     },
   }
 
-  mason_lspconfig.setup { }
+  MasonLspconfig.setup { }
 
-  mason_tool_installer.setup {
+  MasonToolInstaller.setup {
     -- a list of all tools you want to ensure are installed upon
     ensure_installed = {
       'clangd',
@@ -94,7 +94,7 @@ M.setup = function()
     -- Default: nil
     debounce_hours = 168, -- 7天
   }
-  vim.defer_fn(mason_tool_installer.check_install, 2000)
+  vim.defer_fn(MasonToolInstaller.check_install, 2000)
 end
 
 return M

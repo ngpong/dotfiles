@@ -3,12 +3,12 @@ return {
   lazy = true,
   event = 'VeryVeryLazy',
   init = function()
-    PLGS.record_seq('marks.nvim init')
-    PLGS.marks.keys.setup()
-    PLGS.marks.highlight.setup()
+    Plgs.record_seq('marks.nvim init')
+    Plgs.marks.keys.setup()
+    Plgs.marks.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('marks.nvim config')
-    PLGS.marks.config.setup()
+    Plgs.record_seq('marks.nvim config')
+    Plgs.marks.config.setup()
   end
 }

@@ -1,8 +1,6 @@
 local gitter = {}
 
-local lazy  = require('ngpong.utils.lazy')
-local async = lazy.require('plenary.async')
-local Job   = lazy.require('plenary.job')
+local libP = require('ngpong.common.libp')
 
 local get_repository_root = (function()
   local git_root = nil
@@ -11,12 +9,12 @@ local get_repository_root = (function()
     if git_root == nil then
       local args = { '-C', path, 'rev-parse', '--show-toplevel' }
 
-      local ok, result = TOOLS.exec_cmd({ 'git', TOOLS.tbl_unpack(args) })
+      local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
       if not ok then
         return nil
       end
 
-      git_root = TOOLS.to_path(result[1])
+      git_root = Tools.to_path(result[1])
     end
 
     return git_root
@@ -28,7 +26,7 @@ local parse_line_2_path = function(line)
     return
   end
 
-  local git_root = get_repository_root(TOOLS.get_cwd())
+  local git_root = get_repository_root(Tools.get_cwd())
 
   local line_parts = vim.split(line, '\t')
   if #line_parts < 2 then
@@ -44,40 +42,38 @@ local parse_line_2_path = function(line)
   relative_path = relative_path:gsub('^"', ""):gsub('"$', "")
 
   -- convert windows path to unix
-  relative_path = TOOLS.to_path(relative_path)
+  relative_path = Tools.to_path(relative_path)
 
   -- convert octal encoded lines to utf-8
-  relative_path = TOOLS.octal_to_utf8(relative_path)
+  relative_path = Tools.octal_to_utf8(relative_path)
 
-  return TOOLS.path_join(git_root, relative_path)
+  return Tools.path_join(git_root, relative_path)
 end
 
 gitter.status_diff = function()
   local ret = {}
 
-  local args = { '-C', get_repository_root(TOOLS.get_cwd()), 'diff', '--name-status', 'HEAD', '--' }
+  local args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--' }
 
-  local ok, result = TOOLS.exec_cmd({ 'git', TOOLS.tbl_unpack(args) })
+  local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
   if ok then
     for _, line in ipairs(result) do
       ret[parse_line_2_path(line)] = true
     end
   else
-    LOGGER.error('exec git status command error.')
+    Logger.error('exec git status command error.')
   end
 
   return ret
 end
 
-gitter.if_has_diff = async.void(function(path, cb)
-  local job = Job.__get()
-
+gitter.if_has_diff = libP.async.void(function(path, cb)
   local result
 
-  local await_has_diff = async.wrap(function(callback)
-    job:new({
+  local await_has_diff = libP.async.wrap(function(callback)
+    libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(TOOLS.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
+      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -88,20 +84,18 @@ gitter.if_has_diff = async.void(function(path, cb)
   await_has_diff()
 
   if next(result) and cb then
-    async.util.scheduler()
+    libP.async.util.scheduler()
     cb(result)
   end
 end)
 
-gitter.if_has_log = async.void(function(path, cb)
-  local job = Job.__get()
-
+gitter.if_has_log = libP.async.void(function(path, cb)
   local result
 
-  local await_has_log = async.wrap(function(callback)
-    job:new({
+  local await_has_log = libP.async.wrap(function(callback)
+    libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(TOOLS.get_cwd()), 'log', '-1', '--pretty=format:"%h"', '--', path },
+      args = { '-C', get_repository_root(Tools.get_cwd()), 'log', '-1', '--pretty=format:"%h"', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -112,20 +106,18 @@ gitter.if_has_log = async.void(function(path, cb)
   await_has_log()
 
   if next(result) and cb then
-    async.util.scheduler()
+    libP.async.util.scheduler()
     cb(result)
   end
 end)
 
-gitter.if_has_diff_or_untracked = async.void(function(path, cb_ok, cb_err)
-  local job = Job.__get()
-
+gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
   local result
 
-  local await_is_untracked = async.wrap(function(callback)
-    job:new({
+  local await_is_untracked = libP.async.wrap(function(callback)
+    libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(TOOLS.get_cwd()), 'ls-files', '--exclude-standard', '--others', '--', path },
+      args = { '-C', get_repository_root(Tools.get_cwd()), 'ls-files', '--exclude-standard', '--others', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -135,15 +127,15 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb_ok, cb_err)
 
   await_is_untracked()
   if next(result) and cb_ok then
-    async.util.scheduler()
+    libP.async.util.scheduler()
     cb_ok(result)
     return
   end
 
-  local await_has_diff = async.wrap(function(callback)
-    job:new({
+  local await_has_diff = libP.async.wrap(function(callback)
+    libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(TOOLS.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
+      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -153,7 +145,7 @@ gitter.if_has_diff_or_untracked = async.void(function(path, cb_ok, cb_err)
 
   await_has_diff()
   if next(result) and cb_ok then
-    async.util.scheduler()
+    libP.async.util.scheduler()
     cb_ok(result)
     return
   end

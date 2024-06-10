@@ -15,7 +15,7 @@ variable.get = function(k)
 end
 
 variable.debug = function()
-  LOGGER.info(cache)
+  Logger.info(cache)
 end
 
 return variable

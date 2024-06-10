@@ -3,12 +3,12 @@ return {
   lazy = true,
   event = 'VeryVeryLazy',
   init = function()
-    PLGS.record_seq('which-key init')
-    PLGS.whichkey.keys.setup()
-    PLGS.whichkey.highlight.setup()
+    Plgs.record_seq('which-key init')
+    Plgs.whichkey.keys.setup()
+    Plgs.whichkey.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('which-key config')
-    PLGS.whichkey.config.setup()
+    Plgs.record_seq('which-key config')
+    Plgs.whichkey.config.setup()
   end
 }

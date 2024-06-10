@@ -1,10 +1,10 @@
 local M = {}
 
-local lazy    = require('ngpong.utils.lazy')
-local conform = lazy.require('conform')
+local Lazy    = require('ngpong.utils.lazy')
+local Conform = Lazy.require('conform')
 
 M.setup = function()
-  conform.setup({
+  Conform.setup({
     -- Map of filetype to formatters
     formatters_by_ft = {
       c = { 'clang-format', },

@@ -1,10 +1,10 @@
 local M = {}
 
-local lazy   = require('ngpong.utils.lazy')
-local lspcfg = lazy.require('lspconfig')
+local Lazy   = require('ngpong.utils.lazy')
+local Lspcfg = Lazy.require('lspconfig')
 
 M.setup = function(cfg)
-  lspcfg.lua_ls.setup {
+  Lspcfg.lua_ls.setup {
     cmd = {
       'lua-language-server',
       -- '--configpath=~/.config/lua_ls/.luarc.json'

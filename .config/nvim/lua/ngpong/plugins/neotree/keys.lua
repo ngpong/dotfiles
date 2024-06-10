@@ -1,18 +1,18 @@
 local M = {}
 
-local keymap            = require('ngpong.common.keybinder')
-local events            = require('ngpong.common.events')
-local lazy              = require('ngpong.utils.lazy')
-local neotree           = lazy.require('neo-tree')
-local source_commands   = lazy.require('neo-tree.sources.common.commands')
-local filesys_commands  = lazy.require('neo-tree.sources.filesystem.commands')
-local common_preview    = lazy.require('neo-tree.sources.common.preview')
-local neotree_events    = lazy.require('neo-tree.events')
-local neotree_ui_inputs = lazy.require('neo-tree.ui.inputs')
+local Keymap            = require('ngpong.common.keybinder')
+local Events            = require('ngpong.common.events')
+local Lazy              = require('ngpong.utils.lazy')
+local Neotree           = Lazy.require('neo-tree')
+local SourceCommands   = Lazy.require('neo-tree.sources.common.commands')
+local FilesysCommands  = Lazy.require('neo-tree.sources.filesystem.commands')
+local CommonPreview    = Lazy.require('neo-tree.sources.common.preview')
+local NeotreeEvents    = Lazy.require('neo-tree.events')
+local NeotreeUIInputs = Lazy.require('neo-tree.ui.inputs')
 
-local this = PLGS.neotree
-local e_mode = keymap.e_mode
-local e_events = events.e_name
+local this = Plgs.neotree
+local e_mode = Keymap.e_mode
+local e_name = Events.e_name
 
 local set_global_commands = function (...)
   return {
@@ -23,7 +23,7 @@ local set_global_commands = function (...)
     ngpong_nop_map_nv_visual = function (_)
     end,
     ngpong_select_node = function(state)
-      source_commands.open_with_window_picker(state, nil)
+      SourceCommands.open_with_window_picker(state, nil)
     end,
     ngpong_open_diff = function(state)
       local node = state.tree:get_node()
@@ -32,7 +32,7 @@ local set_global_commands = function (...)
         return
       end
 
-      HELPER.notify_info('toggleterm + lazygit TODO')
+      Helper.notify_info('toggleterm + lazygit TODO')
     end,
     ngpong_open_history = function(state)
       local node = state.tree:get_node()
@@ -41,17 +41,17 @@ local set_global_commands = function (...)
         return
       end
 
-      HELPER.notify_info('toggleterm + lazygit TODO')
+      Helper.notify_info('toggleterm + lazygit TODO')
     end,
     ngpong_esc = function(state)
       -- 0x1: 重置 file filter
       if state.name == 'filesystem' and state.search_pattern ~= nil then
-        filesys_commands.clear_filter(state)
+        FilesysCommands.clear_filter(state)
       end
 
       -- 0x2: 重置 preview
-      if common_preview.is_active() ~= nil then
-        source_commands.toggle_preview(state)
+      if CommonPreview.is_active() ~= nil then
+        SourceCommands.toggle_preview(state)
       end
 
       -- 0x3: 重置 copy/cut node
@@ -82,15 +82,15 @@ local set_global_commands = function (...)
       local path = node:get_id()
       local cmd = { "git", "checkout", "HEAD", "--", path }
       local msg = string.format("Are you sure you want to revert %s?", node.name)
-      neotree_ui_inputs.confirm(msg, function(yes)
+      NeotreeUIInputs.confirm(msg, function(yes)
         if not yes then
           return
         end
 
         vim.fn.system(cmd)
-        neotree_events.fire_event(neotree_events.GIT_EVENT)
+        NeotreeEvents.fire_event(NeotreeEvents.GIT_EVENT)
 
-        if HELPER.reload_file_if_shown(path) then
+        if Helper.reload_file_if_shown(path) then
           this.api.refresh(state)
         end
       end)
@@ -102,14 +102,14 @@ local set_filesys_commands = function(...)
   return {
     ngpong_cd = function(state)
       if state.tree:get_node().level == 0 then
-        filesys_commands.navigate_up(state)
+        FilesysCommands.navigate_up(state)
       else
-        filesys_commands.set_root(state)
+        FilesysCommands.set_root(state)
       end
       this.api.refresh(state)
     end,
     ngpong_select_node = function (state)
-      filesys_commands.open_with_window_picker(state)
+      FilesysCommands.open_with_window_picker(state)
     end,
   }
 end
@@ -155,7 +155,6 @@ local set_global_keymaps = function(...)
     ['rv']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['rh']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['rc']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
-    ['ro']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['ts']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['m']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['m,']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
@@ -270,15 +269,15 @@ local del_native_keymaps = function()
 end
 
 local set_native_keymaps = function()
-  keymap.register(e_mode.NORMAL, '<leader>e', this.api.open_tree, { remap = false, silent = true, desc = 'open file explore.' })
+  Keymap.register(e_mode.NORMAL, '<leader>e', this.api.open_tree, { remap = false, silent = true, desc = 'open file explore.' })
 end
 
 M.setup = function()
   del_native_keymaps()
   set_native_keymaps()
 
-  events.rg(e_events.SETUP_NEOTREE, function(cfg)
-    TOOLS.tbl_r_extend(cfg, {
+  Events.rg(e_name.SETUP_NEOTREE, function(cfg)
+    Tools.tbl_r_extend(cfg, {
       commands = set_global_commands(),
       window = {
         mapping_options = mapping_opts(),

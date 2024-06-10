@@ -1,23 +1,21 @@
 local session = {}
 
-local events           = require('ngpong.common.events')
-local lazy             = require('ngpong.utils.lazy')
-local json             = require('ngpong.utils.json')
-local async            = lazy.require('plenary.async')
-local Path             = lazy.require('plenary.path')
-local bufferline_state = lazy.require('bufferline.state')
-local bufferline_group = lazy.require('bufferline.groups')
-local bufferline_ui    = lazy.require("bufferline.ui")
+-- stylua: ignore start
+local Events           = require('ngpong.common.events')
+local Lazy             = require('ngpong.utils.lazy')
+local Json             = require('ngpong.utils.json')
+local libP             = require('ngpong.common.libp')
+local BufferlineState  = Lazy.require('bufferline.state')
+local BufferlineGroup  = Lazy.require('bufferline.groups')
+local BufferlineUI     = Lazy.require("bufferline.ui")
 
-local this = PLGS.bufferline
-local e_events = events.e_name
+local this = Plgs.bufferline
+local e_name = Events.e_name
 
 session.setup = function()
-  local path = Path.__get()
+  local file = libP.path:new(vim.fn.stdpath('data') .. '/bufferline/' .. Tools.get_workspace_sha1() .. '.json')
 
-  local file = path:new(vim.fn.stdpath('data') .. '/bufferline/' .. TOOLS.get_workspace_sha1() .. '.json')
-
-  events.rg(e_events.VIM_LEAVE_PRE, async.void(function()
+  Events.rg(e_name.VIM_LEAVE_PRE, libP.async.void(function()
     if not this.api.is_plugin_loaded() then
       return
     end
@@ -27,22 +25,22 @@ session.setup = function()
     end
 
     local datas = {}
-    for _, _item in ipairs(bufferline_state.components) do
+    for _, _item in ipairs(BufferlineState.components) do
       local element = _item:as_element()
 
-      if element.name ~= 'COMMIT_EDITMSG' and not TOOLS.isempty(element.path) then
+      if element.name ~= 'COMMIT_EDITMSG' and not Tools.isempty(element.path) then
         table.insert(datas, {
           file = element.path,
           is_pinned = this.api.is_pinned(element),
-          is_activation = HELPER.get_cur_bufnr() == element.id and true or false
+          is_activation = Helper.get_cur_bufnr() == element.id and true or false
         })
       end
     end
 
-    file:write(json.encode(datas), 'w')
+    file:write(Json.encode(datas), 'w')
   end))
 
-  events.rg(e_events.VIM_ENTER, async.void(function()
+  Events.rg(e_name.VIM_ENTER, libP.async.void(function()
     if not file:exists() then
       return
     end
@@ -50,22 +48,22 @@ session.setup = function()
     local data = file:read()
 
     -- 获取持久化的 buffer
-    local pre_buffs = json.decode(data)
+    local pre_buffs = Json.decode(data)
     if not next(pre_buffs) then
       return
     end
 
     -- 获取新加进来的 buffer
     local new_buffs = {}
-    for _, _bufnr in pairs(HELPER.get_all_bufs()) do
-      if not HELPER.is_unnamed_buf(_bufnr) then
-        new_buffs[HELPER.get_buf_name(_bufnr)] = _bufnr
+    for _, _bufnr in pairs(Helper.get_all_bufs()) do
+      if not Helper.is_unnamed_buf(_bufnr) then
+        new_buffs[Helper.get_buf_name(_bufnr)] = _bufnr
       end
     end
 
     -- 仅当 bufferline 加载后
     while not this.api.is_plugin_loaded() do
-      async.util.sleep(1)
+      libP.async.util.sleep(1)
     end
 
     -- 按照顺序追加持久化的 buffers
@@ -85,12 +83,12 @@ session.setup = function()
         -- 此段逻辑会有一点延迟
         -- 当通过命令行打开的文件，则直接激活它，而不是使用持久化的buffer数据
         if _data.is_activation and not next(new_buffs) then
-          HELPER.switch_buffer(bufnr)
+          Helper.switch_buffer(bufnr)
         end
 
         final_buffs[bufnr] = { file = _data.file, is_pinned = _data.is_pinned }
 
-        async.util.scheduler()
+        libP.async.util.scheduler()
       end
     end
     for _file, _bufnr in pairs(new_buffs) do
@@ -100,15 +98,15 @@ session.setup = function()
     end
 
     -- 擦除第一个默认打开的 [NONAME] BUFFERS
-    if HELPER.is_unnamed_buf(1) then
-      HELPER.wipeout_buffer(1, true)
+    if Helper.is_unnamed_buf(1) then
+      Helper.wipeout_buffer(1, true)
     end
 
     -- 等待 bufferline components 初始化完毕
     while true do
       local is_complete = true
 
-      for _, _item in ipairs(bufferline_state.components) do
+      for _, _item in ipairs(BufferlineState.components) do
         local element = _item:as_element()
 
         if not final_buffs[element.id] then
@@ -117,26 +115,26 @@ session.setup = function()
         end
       end
 
-      if not is_complete or not next(bufferline_state.components) then
-        async.util.sleep(5)
+      if not is_complete or not next(BufferlineState.components) then
+        libP.async.util.sleep(5)
       else
         break
       end
     end
 
     -- 设置 pinned buffer
-    for _, _item in ipairs(bufferline_state.components) do
+    for _, _item in ipairs(BufferlineState.components) do
       local element = _item:as_element()
       local buf = final_buffs[element.id]
 
       if buf and buf.is_pinned then
-        bufferline_group.add_element("pinned", element)
+        BufferlineGroup.add_element("pinned", element)
 
-        async.util.scheduler()
+        libP.async.util.scheduler()
       end
     end
 
-    bufferline_ui.refresh()
+    BufferlineUI.refresh()
   end))
 end
 

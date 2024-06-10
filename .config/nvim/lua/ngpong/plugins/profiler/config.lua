@@ -5,7 +5,7 @@ local f = function()
   if should_profile then
     require("profile").instrument_autocmds()
     if should_profile:lower():match("^start") then
-      require("profile").start("*")
+      require("profile").start("trouble*")
     else
       require("profile").instrument("*")
     end
@@ -22,7 +22,7 @@ local f = function()
         end
       end)
     else
-      prof.start("*")
+      prof.start("trouble*")
     end
   end
 

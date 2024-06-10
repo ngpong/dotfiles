@@ -1,52 +1,44 @@
 local M = {}
 
-local autocmd = require('ngpong.common.autocmd')
-local events  = require('ngpong.common.events')
-local lazy    = require('ngpong.utils.lazy')
-local async   = lazy.require('plenary.async')
+local libP    = require('ngpong.common.libp')
+local Autocmd = require('ngpong.common.autocmd')
+local Events  = require('ngpong.common.events')
 
-local this = PLGS.telescope
-local e_events = events.e_name
+local this = Plgs.telescope
+
+local e_name = Events.e_name
 
 local unset_autocmds = function()
-  autocmd.del_augroup('telescope')
+  Autocmd.del_augroup('telescope')
 end
 
 local setup_autocmds = function()
-  local group_id = autocmd.new_augroup('telescope')
+  Autocmd.new_augroup().on('User', function(args)
+    Events.emit(e_name.TELESCOPE_PREVIEW_LOAD, args)
+  end, 'TelescopePreviewerLoaded')
 
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'TelescopePreviewerLoaded',
-    callback = function(args)
-      events.emit(e_events.TELESCOPE_PREVIEW_LOAD, args)
-    end,
-  })
+  Autocmd.new_augroup('telescope').on('WinEnter', function(args)
+    local bufnr = args.buf
 
-  vim.api.nvim_create_autocmd('WinEnter', {
-    group = group_id,
-    callback = function(args)
-      local bufnr = args.buf
+    libP.async.run(function()
+      libP.async.util.scheduler()
 
-      async.run(function()
-        async.util.scheduler()
+      if not Plgs.is_loaded('telescope.nvim') then
+        return
+      end
 
-        if not PLGS.is_loaded('telescope.nvim') then
-          return
-        end
+      if not this.api.is_prompt_buf(bufnr) then
+        return
+      end
 
-        if not this.api.is_prompt_buf(bufnr) then
-          return
-        end
+      local picker = this.api.get_current_picker(bufnr)
+      if not picker then
+        return
+      end
 
-        local picker = this.api.get_current_picker(bufnr)
-        if not picker then
-          return
-        end
-
-        events.emit(e_events.TELESCOPE_LOAD, { bufnr = bufnr, picker = picker })
-      end)
-    end,
-  })
+      Events.emit(e_name.TELESCOPE_LOAD, { bufnr = bufnr, picker = picker })
+    end)
+  end)
 end
 
 M.setup = function()

@@ -1,16 +1,17 @@
 local M = {}
 
-local keymap = require('ngpong.common.keybinder')
-local icons  = require('ngpong.utils.icon')
-local lazy   = require('ngpong.utils.lazy')
-local async  = require('plenary.async')
-local marks  = lazy.require('marks')
+local libP   = require('ngpong.common.libp')
+local Keymap = require('ngpong.common.keybinder')
+local Icons  = require('ngpong.utils.icon')
+local Lazy   = require('ngpong.utils.lazy')
+local Marks  = Lazy.require('marks')
 
-local this = PLGS.marks
-local e_mode = keymap.e_mode
+local this = Plgs.marks
+
+local e_mode = Keymap.e_mode
 
 local del_native_keymaps = function()
-  keymap.unregister(e_mode.NORMAL, 'm')
+  Keymap.unregister(e_mode.NORMAL, 'm')
 end
 
 local set_native_keymaps = function()
@@ -22,58 +23,58 @@ local set_native_keymaps = function()
     do
       -- lowercase
       local lower_lhs = 'ms' .. lower
-      local lower_rhs = TOOLS.wrap_f(this.api.set, lower)
-      keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
+      local lower_rhs = Tools.wrap_f(this.api.set, lower)
+      Keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
 
       -- uppercase
       local upper_lhs = 'ms' .. upper
-      local upper_rhs = TOOLS.wrap_f(this.api.set, upper)
-      keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
+      local upper_rhs = Tools.wrap_f(this.api.set, upper)
+      Keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
     end
 
     -- mark delete
     do
       -- lowercase
       local lower_lhs = 'md' .. lower
-      local lower_rhs = TOOLS.wrap_f(this.api.del, lower)
-      keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
+      local lower_rhs = Tools.wrap_f(this.api.del, lower)
+      Keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
 
       -- uppercase
       local upper_lhs = 'md' .. upper
-      local upper_rhs = TOOLS.wrap_f(this.api.del, upper)
-      keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
+      local upper_rhs = Tools.wrap_f(this.api.del, upper)
+      Keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
     end
 
     -- mark jump
     do
       -- lowercase
       local lower_lhs = 'me' .. lower
-      local lower_rhs = TOOLS.wrap_f(this.api.jump, lower)
-      keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
+      local lower_rhs = Tools.wrap_f(this.api.jump, lower)
+      Keymap.register(e_mode.NORMAL, lower_lhs, lower_rhs, { remap = false, desc = '' .. lower .. '' })
 
       -- uppercase
       local upper_lhs = 'me' .. upper
-      local upper_rhs = TOOLS.wrap_f(this.api.jump, upper)
-      keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
+      local upper_rhs = Tools.wrap_f(this.api.jump, upper)
+      Keymap.register(e_mode.NORMAL, upper_lhs, upper_rhs, { remap = false, desc = '' .. upper .. '' })
     end
   end
 
-  keymap.register(e_mode.NORMAL, 'm,', function()
-    HELPER.add_jumplist()
-    marks.prev()
-    HELPER.add_jumplist()
+  Keymap.register(e_mode.NORMAL, 'm,', function()
+    Helper.add_jumplist()
+    Marks.prev()
+    Helper.add_jumplist()
   end, { remap = false, desc = 'jump to prev.' })
-  keymap.register(e_mode.NORMAL, 'm.', function()
-    HELPER.add_jumplist()
-    marks.next()
-    HELPER.add_jumplist()
+  Keymap.register(e_mode.NORMAL, 'm.', function()
+    Helper.add_jumplist()
+    Marks.next()
+    Helper.add_jumplist()
   end, { remap = false, desc = 'jump to next.' })
-  keymap.register(e_mode.NORMAL, 'ms<leader>', TOOLS.wrap_f(lazy.access('marks', 'set_next')), { remap = false, desc = '[NEXT]' })
-  keymap.register(e_mode.NORMAL, 'md<leader>', function()
-    local bufnr  = HELPER.get_cur_bufnr()
-    local row, _ = HELPER.get_cursor()
+  Keymap.register(e_mode.NORMAL, 'ms<leader>', Tools.wrap_f(Lazy.access('marks', 'set_next')), { remap = false, desc = '[NEXT]' })
+  Keymap.register(e_mode.NORMAL, 'md<leader>', function()
+    local bufnr  = Helper.get_cur_bufnr()
+    local row, _ = Helper.get_cursor()
 
-    local datas = marks.mark_state.buffers[bufnr].marks_by_line[row]
+    local datas = Marks.mark_state.buffers[bufnr].marks_by_line[row]
     if not datas then
       return
     end
@@ -83,16 +84,18 @@ local set_native_keymaps = function()
       table.insert(texts, string.format('[%s]', mark))
     end
 
-    marks.delete_line()
+    Marks.delete_line()
 
     if next(texts) then
-      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
+      this.api.on_mark_change()
+
+      Helper.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = Icons.lsp_loaded })
     end
   end, { remap = false, desc = '<LINE>' })
-  keymap.register(e_mode.NORMAL, 'md<CR>', async.void(function()
-    local bufnr  = HELPER.get_cur_bufnr()
+  Keymap.register(e_mode.NORMAL, 'md<CR>', libP.async.void(function()
+    local bufnr  = Helper.get_cur_bufnr()
 
-    local datas = marks.mark_state.buffers[bufnr].marks_by_line
+    local datas = Marks.mark_state.buffers[bufnr].marks_by_line
     if not datas then
       return
     end
@@ -112,15 +115,17 @@ local set_native_keymaps = function()
 
     for _, _mark in pairs(delete_marks) do
       this.api.del(_mark)
-      async.util.scheduler()
+      libP.async.util.scheduler()
     end
 
     if next(texts) then
-      HELPER.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = icons.lsp_loaded })
+      this.api.on_mark_change()
+
+      Helper.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = Icons.lsp_loaded })
     end
   end), { remap = false, desc = '<BUFFER>' })
-  keymap.register(e_mode.NORMAL, 'mm', TOOLS.wrap_f(this.api.toggle_marks_list, nil, false), { silent = true, remap = false, desc = 'toggle current buffer marks list.' })
-  keymap.register(e_mode.NORMAL, 'mM', TOOLS.wrap_f(this.api.toggle_marks_list, nil, true), { silent = true, remap = false, desc = 'toggle all marks list.' })
+  Keymap.register(e_mode.NORMAL, 'mm', Tools.wrap_f(Plgs.trouble.api.toggle, 'document_mark'), { silent = true, remap = false, desc = 'toggle document marks list.' })
+  Keymap.register(e_mode.NORMAL, 'mM', Tools.wrap_f(Plgs.trouble.api.toggle, 'workspace_mark'), { silent = true, remap = false, desc = 'toggle workspace mark list.' })
 end
 
 M.setup = function()

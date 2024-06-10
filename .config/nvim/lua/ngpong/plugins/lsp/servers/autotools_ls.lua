@@ -1,11 +1,11 @@
 
 local M = {}
 
-local lazy   = require('ngpong.utils.lazy')
-local lspcfg = lazy.require('lspconfig')
+local Lazy   = require('ngpong.utils.lazy')
+local Lspcfg = Lazy.require('lspconfig')
 
 local setup_server = function(cfg)
-  lspcfg.autotools_ls.setup({
+  Lspcfg.autotools_ls.setup({
     cmd = {
       'autotools-language-server',
     },

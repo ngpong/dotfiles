@@ -12,12 +12,12 @@ return {
       'williamboman/mason-lspconfig.nvim',
     },
     init = function()
-      PLGS.record_seq('mason.nvim init')
-      PLGS.package.keys.setup()
+      Plgs.record_seq('mason.nvim init')
+      Plgs.package.keys.setup()
     end,
     config = function()
-      PLGS.record_seq('mason.nvim config')
-      PLGS.package.config.setup()
+      Plgs.record_seq('mason.nvim config')
+      Plgs.package.config.setup()
     end
   }
   ,
@@ -25,10 +25,10 @@ return {
     'williamboman/mason-lspconfig.nvim',
     lazy = true,
     init = function()
-      PLGS.record_seq('mason-tool-installer.nvim init')
+      Plgs.record_seq('mason-tool-installer.nvim init')
     end,
     config = function()
-      PLGS.record_seq('mason-tool-installer.nvim config')
+      Plgs.record_seq('mason-tool-installer.nvim config')
     end
   }
   ,
@@ -36,10 +36,10 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     lazy = true,
     init = function()
-      PLGS.record_seq('mason-lspconfig.nvim init')
+      Plgs.record_seq('mason-lspconfig.nvim init')
     end,
    config = function()
-      PLGS.record_seq('mason-lspconfig.nvim config')
+      Plgs.record_seq('mason-lspconfig.nvim config')
     end
   },
 }

@@ -3,12 +3,12 @@ return {
   lazy = true,
   event = 'VeryLazy',
   init = function()
-    PLGS.record_seq('bufferline.nvim init')
-    PLGS.bufferline.keys.setup()
-    PLGS.bufferline.session.setup()
+    Plgs.record_seq('bufferline.nvim init')
+    Plgs.bufferline.keys.setup()
+    Plgs.bufferline.session.setup()
   end,
   config = function()
-    PLGS.record_seq('bufferline.nvim config')
-    PLGS.bufferline.config.setup()
+    Plgs.record_seq('bufferline.nvim config')
+    Plgs.bufferline.config.setup()
   end
 }

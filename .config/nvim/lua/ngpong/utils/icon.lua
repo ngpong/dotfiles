@@ -93,6 +93,9 @@ local icons = {
   enum = '󰕘',
   chars_1 = '',
   chars_2 = '󰀬',
+  chars_3 = '󱀍',
+  chars_4 = '󰬈',
+  chars_5 = '󰯬',
   key = '󰌋',
   snippet = '',
   source = '',
@@ -137,6 +140,7 @@ local icons = {
   pinned_2 = '',
   pinned_3 = '📌',
   fire = '',
+  small_dot = '',
   spinner_frames = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
 }
 icons.lsp_kinds = {
@@ -187,7 +191,7 @@ icons.get_all_lsp_hllink = function ()
   local ret = {}
 
   for type, tb in pairs(icons.lsp_kinds) do
-    if TOOLS.is_callable(tb) then
+    if Tools.is_callable(tb) then
       goto continue
     end
 

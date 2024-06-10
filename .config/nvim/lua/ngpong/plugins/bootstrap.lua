@@ -1,14 +1,14 @@
 local M = {}
 
-local icons   = require('ngpong.utils.icon')
-local lazy    = require('ngpong.utils.lazy')
-local keymap  = require('ngpong.common.keybinder')
-local autocmd = require('ngpong.common.autocmd')
-local events  = require('ngpong.common.events')
-local async   = lazy.require('plenary.async')
+local Icons   = require('ngpong.utils.icon')
+local Lazy    = require('ngpong.utils.lazy')
+local Keymap  = require('ngpong.common.keybinder')
+local Autocmd = require('ngpong.common.autocmd')
+local Events  = require('ngpong.common.events')
+local libP    = require('ngpong.common.libp')
 
-local e_mode = keymap.e_mode
-local e_events = events.e_name
+local e_mode = Keymap.e_mode
+local e_name = Events.e_name
 
 M.ensure_install = function()
   local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -28,7 +28,7 @@ end
 M.laungh = function()
   local specs = {}
 
-  local dirs = TOOLS.scandir('/home/ngpong/.config/nvim/lua/ngpong/plugins')
+  local dirs = Tools.scandir('/home/ngpong/.config/nvim/lua/ngpong/plugins')
   -- local dirs = {
   --   'libs',
   --   'colorscheme',
@@ -69,7 +69,7 @@ M.laungh = function()
   end
 
   if not next(specs) then
-    LOGGER.error('Not plugins specs found.')
+    Logger.error('Not plugins specs found.')
     return
   end
 
@@ -97,27 +97,27 @@ M.laungh = function()
       title_pos = 'center',
       pills = true,
       icons = {
-        cmd = icons.cmd .. icons.space,
-        config = icons.config .. icons.space,
-        event = icons.electricity_2 .. icons.space,
-        ft = icons.file_1 .. icons.space,
-        init = icons.config .. icons.space,
-        import = icons.import .. icons.space,
-        keys = icons.keyboard .. icons.space,
-        lazy = icons.sleep .. icons.space,
-        loaded = icons.circular_mid .. icons.space,
-        not_loaded = icons.circular_mid_hollow .. icons.space,
-        plugin = icons.box_1 .. icons.space,
-        runtime = icons.vim .. icons.space,
-        require = icons.lua .. icons.space,
-        source = icons.source .. icons.space,
-        start = icons.play .. icons.space,
-        task = icons.yes .. icons.space,
+        cmd = Icons.cmd .. Icons.space,
+        config = Icons.config .. Icons.space,
+        event = Icons.electricity_2 .. Icons.space,
+        ft = Icons.file_1 .. Icons.space,
+        init = Icons.config .. Icons.space,
+        import = Icons.import .. Icons.space,
+        keys = Icons.keyboard .. Icons.space,
+        lazy = Icons.sleep .. Icons.space,
+        loaded = Icons.circular_mid .. Icons.space,
+        not_loaded = Icons.circular_mid_hollow .. Icons.space,
+        plugin = Icons.box_1 .. Icons.space,
+        runtime = Icons.vim .. Icons.space,
+        require = Icons.lua .. Icons.space,
+        source = Icons.source .. Icons.space,
+        start = Icons.play .. Icons.space,
+        task = Icons.yes .. Icons.space,
         list = {
-          icons.circular_mid,
-          icons.arrow_right_2,
-          icons.star,
-          icons.ellipsis,
+          Icons.circular_mid,
+          Icons.arrow_right_2,
+          Icons.star,
+          Icons.ellipsis,
         },
       },
       throttle = 20,
@@ -200,17 +200,17 @@ M.register_event = function()
       end
       done = true
 
-      autocmd.del_augroup('lazy_file')
+      Autocmd.del_augroup('lazy_file')
 
       local skips = {}
       for _, event in ipairs(events) do
         skips[event.event] = skips[event.event] or Event.get_augroups(event.event)
       end
 
-      vim.api.nvim_exec_autocmds('User', { pattern = 'LazyFile', modeline = false })
-      async.run(function()
-        async.util.sleep(100)
-        vim.api.nvim_exec_autocmds('User', { pattern = 'VeryLazyFile', modeline = false })
+      Autocmd.exec('User', { pattern = 'LazyFile', modeline = false })
+      libP.async.run(function()
+        libP.async.util.sleep(100)
+        Autocmd.exec('User', { pattern = 'VeryLazyFile', modeline = false })
       end)
 
       for _, event in ipairs(events) do
@@ -229,7 +229,7 @@ M.register_event = function()
           end
         end
       end
-      vim.api.nvim_exec_autocmds('CursorMoved', { modeline = false })
+      Autocmd.exec('CursorMoved', { modeline = false })
       events = {}
     end
 
@@ -237,30 +237,24 @@ M.register_event = function()
     -- and the UI can continue rendering without blocking
     load = vim.schedule_wrap(load)
 
-    vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile', 'BufWritePre' }, {
-      group = autocmd.new_augroup('lazy_file'),
-      callback = function(event)
-        table.insert(events, event)
-        load()
-      end,
-    })
+    Autocmd.new_augroup('lazy_file').on({ 'BufReadPost', 'BufNewFile', 'BufWritePre' }, function(event)
+      table.insert(events, event)
+      load()
+    end)
   end
 
   local register_extra_verylazy = function()
     Event.mappings.VeryVeryLazy = { id = 'VeryVeryLazy', event = 'User', pattern = 'VeryVeryLazy' }
     Event.mappings['User VeryVeryLazy'] = Event.mappings.VeryVeryLazy
 
-    vim.api.nvim_create_autocmd('UIEnter', {
-      group = autocmd.new_augroup('extra_very_lazy'),
-      callback = function(event)
-        autocmd.del_augroup('extra_very_lazy')
+    Autocmd.new_augroup('extra_very_lazy').on('UIEnter', function(args)
+      Autocmd.del_augroup('extra_very_lazy')
 
-        async.run(function()
-          async.util.sleep(350)
-          vim.api.nvim_exec_autocmds('User', { pattern = 'VeryVeryLazy', modeline = false })
-        end)
-      end,
-    })
+      libP.async.run(function()
+        libP.async.util.sleep(350)
+        Autocmd.exec('User', { pattern = 'VeryVeryLazy', modeline = false })
+      end)
+    end)
   end
 
   register_lazyfile()
@@ -269,13 +263,13 @@ end
 
 M.register_keymap = function()
   -- 打开 lazy plugin manager
-  keymap.register(e_mode.NORMAL, '<leader>p', function()
+  Keymap.register(e_mode.NORMAL, '<leader>p', function()
     vim.cmd('Lazy')
 
     -- 由于 lazy 禁用了 autocmd，所以我们要手动触发一次
-    for _, _bufnr in pairs(HELPER.get_all_bufs()) do
-      if 'lazy' == HELPER.get_filetype(_bufnr) then
-        events.emit(e_events.BUFFER_ENTER, { buf = _bufnr })
+    for _, _bufnr in pairs(Helper.get_all_bufs()) do
+      if 'lazy' == Helper.get_filetype(_bufnr) then
+        Events.emit(e_name.BUFFER_ENTER, { buf = _bufnr })
         break
       end
     end
@@ -285,7 +279,7 @@ M.register_keymap = function()
   require('lazy.view.config').keys.close = '<esc>'
   require('lazy.view.config').keys.hover = '<nop>'
   require('lazy.view.config').keys.diff  = '<nop>'
-  TOOLS.tbl_r_extend(require('lazy.view.config').commands.help, { key = 'M' })
+  Tools.tbl_r_extend(require('lazy.view.config').commands.help, { key = 'M' })
 end
 
 return M

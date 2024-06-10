@@ -1,108 +1,60 @@
 local M = {}
 
-local events  = require('ngpong.common.events')
-local autocmd = require('ngpong.common.autocmd')
+local Events  = require('ngpong.common.events')
+local Autocmd = require('ngpong.common.autocmd')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 local setup_autocmd = function()
-  local group_id = autocmd.new_augroup("native")
+  local group = Autocmd.new_augroup('native')
 
-  vim.api.nvim_create_autocmd('BufReadPost', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_READ_POST, args)
-    end
-  })
+  group.on('BufReadPost', function(args)
+    Events.emit(e_name.BUFFER_READ_POST, args)
+  end)
 
-  vim.api.nvim_create_autocmd('FileType', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.FILE_TYPE, args)
-    end
-  })
+  group.on('FileType', function(args)
+    Events.emit(e_name.FILE_TYPE, args)
+  end)
 
-  vim.api.nvim_create_autocmd('VimEnter', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.VIM_ENTER, args)
-    end
-  })
+  group.on('VimEnter', function(args)
+    Events.emit(e_name.VIM_ENTER, args)
+  end)
 
-  vim.api.nvim_create_autocmd('VimLeavePre', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.VIM_LEAVE_PRE, args)
-    end
-  })
+  group.on('VimLeavePre', function(args)
+    Events.emit(e_name.VIM_LEAVE_PRE, args)
+  end)
 
-  vim.api.nvim_create_autocmd('ExitPre', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.VIM_EXIT_PRE, args)
-    end
-  })
+  group.on('ExitPre', function(args)
+    Events.emit(e_name.VIM_EXIT_PRE, args)
+  end)
 
-  vim.api.nvim_create_autocmd('BufNew', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_READ, args)
-    end
-  })
+  group.on('BufNew', function(args)
+    Events.emit(e_name.BUFFER_READ, args)
+  end)
 
-  vim.api.nvim_create_autocmd('BufEnter', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_ENTER, args)
-    end
-  })
+  group.on('BufEnter', function(args)
+    Events.emit(e_name.BUFFER_ENTER, args)
+  end)
 
-  vim.api.nvim_create_autocmd('BufWinEnter', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_WIN_ENTER, args)
-    end
-  })
+  group.on('BufWinEnter', function(args)
+    Events.emit(e_name.BUFFER_WIN_ENTER, args)
+  end)
 
-  vim.api.nvim_create_autocmd('BufAdd', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_ADD, args)
-    end
-  })
+  group.on('BufAdd', function(args)
+    Events.emit(e_name.BUFFER_ADD, args)
+  end)
 
-  vim.api.nvim_create_autocmd('BufDelete', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.BUFFER_DELETE, args)
-    end
-  })
+  group.on('BufDelete', function(args)
+    Events.emit(e_name.BUFFER_DELETE, args)
+  end)
 
-  vim.api.nvim_create_autocmd('WinClosed', {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.WIN_CLOSED, args)
-    end
-  })
+  group.on('WinClosed', function(args)
+    Events.emit(e_name.WIN_CLOSED, args)
+  end)
 
-  vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertLeave', 'CursorHold' }, {
-    group = group_id,
-    pattern = { '*' },
-    callback = function(args)
-      events.emit(e_events.CURSOR_NORMAL, args)
-    end
-  })
+  group.on({ 'CursorMoved', 'InsertLeave', 'CursorHold' }, function(args)
+    Events.emit(e_name.CURSOR_NORMAL, args)
+  end)
 end
 
 M.setup = function()

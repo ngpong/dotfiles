@@ -8,7 +8,7 @@ M.setup = function()
   vim.cmd.cnoreabbrev('<expr>', 'wq!', '(getcmdtype()==#\':\'&&getcmdline()==#\'wq!\')?\'wqa!\':\'wq!\'')
 
   -- 绑定 user command
-  vim.api.nvim_create_user_command('ReloadConfig', HELPER.reload_cfg, {})
+  vim.api.nvim_create_user_command('ReloadConfig', Helper.reload_cfg, {})
 end
 
 return M

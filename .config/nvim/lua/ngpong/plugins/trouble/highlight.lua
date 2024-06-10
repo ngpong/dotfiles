@@ -1,6 +1,8 @@
 local M = {}
 
-local colors = PLGS.colorscheme.colors
+local Icons = require('ngpong.utils.icon')
+
+local colors = Plgs.colorscheme.colors
 
 M.setup = function()
   vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = colors.dark0_soft })
@@ -12,10 +14,41 @@ M.setup = function()
   vim.api.nvim_set_hl(0, 'TroubleSignWarning', { link = 'DiagnosticWarn' })
   vim.api.nvim_set_hl(0, 'TroubleSignInformation', { link = 'DiagnosticInfo' })
   vim.api.nvim_set_hl(0, 'TroubleCount', { fg = colors.bright_orange, bg = colors.dark2 })
+  vim.api.nvim_set_hl(0, 'TroubleIconDirectory', { link = 'GruvboxYellow' })
+  vim.api.nvim_set_hl(0, 'TroubleIndentFoldClosed', { link = 'TroubleIndent' })
   vim.api.nvim_set_hl(0, 'TroubleTextHint', { fg = colors.light1 })
   vim.api.nvim_set_hl(0, 'TroubleTextInformation', { fg = colors.light1 })
   vim.api.nvim_set_hl(0, 'TroubleTextWarning', { fg = colors.light1 })
   vim.api.nvim_set_hl(0, 'TroubleTextError', { fg = colors.light1 })
+  vim.api.nvim_set_hl(0, 'TroubleTelescopeFileName', { fg = colors.light1 })
+
+  vim.api.nvim_set_hl(0, 'TroubleIconDirectory', { link = 'GruvboxYellow' })
+  vim.api.nvim_set_hl(0, 'TroubleIconArray', { link = Icons.lsp_kinds.Array.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconBoolean', { link = Icons.lsp_kinds.Boolean.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconClass', { link = Icons.lsp_kinds.Class.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconConstant', { link = Icons.lsp_kinds.Constant.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconConstructor', { link = Icons.lsp_kinds.Constructor.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconEnum', { link = Icons.lsp_kinds.Enum.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconEnumMember', { link = Icons.lsp_kinds.EnumMember.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconEvent', { link = Icons.lsp_kinds.Event.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconField', { link = Icons.lsp_kinds.Field.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconFile', { link = Icons.lsp_kinds.File.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconFunction', { link = Icons.lsp_kinds.Function.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconInterface', { link = Icons.lsp_kinds.Interface.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconKey', { link = Icons.lsp_kinds.Key.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconMethod', { link = Icons.lsp_kinds.Method.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconModule', { link = Icons.lsp_kinds.Module.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconNamespace', { link = Icons.lsp_kinds.Namespace.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconNull', { link = Icons.lsp_kinds.Null.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconNumber', { link = Icons.lsp_kinds.Number.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconObject', { link = Icons.lsp_kinds.Object.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconOperator', { link = Icons.lsp_kinds.Operator.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconPackage', { link = Icons.lsp_kinds.Package.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconProperty', { link = Icons.lsp_kinds.Property.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconString', { link = Icons.lsp_kinds.String.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconStruct', { link = Icons.lsp_kinds.Struct.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconTypeParameter', { link = Icons.lsp_kinds.TypeParameter.hl_link })
+  vim.api.nvim_set_hl(0, 'TroubleIconVariable', { link = Icons.lsp_kinds.Variable.hl_link })
 end
 
 return M

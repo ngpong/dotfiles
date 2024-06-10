@@ -1,8 +1,8 @@
 local M = {}
 
-local events = require('ngpong.common.events')
+local Events = require('ngpong.common.events')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 M.setup = function()
   require('gitsigns').setup {
@@ -49,7 +49,7 @@ M.setup = function()
       col = 1
     },
     on_attach = function(bufnr)
-      events.emit(e_events.ATTACH_GITSIGNS, { bufnr = bufnr })
+      Events.emit(e_name.ATTACH_GITSIGNS, { bufnr = bufnr })
     end
   }
 end

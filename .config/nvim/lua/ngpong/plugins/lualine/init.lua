@@ -3,12 +3,12 @@ return {
   lazy = true,
   event = 'VeryLazy',
   init = function()
-    PLGS.record_seq('lualine.nvim init')
-    PLGS.lualine.opts.setup()
-    PLGS.lualine.highlight.setup()
+    Plgs.record_seq('lualine.nvim init')
+    Plgs.lualine.opts.setup()
+    Plgs.lualine.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('lualine.nvim config')
-    PLGS.lualine.config.setup()
+    Plgs.record_seq('lualine.nvim config')
+    Plgs.lualine.config.setup()
   end
 }

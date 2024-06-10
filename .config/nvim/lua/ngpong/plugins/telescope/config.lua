@@ -1,12 +1,13 @@
 local M = {}
 
-local events    = require('ngpong.common.events')
-local icons     = require('ngpong.utils.icon')
-local lazy      = require('ngpong.utils.lazy')
-local telescope = lazy.require('telescope')
+local Events = require('ngpong.common.events')
+local Icons = require('ngpong.utils.icon')
+local Lazy = require('ngpong.utils.lazy')
+local Telescope = Lazy.require('telescope')
 
-local this = PLGS.telescope
-local e_events = events.e_name
+local this = Plgs.telescope
+
+local e_name = Events.e_name
 
 M.setup = function()
   local cfg = {
@@ -23,8 +24,9 @@ M.setup = function()
         path = '~/.local/share/nvim/databases/telescope_history.sqlite3',
         limit = 100,
       },
-      prompt_prefix = icons.space .. icons.search .. icons.space,
-      selection_caret = icons.dapstopped .. icons.space,
+      multi_icon = Icons.small_dot,
+      prompt_prefix = Icons.space .. Icons.search .. Icons.space,
+      selection_caret = Icons.dapstopped .. Icons.space,
       vimgrep_arguments = {
         'rg',
         -- telescope defaults
@@ -93,6 +95,16 @@ M.setup = function()
           '--no-ignore-vcs',
         },
       },
+      git_status = {
+        git_icons = {
+          added = Icons.git_add,
+          changed = Icons.git_change,
+          deleted = Icons.git_delete,
+          renamed = Icons.git_renamed,
+          unmerged = Icons.git_conflict,
+          untracked = Icons.git_untracked,
+        },
+      },
       -- current_buffer_fuzzy_find = {
       --   preview = {
       --     hide_on_startup = false,
@@ -109,11 +121,11 @@ M.setup = function()
   local extensions_cfg = {
     extensions = {
       fzf = {
-        fuzzy = true,                    -- false will only do exact matching
-        override_generic_sorter = true,  -- override the generic sorter
-        override_file_sorter = true,     -- override the file sorter
-        case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                                         -- the default case_mode is "smart_case"
+        fuzzy = true, -- false will only do exact matching
+        override_generic_sorter = true, -- override the generic sorter
+        override_file_sorter = true, -- override the file sorter
+        case_mode = 'smart_case', -- or "ignore_case" or "respect_case"
+        -- the default case_mode is "smart_case"
       },
       live_grep_args = {
         auto_quoting = false, -- enable/disable auto-quoting
@@ -122,19 +134,19 @@ M.setup = function()
             ['<TAB>'] = require('telescope-live-grep-args.actions').quote_prompt(), -- { postfix = " --iglob " }
           },
         },
-      }
-    }
+      },
+    },
   }
 
-  TOOLS.tbl_r_extend(cfg, layout_cfg,
+  Tools.tbl_r_extend(cfg, layout_cfg,
                           picker_cfg,
                           extensions_cfg)
 
-  events.emit(e_events.SETUP_TELESCOPE, cfg)
+  Events.emit(e_name.SETUP_TELESCOPE, cfg)
 
-  telescope.setup(cfg)
-  telescope.load_extension('fzf')
-  telescope.load_extension('smart_history')
+  Telescope.setup(cfg)
+  Telescope.load_extension('fzf')
+  Telescope.load_extension('smart_history')
 end
 
 return M

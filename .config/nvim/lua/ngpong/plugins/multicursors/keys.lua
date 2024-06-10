@@ -1,27 +1,28 @@
 local M = {}
 
-local keymap        = require('ngpong.common.keybinder')
-local events        = require('ngpong.common.events')
-local lazy          = require('ngpong.utils.lazy')
-local mc            = lazy.require('multicursors')
-local mc_n          = lazy.require('multicursors.normal_mode')
-local mc_i          = lazy.require('multicursors.insert_mode')
-local mc_e          = lazy.require('multicursors.extend_mode')
-local mc_utils      = lazy.require('multicursors.utils')
-local mc_selections = lazy.require('multicursors.selections')
+local Keymap        = require('ngpong.common.keybinder')
+local Events        = require('ngpong.common.events')
+local Lazy          = require('ngpong.utils.lazy')
+local mc            = Lazy.require('multicursors')
+local mc_n          = Lazy.require('multicursors.normal_mode')
+local mc_i          = Lazy.require('multicursors.insert_mode')
+local mc_e          = Lazy.require('multicursors.extend_mode')
+local mc_utils      = Lazy.require('multicursors.utils')
+local mc_selections = Lazy.require('multicursors.selections')
 
-local this = PLGS.multicursors
-local e_mode = keymap.e_mode
-local e_events = events.e_name
+local this = Plgs.multicursors
+
+local e_mode = Keymap.e_mode
+local e_name = Events.e_name
 
 local set_native_keymaps = function()
-  keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<leader>c', function()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<leader>c', function()
     mc.start()
   end, { remap = false, desc = 'enter multi cursor mode.' })
 end
 
 local set_mode_keymaps = function(cfg)
-  TOOLS.tbl_r_extend(cfg, {
+  Tools.tbl_r_extend(cfg, {
     mode_keys = {
       append = { 'a', desc = 'MULTICURSORS: enter(head) inster mode.' },
       change = { 'c', desc = 'MULTICURSORS: cut character and enter insert mode.' },
@@ -32,7 +33,7 @@ local set_mode_keymaps = function(cfg)
 end
 
 local set_normal_keymaps = function(cfg)
-  TOOLS.tbl_r_extend(cfg, {
+  Tools.tbl_r_extend(cfg, {
     normal_keys = {
       ['<C-.>'] = {
         method = function()
@@ -158,7 +159,6 @@ local set_normal_keymaps = function(cfg)
       ['t.'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['t,'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['r'] = { method = function() end, opts = { desc = 'which_key_ignore' } },
-      ['ro'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['rc'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['r:'] = { method = nil, opts = { desc = 'which_key_ignore' } },
       ['r;'] = { method = nil, opts = { desc = 'which_key_ignore' } },
@@ -217,7 +217,7 @@ local set_normal_keymaps = function(cfg)
 end
 
 local set_insert_keymaps = function(cfg)
-  TOOLS.tbl_r_extend(cfg, {
+  Tools.tbl_r_extend(cfg, {
     insert_keys = {
       ['<A-[>'] = {
         method = mc_i.Home_method,
@@ -265,7 +265,7 @@ local set_insert_keymaps = function(cfg)
 end
 
 local set_extend_keymaps = function(cfg)
-  TOOLS.tbl_r_extend(cfg, {
+  Tools.tbl_r_extend(cfg, {
     extend_keys = {}
   })
 end
@@ -273,7 +273,7 @@ end
 M.setup = function()
   set_native_keymaps()
 
-  events.rg(e_events.SETUP_MULTICURSORS, function(cfg)
+  Events.rg(e_name.SETUP_MULTICURSORS, function(cfg)
     set_mode_keymaps(cfg)
     set_normal_keymaps(cfg)
     set_insert_keymaps(cfg)

@@ -1,9 +1,9 @@
 local M = {}
 
-local events = require('ngpong.common.events')
-local icons  = require('ngpong.utils.icon')
+local Events = require('ngpong.common.events')
+local Icons  = require('ngpong.utils.icon')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 M.setup = function()
   local cfg = {
@@ -121,19 +121,19 @@ M.setup = function()
       sources = {
         {
           source = 'filesystem',
-          display_name = icons.space .. icons.files_1 .. icons.space .. 'FILES' .. icons.space
+          display_name = Icons.space .. Icons.files_1 .. Icons.space .. 'FILES' .. Icons.space
         },
         {
           source = 'git_status',
-          display_name = icons.space .. icons.git .. icons.space .. 'GIT' .. icons.space
+          display_name = Icons.space .. Icons.git .. Icons.space .. 'GIT' .. Icons.space
         },
         {
           source = 'buffers',
-          display_name = icons.space .. icons.files_2 .. icons.space .. 'BUFFERS' .. icons.space
+          display_name = Icons.space .. Icons.files_2 .. Icons.space .. 'BUFFERS' .. Icons.space
         },
         {
           source = 'document_symbols',
-          display_name = icons.space .. icons.symbol .. icons.space .. 'SYMBOLS' .. icons.space
+          display_name = Icons.space .. Icons.symbol .. Icons.space .. 'SYMBOLS' .. Icons.space
         },
       },
       winbar = true,
@@ -141,7 +141,7 @@ M.setup = function()
       show_separator_on_edge = false,
       content_layout = 'center',
       tabs_layout = 'equal',
-      separator = { left = icons.left_harf_2, right= icons.right_harf_2 },
+      separator = { left = Icons.left_harf_2, right= Icons.right_harf_2 },
     },
   }
 
@@ -150,13 +150,13 @@ M.setup = function()
       {
         event = 'neo_tree_window_after_open',
         handler = function ()
-          events.emit(e_events.INIT_NEOTREE)
+          Events.emit(e_name.INIT_NEOTREE)
         end
       },
       {
         event = 'neo_tree_window_after_close',
         handler = function ()
-          events.emit(e_events.FREE_NEOTREE)
+          Events.emit(e_name.FREE_NEOTREE)
         end
       },
     },
@@ -165,17 +165,17 @@ M.setup = function()
   local fixicon_cfg = {
     default_component_configs = {
       indent = {
-        indent_marker = icons.indent_marker_3,
-        last_indent_marker = icons.indent_marker_2,
-        expander_collapsed = icons.closepand,
-        expander_expanded = icons.expand,
+        indent_marker = Icons.indent_marker_3,
+        last_indent_marker = Icons.indent_marker_2,
+        expander_collapsed = Icons.closepand,
+        expander_expanded = Icons.expand,
       },
       diagnostics = {
         symbols = {
-          hint = icons.diagnostic_hint,
-          info = icons.diagnostic_info,
-          warn = icons.diagnostic_warn,
-          error = icons.diagnostic_err,
+          hint = Icons.diagnostic_hint,
+          info = Icons.diagnostic_info,
+          warn = Icons.diagnostic_warn,
+          error = Icons.diagnostic_err,
         },
         highlights = {
           hint = 'NeoTreeDiagnosticSignHint',
@@ -185,52 +185,52 @@ M.setup = function()
         },
       },
       icon = {
-        folder_closed = icons.dir_closed,
-        folder_open = icons.dir_opened,
-        folder_empty = icons.dir_empty_opend,
-        folder_empty_open = icons.dir_empty_closed,
-        default = icons.file_3,
+        folder_closed = Icons.dir_closed,
+        folder_open = Icons.dir_opened,
+        folder_empty = Icons.dir_empty_opend,
+        folder_empty_open = Icons.dir_empty_closed,
+        default = Icons.file_3,
       },
       modified = {
-        symbol = icons.circular_big,
+        symbol = Icons.circular_big,
       },
       git_status = {
         symbols = {
-          added     = icons.git_add,
-          modified  = icons.git_change,
-          deleted   = icons.git_delete,
-          renamed   = icons.git_renamed,
-          untracked = icons.git_untracked,
-          ignored   = icons.git_ignored,
-          unstaged  = icons.git_unstaged,
-          staged    = icons.git_staged,
-          conflict  = icons.git_conflict,
+          added     = Icons.git_add,
+          modified  = Icons.git_change,
+          deleted   = Icons.git_delete,
+          renamed   = Icons.git_renamed,
+          untracked = Icons.git_untracked,
+          ignored   = Icons.git_ignored,
+          unstaged  = Icons.git_unstaged,
+          staged    = Icons.git_staged,
+          conflict  = Icons.git_conflict,
         }
       },
     },
     document_symbols = {
       kinds = {
         -- respect gruvbox.nvim CmpItemKind* settings
-        File = { icon = icons.lsp_kinds.File.val, hl = icons.lsp_kinds.File.hl_link },
-        Method = { icon = icons.lsp_kinds.Method.val, hl = icons.lsp_kinds.Method.hl_link },
-        Field= { icon = icons.lsp_kinds.Field.val, hl = icons.lsp_kinds.Field.hl_link },
-        Namespace = { icon = icons.lsp_kinds.Module.val, hl = icons.lsp_kinds.Module.hl_link },
-        Constructor = { icon = icons.lsp_kinds.Constructor.val, hl = icons.lsp_kinds.Constructor.hl_link },
-        Package = { icon = icons.lsp_kinds.Package.val, hl = icons.lsp_kinds.Package.hl_link },
-        Class = { icon = icons.lsp_kinds.Class.val, hl = icons.lsp_kinds.Class.hl_link },
-        Property = { icon = icons.lsp_kinds.Property.val, hl = icons.lsp_kinds.Property.hl_link },
-        Enum = { icon = icons.lsp_kinds.Enum.val, hl = icons.lsp_kinds.Enum.hl_link },
-        Function = { icon = icons.lsp_kinds.Function.val, hl = icons.lsp_kinds.Function.hl_link },
-        Variable = { icon = icons.lsp_kinds.Variable.val, hl = icons.lsp_kinds.Variable.hl_link },
-        String = { icon = icons.lsp_kinds.String.val, hl = icons.lsp_kinds.String.hl_link },
-        Number = { icon = icons.lsp_kinds.Value.val, hl = icons.lsp_kinds.Value.hl_link },
-        Array = { icon = icons.lsp_kinds.Array.val, hl = icons.lsp_kinds.Array.hl_link },
-        Object = { icon = icons.lsp_kinds.Class.val, hl = icons.lsp_kinds.Class.hl_link },
-        Key = { icon = icons.lsp_kinds.Keyword.val, hl = icons.lsp_kinds.Keyword.hl_link },
-        Struct = { icon = icons.lsp_kinds.Struct.val, hl = icons.lsp_kinds.Struct.hl_link },
-        Operator = { icon = icons.lsp_kinds.Operator.val, hl = icons.lsp_kinds.Operator.hl_link },
-        TypeParameter = { icon = icons.lsp_kinds.TypeParameter.val, hl = icons.lsp_kinds.TypeParameter.hl_link },
-        StaticMethod = { icon = icons.lsp_kinds.StaticMethod.val, hl = icons.lsp_kinds.StaticMethod.hl_link },
+        File = { icon = Icons.lsp_kinds.File.val, hl = Icons.lsp_kinds.File.hl_link },
+        Method = { icon = Icons.lsp_kinds.Method.val, hl = Icons.lsp_kinds.Method.hl_link },
+        Field= { icon = Icons.lsp_kinds.Field.val, hl = Icons.lsp_kinds.Field.hl_link },
+        Namespace = { icon = Icons.lsp_kinds.Module.val, hl = Icons.lsp_kinds.Module.hl_link },
+        Constructor = { icon = Icons.lsp_kinds.Constructor.val, hl = Icons.lsp_kinds.Constructor.hl_link },
+        Package = { icon = Icons.lsp_kinds.Package.val, hl = Icons.lsp_kinds.Package.hl_link },
+        Class = { icon = Icons.lsp_kinds.Class.val, hl = Icons.lsp_kinds.Class.hl_link },
+        Property = { icon = Icons.lsp_kinds.Property.val, hl = Icons.lsp_kinds.Property.hl_link },
+        Enum = { icon = Icons.lsp_kinds.Enum.val, hl = Icons.lsp_kinds.Enum.hl_link },
+        Function = { icon = Icons.lsp_kinds.Function.val, hl = Icons.lsp_kinds.Function.hl_link },
+        Variable = { icon = Icons.lsp_kinds.Variable.val, hl = Icons.lsp_kinds.Variable.hl_link },
+        String = { icon = Icons.lsp_kinds.String.val, hl = Icons.lsp_kinds.String.hl_link },
+        Number = { icon = Icons.lsp_kinds.Value.val, hl = Icons.lsp_kinds.Value.hl_link },
+        Array = { icon = Icons.lsp_kinds.Array.val, hl = Icons.lsp_kinds.Array.hl_link },
+        Object = { icon = Icons.lsp_kinds.Class.val, hl = Icons.lsp_kinds.Class.hl_link },
+        Key = { icon = Icons.lsp_kinds.Keyword.val, hl = Icons.lsp_kinds.Keyword.hl_link },
+        Struct = { icon = Icons.lsp_kinds.Struct.val, hl = Icons.lsp_kinds.Struct.hl_link },
+        Operator = { icon = Icons.lsp_kinds.Operator.val, hl = Icons.lsp_kinds.Operator.hl_link },
+        TypeParameter = { icon = Icons.lsp_kinds.TypeParameter.val, hl = Icons.lsp_kinds.TypeParameter.hl_link },
+        StaticMethod = { icon = Icons.lsp_kinds.StaticMethod.val, hl = Icons.lsp_kinds.StaticMethod.hl_link },
       }
     },
   }
@@ -243,11 +243,11 @@ M.setup = function()
     },
   }
 
-  TOOLS.tbl_r_extend(cfg, hook_cfg,
+  Tools.tbl_r_extend(cfg, hook_cfg,
                           fixicon_cfg,
                           fix_1312_cfg)
 
-  events.emit(e_events.SETUP_NEOTREE, cfg)
+  Events.emit(e_name.SETUP_NEOTREE, cfg)
 
   require('neo-tree').setup(cfg)
 end

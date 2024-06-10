@@ -2,11 +2,11 @@ return {
   'stevearc/dressing.nvim',
   lazy = true,
   init = function()
-    PLGS.record_seq('dressing.nvim init')
-    PLGS.dressing.opts.setup()
+    Plgs.record_seq('dressing.nvim init')
+    Plgs.dressing.opts.setup()
   end,
   config = function()
-    PLGS.record_seq('dressing.nvim config')
-    PLGS.dressing.config.setup()
+    Plgs.record_seq('dressing.nvim config')
+    Plgs.dressing.config.setup()
   end
 }

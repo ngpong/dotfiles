@@ -1,11 +1,11 @@
 local M = {}
 
-local events          = require('ngpong.common.events')
-local lazy            = require('ngpong.utils.lazy')
-local buffline_state  = lazy.require('bufferline.state')
-local buffline_groups = lazy.require('bufferline.groups')
+local Events         = require('ngpong.common.events')
+local Lazy           = require('ngpong.utils.lazy')
+local BufflineState  = Lazy.require('bufferline.state')
+local BufflineGroups = Lazy.require('bufferline.groups')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 M.redraw = function()
   vim.cmd.redrawtabline()
@@ -14,22 +14,22 @@ end
 
 M.is_pinned = function(arg)
   if type(arg) == 'number' then
-    local bufnr = arg or HELPER.get_cur_bufnr()
+    local bufnr = arg or Helper.get_cur_bufnr()
 
-    for _, item in ipairs(buffline_state.components) do
+    for _, item in ipairs(BufflineState.components) do
       local element = item:as_element()
-      if element.id == bufnr and buffline_groups._is_pinned(element) then
+      if element.id == bufnr and BufflineGroups._is_pinned(element) then
         return true
       end
     end
   elseif type(arg) == 'table' then
     local element = arg
 
-    return buffline_groups._is_pinned(element)
+    return BufflineGroups._is_pinned(element)
   elseif type(arg) == 'string' and arg == 'all' then
-    for _, item in ipairs(buffline_state.components) do
+    for _, item in ipairs(BufflineState.components) do
       local element = item:as_element()
-      if buffline_groups._is_pinned(element) then
+      if BufflineGroups._is_pinned(element) then
         return true
       end
     end
@@ -41,14 +41,14 @@ M.is_pinned = function(arg)
 end
 
 M.get_components = function()
-  return buffline_state.components
+  return BufflineState.components
 end
 
 M.cycle_next = function(_)
   local success, _ = pcall(vim.cmd, 'keepjumps BufferLineCycleNext')
 
   if success then
-    events.emit(e_events.CYCLE_NEXT_BUFFER)
+    Events.emit(e_name.CYCLE_NEXT_BUFFER)
   end
 end
 
@@ -56,7 +56,7 @@ M.cycle_prev = function(_)
   local success, _ = pcall(vim.cmd, 'keepjumps BufferLineCyclePrev')
 
   if success then
-    events.emit(e_events.CYCLE_PREV_BUFFER)
+    Events.emit(e_name.CYCLE_PREV_BUFFER)
   end
 end
 
@@ -76,12 +76,12 @@ M.select = function(_)
   local success, _ = pcall(vim.cmd, 'keepjumps BufferLinePick')
 
   if success then
-    events.emit(e_events.SELECT_TARGET_BUFFER)
+    Events.emit(e_name.SELECT_TARGET_BUFFER)
   end
 end
 
 M.is_plugin_loaded = function()
-  return PLGS.is_loaded('bufferline.nvim')
+  return Plgs.is_loaded('bufferline.nvim')
 end
 
 return M

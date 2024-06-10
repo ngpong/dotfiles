@@ -3,14 +3,14 @@ return {
   lazy = true,
   cmd = 'Neotree',
   init = function()
-    PLGS.record_seq('neo-tree.nvim init')
-    PLGS.neotree.keys.setup()
-    PLGS.neotree.opts.setup()
-    PLGS.neotree.highlight.setup()
+    Plgs.record_seq('neo-tree.nvim init')
+    Plgs.neotree.keys.setup()
+    Plgs.neotree.opts.setup()
+    Plgs.neotree.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('neo-tree.nvim config')
-    PLGS.neotree.behavior.setup()
-    PLGS.neotree.config.setup()
+    Plgs.record_seq('neo-tree.nvim config')
+    Plgs.neotree.behavior.setup()
+    Plgs.neotree.config.setup()
   end
 }

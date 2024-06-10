@@ -1,10 +1,10 @@
 local M = {}
 
-local events = require('ngpong.common.events')
-local lazy   = require('ngpong.utils.lazy')
-local wk     = lazy.require('which-key')
+local Events = require('ngpong.common.events')
+local Lazy   = require('ngpong.utils.lazy')
+local WK     = Lazy.require('which-key')
 
-local e_events = events.e_name
+local e_name = Events.e_name
 
 M.setup = function()
   local cfg = {
@@ -85,9 +85,9 @@ M.setup = function()
     sort_by_description = true,
   }
 
-  wk.setup(cfg)
+  WK.setup(cfg)
 
-  events.emit(e_events.SETUP_WHICHKEY)
+  Events.emit(e_name.SETUP_WHICHKEY)
 end
 
 return M

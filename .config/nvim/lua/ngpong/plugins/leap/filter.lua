@@ -3,9 +3,9 @@ local execlude_fts = {
 }
 
 local f = function(win)
-  return HELPER.is_win_valid(win) and
+  return Helper.is_win_valid(win) and
          vim.api.nvim_win_get_config(win).focusable and
-         not TOOLS.tbl_contains(execlude_fts, HELPER.get_filetype(HELPER.get_bufnr(win)))
+         not Tools.tbl_contains(execlude_fts, Helper.get_filetype(Helper.get_bufnr(win)))
 end
 
 return setmetatable({}, {

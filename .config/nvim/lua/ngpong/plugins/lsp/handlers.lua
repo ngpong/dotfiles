@@ -1,39 +1,38 @@
 local M = {}
 
-local icons = require('ngpong.utils.icon')
-local lazy  = require('ngpong.utils.lazy')
-local async = lazy.require('plenary.async')
+local libP  = require('ngpong.common.libp')
+local Icons = require('ngpong.utils.icon')
 
 local setup_jumping = function()
   local real_textDocument_definition = vim.lsp.handlers['textDocument/definition']
-  vim.lsp.handlers['textDocument/definition'] = async.void(function(...)
+  vim.lsp.handlers['textDocument/definition'] = libP.async.void(function(...)
     VAR.set('DisablePresistCursor', true)
 
     real_textDocument_definition(...)
 
-    async.util.scheduler()
+    libP.async.util.scheduler()
 
     VAR.unset('DisablePresistCursor')
   end)
 
   local real_textDocument_references = vim.lsp.handlers['textDocument/references']
-  vim.lsp.handlers['textDocument/references'] = async.void(function(...)
+  vim.lsp.handlers['textDocument/references'] = libP.async.void(function(...)
     VAR.set('DisablePresistCursor', true)
 
     real_textDocument_references(...)
 
-    async.util.scheduler()
+    libP.async.util.scheduler()
 
     VAR.unset('DisablePresistCursor')
   end)
 
   local real_textDocument_declaration = vim.lsp.handlers['textDocument/declaration']
-  vim.lsp.handlers['textDocument/declaration'] = async.void(function(...)
+  vim.lsp.handlers['textDocument/declaration'] = libP.async.void(function(...)
     VAR.set('DisablePresistCursor', true)
 
     real_textDocument_declaration(...)
 
-    async.util.scheduler()
+    libP.async.util.scheduler()
 
     VAR.unset('DisablePresistCursor')
   end)
@@ -189,12 +188,12 @@ local setup_lsp_notify = function()
     local notif_data = get_notif_data(client_id, token)
 
     if notif_data.spinner then
-      local new_spinner = (notif_data.spinner + 1) % #icons.spinner_frames
+      local new_spinner = (notif_data.spinner + 1) % #Icons.spinner_frames
       notif_data.spinner = new_spinner
 
       notif_data.notification = vim.notify(nil, nil, {
         hide_from_history = true,
-        icon = icons.spinner_frames[new_spinner],
+        icon = Icons.spinner_frames[new_spinner],
         replace = notif_data.notification,
       })
 
@@ -228,7 +227,7 @@ local setup_lsp_notify = function()
 
       notif_data.notification = vim.notify(message, 'info', {
         title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
-        icon = icons.spinner_frames[1],
+        icon = Icons.spinner_frames[1],
         timeout = false,
         hide_from_history = false,
       })
@@ -243,7 +242,7 @@ local setup_lsp_notify = function()
     elseif val.kind == 'end' and notif_data then
       notif_data.notification =
         vim.notify(val.message and format_message(val.message) or 'Complete', 'info', {
-          icon = icons.lsp_loaded,
+          icon = Icons.lsp_loaded,
           replace = notif_data.notification,
           timeout = 3000,
         })
@@ -253,7 +252,7 @@ local setup_lsp_notify = function()
   end
 
   vim.lsp.handlers['window/showMessage'] = function(err, method, params, client_id)
-     vim.notify(method.message, severity[params.type])
+    vim.notify(method.message, severity[params.type])
   end
 end
 

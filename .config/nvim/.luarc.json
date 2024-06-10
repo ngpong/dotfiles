@@ -28,7 +28,7 @@
       "/usr/local/share/lua/5.1",
       "/usr/share/lua/5.1",
 
-      "/usr/share/nvim/runtime/lua"
+      "$VIMRUNTIME"
     ]
   }
 }

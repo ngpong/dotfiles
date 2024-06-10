@@ -18,8 +18,7 @@ local function roundNumber(num, digits)
   return tonumber(fmt:format(num))
 end
 
-local function filesize(size, options)
-
+return function(size, options)
   -- copy options to o
   local o = {}
   for key, value in pairs(options or {}) do
@@ -133,5 +132,3 @@ local function filesize(size, options)
       return value .. o.spacer .. suffix
   end
 end
-
-return filesize

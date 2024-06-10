@@ -1,126 +1,140 @@
 local M = {}
 
-local icons   = require('ngpong.utils.icon')
-local lazy    = require('ngpong.utils.lazy')
-local bouncer = require('ngpong.utils.debounce')
-local async   = lazy.require('plenary.async')
-local trouble = lazy.require('trouble')
-local config  = lazy.require("trouble.config")
+-- stylua: ignore start
+local libP    = require('ngpong.common.libp')
+local Bouncer = require('ngpong.utils.debounce')
+local Icons   = require('ngpong.utils.icon')
+local Lazy    = require('ngpong.utils.lazy')
+local API     = Lazy.require('trouble.api')
+local View    = Lazy.require('trouble.view')
+local Preview = Lazy.require('trouble.view.preview')
+-- stylua: ignore end
 
-local trouble_actions = lazy.access('trouble', 'action')
-
-M.actions = setmetatable({}, {
-  __index = function(t, k)
-    if k == 'nop' then
-      return function() end
-    else
-      return TOOLS.wrap_f(trouble_actions, k)
-    end
-  end
-})
-
-M.jump = async.void(function()
+M.jump = libP.async.void(function()
   VAR.set('DisablePresistCursor', true)
 
-  HELPER.add_jumplist()
-  M.actions.jump()
-  HELPER.add_jumplist()
+  Helper.add_jumplist()
+  API.jump()
+  Helper.add_jumplist()
 
-  async.util.scheduler()
+  libP.async.util.scheduler()
 
-  HELPER.keep_screen_center()
+  Helper.keep_screen_center()
 
   VAR.unset('DisablePresistCursor')
 end)
 
-M.refresh = bouncer.throttle_leading(1000, function()
-  if not M.is_open() then
-    return
-  end
+M.jump_close = libP.async.void(function()
+  VAR.set('DisablePresistCursor', true)
 
-  local view = trouble.get_view()
-  if not view then
-    return
-  end
+  Helper.add_jumplist()
+  API.jump_close()
+  Helper.add_jumplist()
 
-  local _refresh = function()
-    local source = VAR.get('TroubleSource')
+  libP.async.util.scheduler()
 
-    local title = 'System: Trouble list'
-    local msg   = 'Refresh [' .. (TOOLS.isempty(source) and config.options.mode or source) .. '] success.'
+  Helper.keep_screen_center()
 
-    M.actions.refresh()
-
-    vim.schedule(function()
-      HELPER.notify_info(msg, title, { icon = icons.lsp_loaded })
-    end)
-  end
-
-  local mod = config.options.mode
-
-  -- quickfix 比较特殊，项目内部的特殊 trouble list 都是用的这玩意
-  if mod == 'quickfix' then
-    local source = VAR.get('TroubleSource')
-
-    local parent = view.parent
-    if not parent then
-      return
-    end
-
-    local bufnr = HELPER.get_bufnr(parent)
-    if not HELPER.is_buf_valid(bufnr) then
-      return
-    end
-
-    if source:match('^Git') then
-      -- 没有 diff 的文件直接清空刷新
-      local hunks = PLGS.gitsigns.api.get_hunks(bufnr)
-      if not hunks or not next(hunks) then
-        HELPER.clear_qflst()
-        _refresh()
-      end
-
-      PLGS.gitsigns.api.send_symbols_2_qf(source:match('workspace') and 'all' or bufnr, _refresh)
-    elseif source:match('^Mark') then
-      PLGS.marks.api.send_marks_2_qf(bufnr, source:match('workspace') ~= nil, _refresh)
-    else
-      _refresh()
-    end
-  else
-    _refresh()
-  end
+  VAR.unset('DisablePresistCursor')
 end)
 
-M.toggle = function(mod, source)
-  mod = mod or ''
-  source = source or ''
-
-  local success, _ = pcall(vim.cmd, 'TroubleToggle ' .. mod)
-  if success and M.is_open() then
-    VAR.set('TroubleSource', source)
+M.toggle_preview = function()
+  local v = M.find_view_by_winid(Helper.get_cur_winid())
+  if not v then
+    return
   end
-end
 
-M.open = function(mod, source)
-  mod = mod or ''
-  source = source or ''
-
-  local success, msg = pcall(vim.cmd, 'Trouble ' .. mod)
-  if success then
-    VAR.set('TroubleSource', source)
+  if Preview.is_open() then
+    v.opts.auto_preview = false
+    Preview.close()
   else
-    LOGGER.error(msg)
+    v.opts.auto_preview = true
+    Preview.open(v, v:at().item, { scratch = v.opts.preview.scratch })
   end
 end
 
-M.close = function(mod)
-  mod = mod or ''
+M.toggle = setmetatable({
+  ___open_state = {},
+}, {
+  __call = function(self, mode)
+    local is_open = API.is_open({ mode = mode })
 
-  pcall(vim.cmd, 'TroubleClose ' .. mod)
+    if not is_open and self.___open_state[mode] then
+      return
+    end
+
+    API.toggle({ mode = mode or '' })
+
+    if not is_open then
+      self.___open_state[mode] = true
+    end
+  end,
+})
+
+M.open = setmetatable({
+  ___open_state = {},
+}, {
+  __call = function(self, mode)
+    if self.___open_state[mode] then
+      return
+    end
+
+    API.open({ mode = mode or '' })
+    self.___open_state[mode] = true
+  end,
+})
+
+M.find_view_by_mode = function(mode)
+  for v, _ in pairs(View._views or {}) do
+    if v.opts.mode == mode then
+      return v
+    end
+  end
+
+  return nil
 end
 
-M.is_open = function()
-  return trouble.is_open()
+---@param winid number? window id
+M.find_view_by_winid = function(winid)
+  for v, _ in pairs(View._views or {}) do
+    if v.win.win == winid then
+      return v
+    end
+  end
+
+  return nil
 end
 
-return M
+M.close = function(winid)
+  winid = winid or Helper.get_cur_winid()
+
+  local v = M.find_view_by_winid(winid)
+  if v == nil then
+    return
+  end
+
+  v:close()
+end
+
+M.get_cur_view_name = function()
+  local winid = Helper.get_cur_winid()
+
+  local v = M.find_view_by_winid(winid)
+  if v == nil then
+    return ''
+  end
+
+  return v.opts.desc
+end
+
+M.close_all = function()
+  for _, v in pairs(API._find() or {}) do
+    v:close()
+  end
+end
+
+return setmetatable(M, {
+  __index = function(_, k)
+    return Tools.wrap_f(Lazy.access('trouble.api', k))
+  end,
+})

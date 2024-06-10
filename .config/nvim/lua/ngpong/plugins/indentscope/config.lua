@@ -29,7 +29,7 @@ M.setup = function()
       try_as_border = true,
     },
     -- Which character to use for drawing scope indicator
-    symbol = '▏',
+    symbol = '⁞', -- '▏'
   }
 end
 

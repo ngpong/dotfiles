@@ -1,6 +1,6 @@
 return setmetatable({
   setup = function()
-    _G.PLGS = require('ngpong.plugins')
+    _G.Plgs = require('ngpong.plugins')
 
     require('ngpong.plugins.bootstrap').ensure_install()
     require('ngpong.plugins.bootstrap').register_event()
@@ -13,7 +13,7 @@ return setmetatable({
   record_seq = function(key)
     -- _G.plgs___seq = _G.plgs___seq or 0
     -- _G.plgs___seq = _G.plgs___seq + 1
-    -- LOGGER.debug('Execute [' .. (key and key or '') .. '] ' .. _G.plgs___seq)
+    -- Logger.debug('Execute [' .. (key and key or '') .. '] ' .. _G.plgs___seq)
   end,
 }, {
   __index = function(self, k)
@@ -23,7 +23,10 @@ return setmetatable({
     local plugin = setmetatable({}, {
       __index = function(_self, _k)
         local success, module = pcall(require, path .. '.' .. _k)
-        assert(success, 'load plugin module error, plugin [' .. k .. '] module [' .. _k .. '].')
+        if not success then
+          Logger.error(module)
+          assert(false, 'load plugin module error, plugin [' .. k .. '] module [' .. _k .. '].')
+        end
 
         _self[_k] = module
         return module

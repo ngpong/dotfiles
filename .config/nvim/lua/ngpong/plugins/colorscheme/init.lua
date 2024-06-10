@@ -3,7 +3,7 @@ return {
   lazy = false,
   priority = 1,
   config = function()
-    PLGS.record_seq('colorscheme config')
-    PLGS.colorscheme.config.setup()
+    Plgs.record_seq('colorscheme config')
+    Plgs.colorscheme.config.setup()
   end
 }

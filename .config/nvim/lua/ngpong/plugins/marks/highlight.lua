@@ -1,6 +1,6 @@
 local M = {}
 
-local colors = PLGS.colorscheme.colors
+local colors = Plgs.colorscheme.colors
 
 M.setup = function()
   -- 该条 highlight 被我在 makrs.nvim 源码里面手动删除了

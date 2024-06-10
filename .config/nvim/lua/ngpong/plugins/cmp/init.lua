@@ -12,13 +12,13 @@ return {
     'L3MON4D3/LuaSnip'
   },
   init = function()
-    PLGS.record_seq('nvim-cmp init')
-    PLGS.cmp.opts.setup()
-    PLGS.cmp.keys.setup()
-    PLGS.cmp.highlight.setup()
+    Plgs.record_seq('nvim-cmp init')
+    Plgs.cmp.opts.setup()
+    Plgs.cmp.keys.setup()
+    Plgs.cmp.highlight.setup()
   end,
   config = function()
-    PLGS.record_seq('nvim-cmp config')
-    PLGS.cmp.config.setup()
+    Plgs.record_seq('nvim-cmp config')
+    Plgs.cmp.config.setup()
   end
 }

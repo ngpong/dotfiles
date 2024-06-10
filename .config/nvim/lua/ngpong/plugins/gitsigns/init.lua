@@ -3,12 +3,12 @@ return {
   lazy = true,
   event = 'LazyFile',
   init = function()
-    PLGS.record_seq('gitsigns.nvim init')
-    PLGS.gitsigns.keys.setup()
+    Plgs.record_seq('gitsigns.nvim init')
+    Plgs.gitsigns.keys.setup()
   end,
   config = function()
-    PLGS.record_seq('gitsigns.nvim config')
-    PLGS.gitsigns.config.setup()
-    PLGS.gitsigns.autocmd.setup()
+    Plgs.record_seq('gitsigns.nvim config')
+    Plgs.gitsigns.config.setup()
+    Plgs.gitsigns.autocmd.setup()
   end
 }

@@ -1,8 +1,8 @@
 local M = {}
 
-local lazy       = require('ngpong.utils.lazy')
-local async      = lazy.require('plenary.async')
-local treesitter = lazy.require('nvim-treesitter.configs')
+local libP       = require('ngpong.common.libp')
+local Lazy       = require('ngpong.utils.lazy')
+local Treesitter = Lazy.require('nvim-treesitter.configs')
 
 M.setup = function()
   -- NOTE: 可能会有BUG
@@ -15,32 +15,32 @@ M.setup = function()
   local max  = 200
   local inc  = 10
 
-  local real_detach_module = treesitter.detach_module
-  treesitter.detach_module = async.void(function(mod_name, bufnr)
-    async.util.sleep(cur)
+  local real_detach_module = Treesitter.detach_module
+  Treesitter.detach_module = libP.async.void(function(mod_name, bufnr)
+    libP.async.util.sleep(cur)
 
     cur = cur + inc
     if cur > max then
       cur = base
     end
 
-    if not HELPER.is_buf_valid(bufnr) or HELPER.is_unnamed_buf(bufnr) then
+    if not Helper.is_buf_valid(bufnr) or Helper.is_unnamed_buf(bufnr) then
       return
     end
 
     real_detach_module(mod_name, bufnr)
   end)
 
-  local real_attach_module = treesitter.attach_module
-  treesitter.attach_module = async.void(function(mod_name, bufnr, lang)
-    async.util.sleep(cur)
+  local real_attach_module = Treesitter.attach_module
+  Treesitter.attach_module = libP.async.void(function(mod_name, bufnr, lang)
+    libP.async.util.sleep(cur)
 
     cur = cur + inc
     if cur > max then
       cur = base
     end
 
-    if not HELPER.is_buf_valid(bufnr) or HELPER.is_unnamed_buf(bufnr) then
+    if not Helper.is_buf_valid(bufnr) or Helper.is_unnamed_buf(bufnr) then
       return
     end
 

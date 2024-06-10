@@ -3,11 +3,11 @@ return {
   lazy = true,
   event = 'VeryVeryLazy',
   init = function()
-    PLGS.record_seq('todo-comments.nvim init')
-    PLGS.todocomments.keys.setup()
+    Plgs.record_seq('todo-comments.nvim init')
+    Plgs.todocomments.keys.setup()
   end,
   config = function()
-    PLGS.record_seq('todo-comments.nvim config')
-    PLGS.todocomments.config.setup()
+    Plgs.record_seq('todo-comments.nvim config')
+    Plgs.todocomments.config.setup()
   end
 }

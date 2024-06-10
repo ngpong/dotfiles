@@ -1,6 +1,6 @@
 local M = {}
 
-local this = PLGS.marks
+local this = Plgs.marks
 
 M.setup = function()
   require('marks').setup {

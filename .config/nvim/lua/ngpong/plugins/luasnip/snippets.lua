@@ -1,49 +1,49 @@
 local M = {}
 
-local lazy     = require('ngpong.utils.lazy')
-local engine   = lazy.require('luasnip')
-local snippets = lazy.require('luasnip.loaders.from_vscode')
+local Lazy     = require('ngpong.utils.lazy')
+local Engine   = Lazy.require('luasnip')
+local Snippets = Lazy.require('luasnip.loaders.from_vscode')
 
-local s       = lazy.access('luasnip', 'snippet')
-local t       = lazy.access('luasnip', 'text_node')
-local i       = lazy.access('luasnip', 'insert_node')
-local f       = lazy.access('luasnip', 'function_node')
-local p       = lazy.access('luasnip.extras', 'partial')
-local postfix = lazy.access('luasnip.extras.postfix', 'postfix')
+local S        = Lazy.access('luasnip', 'snippet')
+local T        = Lazy.access('luasnip', 'text_node')
+local I        = Lazy.access('luasnip', 'insert_node')
+local F        = Lazy.access('luasnip', 'function_node')
+local P        = Lazy.access('luasnip.extras', 'partial')
+local PF       = Lazy.access('luasnip.extras.postfix', 'postfix')
 
 M.setup = function()
   -- custom snippets
-  snippets.lazy_load {
+  Snippets.lazy_load {
     paths  = './snippets',
     exclude = { 'lua' }, -- luals 不支持禁用内置 snippets，为了使完成更加存粹，禁用掉这里的
   }
 
   -- snippets write by lua
-  engine.add_snippets('all', {
-    s('$YEAR', {
-      p(os.date, '%Y')
+  Engine.add_snippets('all', {
+    S('$YEAR', {
+      P(os.date, '%Y')
     }),
 
-    s({ trig = 'trigger_test_test', name = 'hello,world' }, {
-      t({'After expanding, the cursor is here ->'}), i(1),
-      t({'', 'After jumping forward once, cursor is here ->'}), i(2),
-      t({'', 'After jumping once more, the snippet is exited there ->'}), i(0),
+    S({ trig = 'trigger_test_test', name = 'hello,world' }, {
+      T({'After expanding, the cursor is here ->'}), I(1),
+      T({'', 'After jumping forward once, cursor is here ->'}), I(2),
+      T({'', 'After jumping once more, the snippet is exited there ->'}), I(0),
     }),
 
-    postfix('.br', {
-      f(function(_, parent)
+    PF('.br', {
+      F(function(_, parent)
         return '[' .. (parent.snippet.env.POSTFIX_MATCH or '') .. ']'
       end, {}),
     }),
 
-    postfix('.log', {
-      f(function(_, parent)
+    PF('.log', {
+      F(function(_, parent)
         return 'log << ' .. (parent.snippet.env.POSTFIX_MATCH or '')
       end, {}),
     }),
   })
-  engine.add_snippets('cpp', {
-    engine.parser.parse_snippet(
+  Engine.add_snippets('cpp', {
+    Engine.parser.parse_snippet(
       { trig = 'bmk', name = 'Benchmark Template.', desc = 'Google benchmark template for a tiny cpp program' },
       "#include <benchmark/benchmark.h>\n\nvoid foo(benchmark::State& state) {\n\tfor (auto _: state) {}\n}\nBENCHMARK(foo);\n\nBENCHMARK_MAIN();"
     )
