@@ -7,15 +7,35 @@
 
   "completion": {
     "displayContext": 0,
-    "showWord": "Fallback",
     "keywordSnippet": "Both",
+    "showWord": "Fallback",
     "workspaceWord": true
   },
 
-  "format.enable": false,
+  "format": {
+    "enable": false
+  },
+
+  "hint": {
+    "enable": false
+  },
+
+  "hover": {
+    "enable": true
+  },
+
+  "window": {
+    "progressBar": true,
+    "statusBar": false
+  },
 
   "diagnostics": {
-    "globals": [ "vim" ]
+    "enable": true,
+    "globals": [ "vim" ],
+    "ignoredFiles": "Opened",
+    "libraryFiles": "Opened",
+    "workspaceDelay": 3000,
+    "workspaceEvent": "OnSave"
   },
 
   "runtime": {
@@ -23,12 +43,16 @@
   },
 
   "workspace": {
-    "checkThirdParty": false,
+    "checkThirdParty":false,
     "library": [
       "/usr/local/share/lua/5.1",
       "/usr/share/lua/5.1",
 
       "$VIMRUNTIME"
     ]
+  },
+
+  "misc": {
+    "parameters": [ "--loglevel=error" ]
   }
 }

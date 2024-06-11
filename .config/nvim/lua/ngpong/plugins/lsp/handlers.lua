@@ -1,7 +1,7 @@
 local M = {}
 
-local libP  = require('ngpong.common.libp')
 local Icons = require('ngpong.utils.icon')
+local libP = require('ngpong.common.libp')
 
 local setup_jumping = function()
   local real_textDocument_definition = vim.lsp.handlers['textDocument/definition']
@@ -48,48 +48,42 @@ local setup_diagnostics = function()
   --
   -- 对于 windows terimal 下划线没有颜色的问题
   --  REF1: https://github.com/microsoft/language-server-protocol/issues/257
-  vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      underline = {
-        severity = {
-          vim.diagnostic.severity.ERROR,
-          vim.diagnostic.severity.WARN,
-          vim.diagnostic.severity.INFO,
-          vim.diagnostic.severity.HINT,
-        }
+  vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = {
+      severity = {
+        vim.diagnostic.severity.ERROR,
+        vim.diagnostic.severity.WARN,
+        vim.diagnostic.severity.INFO,
+        vim.diagnostic.severity.HINT,
       },
-      virtual_text = false,
-      signs = false,
-      update_in_insert = false,
-    }
-  )
+    },
+    virtual_text = false,
+    signs = false,
+    update_in_insert = false,
+  })
 
-  vim.lsp.handlers['textDocument/diagnostic'] = vim.lsp.with(
-    vim.lsp.diagnostic.on_diagnostic, {
-      underline = {
-        severity = {
-          vim.diagnostic.severity.ERROR,
-          vim.diagnostic.severity.WARN,
-          vim.diagnostic.severity.INFO,
-          vim.diagnostic.severity.HINT,
-        }
+  vim.lsp.handlers['textDocument/diagnostic'] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
+    underline = {
+      severity = {
+        vim.diagnostic.severity.ERROR,
+        vim.diagnostic.severity.WARN,
+        vim.diagnostic.severity.INFO,
+        vim.diagnostic.severity.HINT,
       },
-      virtual_text = false,
-      signs = false,
-      update_in_insert = false,
-    }
-  )
+    },
+    virtual_text = false,
+    signs = false,
+    update_in_insert = false,
+  })
 end
 
 local setup_hover = function()
-  vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-    vim.lsp.handlers.hover, {
-      border = 'rounded',
-      relative = 'cursor',
-      noautocmd = true,
-      silent = true,
-    }
-  )
+  vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+    border = 'rounded',
+    relative = 'cursor',
+    noautocmd = true,
+    silent = true,
+  })
 end
 
 local setup_signaturehelp = function()
@@ -102,43 +96,47 @@ local setup_signaturehelp = function()
 
   _LSP_SIG_CFG.cursorhold_update = false
 
-  vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-    vim.lsp.handlers.signature_help, {
-      border = 'rounded',
-      relative = 'cursor',
-      noautocmd = true,
-      silent = true,
-    }
-  )
+  vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+    border = 'rounded',
+    relative = 'cursor',
+    noautocmd = true,
+    silent = true,
+  })
 
   lsp_signature.setup({
     debug = false,
     log_path = vim.fn.stdpath('cache') .. '/lsp_signature.log', -- ~/.cache/nvim/lsp_signature.log
     verbose = false, -- show debug line number
     bind = false, -- This is mandatory, otherwise border config won't get registered.
-                  -- If you want to hook lspsaga or other signature handler, pls set to false
+    -- If you want to hook lspsaga or other signature handler, pls set to false
     doc_lines = 0, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
-                   -- set to 0 if you DO NOT want any API comments be shown
-                   -- This setting only take effect in insert mode, it does not affect signature help in normal
-                   -- mode, 10 by default
+    -- set to 0 if you DO NOT want any API comments be shown
+    -- This setting only take effect in insert mode, it does not affect signature help in normal
+    -- mode, 10 by default
     max_height = 12, -- max height of signature floating_window
     max_width = 200, -- max_width of signature floating_window, line will be wrapped if exceed max_width
-                     -- the value need >= 40
+    -- the value need >= 40
     wrap = true, -- allow doc/signature text wrap inside floating_window, useful if your lsp return doc/sig is too long
     floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
     floating_window_above_cur_line = true, -- try to place the floating above the current line when possible Note:
     -- will set to true when fully tested, set to false will use whichever side has more space
     -- this setting will be helpful if you do not want the PUM and floating win overlap
     floating_window_off_x = 1, -- adjust float windows x position.
-                                -- can be either a number or function
+    -- can be either a number or function
     floating_window_off_y = 0, -- adjust float windows y position. e.g -2 move window up 2 lines; 2 move down 2 lines
-                                -- can be either number or function, see examples
+    -- can be either number or function, see examples
     close_timeout = 4000, -- close floating window after ms when laster parameter is entered
-    fix_pos = false,  -- set to true, the floating window will not auto-close until finish all parameters
+    fix_pos = false, -- set to true, the floating window will not auto-close until finish all parameters
     hint_enable = false, -- virtual hint enable
-    hint_prefix = '',  -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
+    hint_prefix = {
+      above = "↙ ",  -- when the hint is on the line above the current line
+      current = "← ",  -- when the hint is on the same line
+      below = "↖ "  -- when the hint is on the line below the current line
+    },
     hint_scheme = 'String',
-    hint_inline = function() return false end,  -- should the hint be inline(nvim 0.10 only)?  default false
+    hint_inline = function()
+      return false
+    end, -- should the hint be inline(nvim 0.10 only)?  default false
     -- return true | 'inline' to show hint inline, return 'eol' to show hint at end of line, return false to disable
     -- return 'right_align' to display hint right aligned in the current line
     hi_parameter = 'LspSignatureActiveParameter', -- how your parameter will be highlight
@@ -156,8 +154,8 @@ local setup_signaturehelp = function()
     timer_interval = 200, -- default timer check interval set to lower value if you want to reduce latency
     toggle_key = nil, -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
     toggle_key_flip_floatwin_setting = false, -- true: toggle floating_windows: true|false setting after toggle key pressed
-        -- false: floating_windows setup will not change, toggle_key will pop up signature helper, but signature
-        -- may not popup when typing depends on floating_window setting
+    -- false: floating_windows setup will not change, toggle_key will pop up signature helper, but signature
+    -- may not popup when typing depends on floating_window setting
     select_signature_key = nil, -- cycle to next signature, e.g. '<M-n>' function overloading
     move_cursor_key = nil, -- imap, use nvim_set_current_win to move cursor between current win and floating
   })
@@ -168,88 +166,119 @@ local setup_lsp_notify = function()
   --  vim.lsp.handlers['$/progress']
   --  vim.lsp.handlers['window/showMessage']
 
-  local severity = { 'error', 'warn', 'info', 'info', } -- map both hint and info to info?
+  local caches = {}
 
-  local client_notifs = {}
-
-  local function get_notif_data(client_id, token)
-    if not client_notifs[client_id] then
-      client_notifs[client_id] = {}
+  local function get_cache(cli_id, token)
+    if not caches[cli_id] then
+      caches[cli_id] = {}
     end
 
-    if not client_notifs[client_id][token] then
-      client_notifs[client_id][token] = {}
-    end
-
-    return client_notifs[client_id][token]
+    return caches[cli_id][token]
   end
 
-  local function update_spinner(client_id, token)
-    local notif_data = get_notif_data(client_id, token)
-
-    if notif_data.spinner then
-      local new_spinner = (notif_data.spinner + 1) % #Icons.spinner_frames
-      notif_data.spinner = new_spinner
-
-      notif_data.notification = vim.notify(nil, nil, {
-        hide_from_history = true,
-        icon = Icons.spinner_frames[new_spinner],
-        replace = notif_data.notification,
-      })
-
-      vim.defer_fn(function()
-        update_spinner(client_id, token)
-      end, 100)
-    end
-  end
-
-  local function format_title(title, client_name)
-   return client_name .. (#title > 0 and ': ' .. title or '')
-  end
-
-  local function format_message(message, percentage)
-   return (percentage and percentage .. '%\t' or '') .. (message or '')
-  end
-
-  vim.lsp.handlers['$/progress'] = function(_, result, ctx)
-    local client_id = ctx.client_id
-
-    local val = result.value
-
-    if not val.kind then
+  local function del_cache(cli_id, token)
+    if not get_cache(cli_id, token) then
       return
     end
 
-    local notif_data = get_notif_data(client_id, result.token)
+    caches[cli_id][token] = nil
+  end
 
-    if val.kind == 'begin' then
-      local message = format_message(val.message, val.percentage)
+  local function ini_cache(cli_id, token)
+    if get_cache(cli_id, token) then
+      return
+    end
 
-      notif_data.notification = vim.notify(message, 'info', {
-        title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
-        icon = Icons.spinner_frames[1],
-        timeout = false,
-        hide_from_history = false,
-      })
+    caches[cli_id][token] = {}
 
-      notif_data.spinner = 1
-      update_spinner(client_id, result.token)
-    elseif val.kind == 'report' and notif_data then
-      notif_data.notification = vim.notify(format_message(val.message, val.percentage), 'info', {
-        replace = notif_data.notification,
-        hide_from_history = false,
-      })
-    elseif val.kind == 'end' and notif_data then
-      notif_data.notification =
-        vim.notify(val.message and format_message(val.message) or 'Complete', 'info', {
-          icon = Icons.lsp_loaded,
-          replace = notif_data.notification,
-          timeout = 3000,
+    return caches[cli_id][token]
+  end
+
+  local function update_spinner(cli_id, token)
+    local cache = get_cache(cli_id, token)
+    if not cache then
+      return
+    end
+
+    local new_spinner = (cache.spinner + 1) % #Icons.spinner_frames
+
+    cache.spinner = new_spinner
+    cache.notification = vim.notify(nil, nil, {
+      hide_from_history = true,
+      icon = Icons.spinner_frames[new_spinner],
+      replace = cache.notification,
+    })
+
+    vim.defer_fn(function()
+      update_spinner(cli_id, token)
+    end, 100)
+  end
+
+  local function format_title(title, client_name)
+    return client_name .. (#title > 0 and ': ' .. title or '')
+  end
+
+  local function format_message(message, percentage)
+    return (percentage and percentage .. '%\t' or '') .. (message or '')
+  end
+
+  vim.lsp.handlers['$/progress'] = function(_, res, ctx)
+    if res.value.kind == 'begin' then
+      local cli = vim.lsp.get_client_by_id(ctx.client_id)
+      if not cli then
+        return
+      end
+
+      local cache = ini_cache(ctx.client_id, res.token)
+      if not cache then
+        return
+      end
+
+      -- NOTE: lua_ls 的某些消息会一直频繁的刷新
+      cache.can_notify = not (cli.name == 'lua_ls' and res.value.title == 'Diagnosing')
+
+      if cache.can_notify then
+        cache.notification = vim.notify(format_message(res.value.message, res.value.percentage), 'info', {
+          title = format_title(res.value.title, cli.name),
+          icon = Icons.spinner_frames[1],
+          timeout = false,
+          hide_from_history = false,
         })
 
-      notif_data.spinner = nil
+        cache.spinner = 1
+        update_spinner(ctx.client_id, res.token)
+      end
+    elseif res.value.kind == 'report' then
+      local cache = get_cache(ctx.client_id, res.token)
+      if not cache then
+        return
+      end
+
+      if cache.can_notify then
+        cache.notification = vim.notify(format_message(res.value.message, res.value.percentage), 'info', {
+          replace = cache.notification,
+          hide_from_history = false,
+        })
+      end
+    elseif res.value.kind == 'end' then
+      local cache = get_cache(ctx.client_id, res.token)
+      if not cache then
+        return
+      end
+
+      if cache.can_notify then
+        cache.notification = vim.notify(res.value.message and format_message(res.value.message) or 'Complete', 'info', {
+          icon = Icons.lsp_loaded,
+          replace = cache.notification,
+          timeout = 3000,
+        })
+      end
+
+      del_cache(ctx.client_id, res.token)
     end
   end
+
+  local severity = { 'error', 'warn', 'info', 'info' } -- map both hint and info to info?
 
   vim.lsp.handlers['window/showMessage'] = function(err, method, params, client_id)
     vim.notify(method.message, severity[params.type])

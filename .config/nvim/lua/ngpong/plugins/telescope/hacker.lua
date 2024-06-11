@@ -111,7 +111,7 @@ local function hack_gitstatus_entrymaker()
   MakeEntry.gen_from_git_status = function(opts)
     opts = opts or {}
 
-    local col_width = ((opts.git_icons and opts.git_icons.added) and opts.git_icons.added:len()) or 2
+    local col_width = 2
     local displayer = EntryDisplay.create({
       separator = '',
       items = {

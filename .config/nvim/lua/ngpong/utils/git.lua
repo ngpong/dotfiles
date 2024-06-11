@@ -67,13 +67,13 @@ gitter.status_diff = function()
   return ret
 end
 
-gitter.if_has_diff = libP.async.void(function(path, cb)
+gitter.if_has_diff = function(cb_ok, cb_err, path)
   local result
 
   local await_has_diff = libP.async.wrap(function(callback)
     libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
+      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path or '.' },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -83,11 +83,32 @@ gitter.if_has_diff = libP.async.void(function(path, cb)
 
   await_has_diff()
 
-  if next(result) and cb then
+  if next(result) and cb_ok then
     libP.async.util.scheduler()
-    cb(result)
+    cb_ok(result)
+  elseif cb_err then
+    cb_err()
   end
-end)
+end
+
+gitter.if_has_diff_sync = function(path)
+  local ret = false
+
+  local job = libP.job:new({
+    command = 'git',
+    args = { '-C', get_repository_root(Tools.get_cwd()), 'diff-index', 'HEAD', '--', path },
+    on_stdout = function(_, data, self)
+      if not self.is_shutdown then
+        ret = true
+        self:shutdown()
+      end
+    end,
+  })
+
+  job:sync()
+
+  return ret
+end
 
 gitter.if_has_log = libP.async.void(function(path, cb)
   local result

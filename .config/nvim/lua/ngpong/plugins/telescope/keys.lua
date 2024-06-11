@@ -29,7 +29,6 @@ local wrap_keymap = function(handler, opts)
   }
   Tools.tbl_r_extend(final_opts, opts or {})
 
-
   return {
     wrap_handler(handler),
     type = 'command',
@@ -202,10 +201,6 @@ end
 local set_buffer_keymaps = function(state)
   if state.picker.prompt_title == 'Buffers' then
     Keymap.register(e_mode.NORMAL, '<C-CR>', Tools.wrap_f(this.api.delete_entries, state.bufnr), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: delete entries.' })
-  end
-
-  if state.picker.prompt_title == 'Git Status' then
-    Keymap.register(e_mode.NORMAL, '<Tab>', wrap_handler(this.api.actions.git_staging_toggle), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: toggle git staging.' })
   end
 end
 

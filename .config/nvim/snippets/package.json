@@ -80,7 +80,7 @@
       },
       {
         "language": "yaml",
-        "path": "./docket/kubernetes.json"
+        "path": "./docker/kubernetes.json"
       },
       {
         "language": "yaml",

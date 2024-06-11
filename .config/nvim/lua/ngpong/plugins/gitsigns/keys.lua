@@ -1,7 +1,9 @@
 local M = {}
 
+local libP     = require('ngpong.common.libp')
 local Keymap   = require('ngpong.common.keybinder')
 local Events   = require('ngpong.common.events')
+local Git      = require('ngpong.utils.git')
 local Lazy     = require('ngpong.utils.lazy')
 local Gitsigns = Lazy.require('gitsigns')
 
@@ -12,7 +14,18 @@ local e_mode = Keymap.e_mode
 local e_name = Events.e_name
 
 local set_native_keymaps = function()
-  Keymap.register(e_mode.NORMAL, 'gg', Tools.wrap_f(telescope.api.builtin_picker, 'git_status'), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
+  Keymap.register(e_mode.NORMAL, 'gg', function()
+    -- NOTE:
+    -- 为了避免在没有 diff 的情况下打开 status 会出现闪烁的情况，这里
+    -- 又加了一层判断。
+    --
+    -- 按道理来说应当使用异步逻辑，但是这里使用异步逻辑会出现一些问题
+    if Git.if_has_diff_sync() then
+      telescope.api.builtin_picker('git_status')
+    else
+      Helper.notify_warn('No result from git_status', 'Telescope')
+    end
+  end, { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
 end
 
 local del_buffer_keymaps = function(bufnr)
