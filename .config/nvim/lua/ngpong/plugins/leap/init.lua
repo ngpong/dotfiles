@@ -1,5 +1,5 @@
 return {
-  'NGPONG/leap.nvim',
+  'ggandor/leap.nvim',
   lazy = true,
   init = function()
     Plgs.record_seq('leap.nvim init')
