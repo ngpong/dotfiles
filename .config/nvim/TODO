@@ -1,21 +1,11 @@
-有时间去实现一下，看上去挺简单 https://github.com/p00f/clangd_extensions.nvim/issues/33
-
 1. neotree preview 不会换行
 2. notify 转圈等待的感觉可以封装成一个函数
 3. <C-v> 一次复制多个存在问题
-4. lsp preivew 的 q 键覆盖一下
+4. 最好在初始状态下能够自动创建 sqllite 的数据库
+5. 在初始状态下的 mason 自动下载包会出问题
 
 1. nvim-lint？
 2. rmagatti/goto-preview？
 3. git_revert 需要加一个 yes or no 的选项？
 4. neovim-pair？ neovim-surround？
 5. go.nvim？
-
-一些参考的项目
-1. https://github.com/NvChad/NvChad
-2. https://github.com/CosmicNvim/CosmicNvim
-3. https://github.com/LunarVim/LunarVim9
-4. https://github.com/tjdevries/config_manager/tree/78608334a7803a0de1a08a9a4bd1b03ad2a5eb11/xdg_config/nvim
-5. https://github.com/AstroNvim/AstroNvim
-6. https://github.com/TwIStOy/dotvim/tree/master/src
-7. https://github.com/CosmicNvim/CosmicNvim/blob/94a13ed01775c1ea72db650df2144dfc119fc7ed/lua/cosmic/lsp/diagnostics/init.lua#L2

@@ -8,9 +8,13 @@ local this = Plgs.telescope
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
 
-local wrap_handler = function(handler)
+local wrap_handler = function(handler, wrap_normal)
   local final_handler = nil
-  if type(handler) == 'string' then
+  if wrap_normal then
+    final_handler = function()
+      handler()
+    end
+  elseif type(handler) == 'string' then
     final_handler = handler
   elseif type(handler) == 'table' or type(handler) == 'function' then
     final_handler = function()
@@ -21,7 +25,7 @@ local wrap_handler = function(handler)
   return final_handler
 end
 
-local wrap_keymap = function(handler, opts)
+local wrap_keymap = function(handler, opts, wrap_normal)
   local final_opts = {
     remap = true,
     silent = true,
@@ -30,7 +34,7 @@ local wrap_keymap = function(handler, opts)
   Tools.tbl_r_extend(final_opts, opts or {})
 
   return {
-    wrap_handler(handler),
+    wrap_handler(handler, wrap_normal),
     type = 'command',
     opts = final_opts,
   }
@@ -106,6 +110,7 @@ local set_plugin_keymaps = function()
       ['<leader>P'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>j'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>J'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<leader>h'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<HOME>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<END>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['d'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -180,9 +185,8 @@ local set_plugin_keymaps = function()
       ----------------------------------------------------------------------
     },
     i = {
-      ['<ESC>'] = wrap_keymap(function()
-        Helper.feedkeys('<ESC>l')
-      end, { desc = 'which_key_ignore' }),
+      ['<CR>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['<ESC>'] = wrap_keymap(Tools.wrap_f(Helper.feedkeys, '<ESC>l'), { desc = 'which_key_ignore' }, true),
     },
   }
 end
@@ -213,11 +217,11 @@ local set_config_keymaps = function(cfg)
     -- 下面的配置无法显示 desc，参考这篇：https://github.com/nvim-telescope/telescope.nvim/issues/2981
     -- pickers = {
     --   buffers = {
-    --     mappings = {
-    --       n = {
-    --         ['<C-CR>'] = { function() vim.cmd [[ stopinsert ]] end, opts = { desc = "asdasdasd" } },
-    --       },
-    --     },
+    --     attach_mappings = function(_, map)
+    --       map('n', '<C-CR>', function() this.api.delete_entries(Helper.get_cur_bufnr()) end, { desc = 'TELESCOPE: delete entries.' })
+    --
+    --       return true
+    --     end,
     --   },
     -- },
   })
