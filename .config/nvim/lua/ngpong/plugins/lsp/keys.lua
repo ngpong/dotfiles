@@ -35,7 +35,8 @@ local del_buffer_keymaps = function(_) end
 
 local set_buffer_keymaps = function(state)
   if state.cli.server_capabilities.documentSymbolProvider then
-    Keymap.register(e_mode.NORMAL, 'dw', Tools.wrap_f(trouble.api.toggle, 'lsp_document_symbols_extra'), { buffer = state.bufnr, silent = true, remap = false, desc = 'show document symbols in the current buffer.' })
+    Keymap.register(e_mode.NORMAL, 'dW', Tools.wrap_f(trouble.api.toggle, 'lsp_document_symbols_extra'), { buffer = state.bufnr, silent = true, remap = false, desc = 'show document symbols in the current buffer.' })
+    Keymap.register(e_mode.NORMAL, 'dw', Tools.wrap_f(telescope.api.builtin_picker, 'lsp_document_symbols'), { buffer = state.bufnr, silent = true, remap = false, desc = 'filter document symbols in the current buffer.' })
   end
 
   if state.cli.server_capabilities.signatureHelpProvider then

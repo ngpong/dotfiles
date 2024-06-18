@@ -21,7 +21,8 @@ keybinder.e_mode = {
   VISUAL  = 'v',
   INSERT  = 'i',
   SELECT  = 's',
-  COMMAND = 'c'
+  COMMAND = 'c',
+  VISUAL_X = 'x',
 }
 
 keybinder.get_keymap = function(mode, lhs, bufnr)

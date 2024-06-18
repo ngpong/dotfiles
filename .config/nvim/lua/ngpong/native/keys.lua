@@ -1,7 +1,7 @@
 local M = {}
 
-local Keymap = require('ngpong.common.keybinder')
 local Events = require('ngpong.common.events')
+local Keymap = require('ngpong.common.keybinder')
 local UI     = require('ngpong.common.ui')
 
 local e_mode = Keymap.e_mode
@@ -267,6 +267,8 @@ local del_native_keymaps = function(_)
   Keymap.unregister(e_mode.NORMAL, 'gra')
   Keymap.unregister(e_mode.NORMAL, 'grr')
   Keymap.unregister(e_mode.NORMAL, 'grn')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL_X }, 'gcc')
+  Keymap.unregister(e_mode.NORMAL, 'gc')
 end
 
 local set_native_keymaps = function()
@@ -322,11 +324,11 @@ local set_native_keymaps = function()
     Helper.presskeys('gg')
     Helper.add_jumplist()
   end, { remap = false, desc = 'file head.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'et', function ()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'et', function()
     Helper.presskeys('G')
     Helper.add_jumplist()
   end, { remap = false, desc = 'file tail.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'eg', function ()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'eg', function()
     Helper.presskeys('N50%')
     Helper.add_jumplist()
   end, { remap = false, desc = 'file center.' })
@@ -471,14 +473,14 @@ local set_buffer_keymaps = function(bufnr)
   Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '[', function()
     local byteidx = vim.fn.col('.')
     local sub = string.sub(vim.fn.getline('.'), 1, (byteidx == 1 and 1 or byteidx - 1))
-    return sub:match("%S") == nil and '<HOME>' or '^'
+    return sub:match('%S') == nil and '<HOME>' or '^'
   end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'MONTION: move cursor to head of line.' })
 
   -- 改善 <END> 的功能
   Keymap.register(e_mode.NORMAL, ']', function()
     local line = vim.fn.getline('.')
 
-    if line:match("%S") == nil then
+    if line:match('%S') == nil then
       return 'g$'
     else
       local max = #line
@@ -492,11 +494,11 @@ local set_buffer_keymaps = function(bufnr)
         return 'g_'
       end
     end
-  end , { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'MONTION: move cursor to end of line.' })
+  end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'MONTION: move cursor to end of line.' })
   Keymap.register(e_mode.INSERT, '<A-]>', '<END>', { remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
   Keymap.register(e_mode.VISUAL, ']', function()
     local line = vim.fn.getline('.')
-    return line:match("%S") == nil and 'g$' or 'g_'
+    return line:match('%S') == nil and 'g$' or 'g_'
   end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
 
   -- 进入 insert 模式

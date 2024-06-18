@@ -205,6 +205,12 @@ end
 local set_buffer_keymaps = function(state)
   if state.picker.prompt_title == 'Buffers' then
     Keymap.register(e_mode.NORMAL, '<C-CR>', Tools.wrap_f(this.api.delete_entries, state.bufnr), { remap = false, buffer = state.bufnr, desc = 'TELESCOPE: delete entries.' })
+    Keymap.unregister(e_mode.NORMAL, '<M-d>', { buffer = state.bufnr })
+  end
+
+  if state.picker.prompt_title == 'Git Commits' then
+    Keymap.unregister(e_mode.NORMAL, '<Tab>', { buffer = state.bufnr })
+    Keymap.unregister(e_mode.NORMAL, '<CR>', { buffer = state.bufnr })
   end
 end
 
@@ -218,7 +224,7 @@ local set_config_keymaps = function(cfg)
     -- pickers = {
     --   buffers = {
     --     attach_mappings = function(_, map)
-    --       map('n', '<C-CR>', function() this.api.delete_entries(Helper.get_cur_bufnr()) end, { desc = 'TELESCOPE: delete entries.' })
+    --       -- map('n', '<C-CR>', function() this.api.delete_entries(Helper.get_cur_bufnr()) end, { desc = 'TELESCOPE: delete entries.' })
     --
     --       return true
     --     end,

@@ -2,31 +2,12 @@ local gitter = {}
 
 local libP = require('ngpong.common.libp')
 
-local get_repository_root = (function()
-  local git_root = nil
-
-  return function(path)
-    if git_root == nil then
-      local args = { '-C', path, 'rev-parse', '--show-toplevel' }
-
-      local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
-      if not ok then
-        return nil
-      end
-
-      git_root = Tools.to_path(result[1])
-    end
-
-    return git_root
-  end
-end)()
-
 local parse_line_2_path = function(line)
   if type(line) ~= "string" then
     return
   end
 
-  local git_root = get_repository_root(Tools.get_cwd())
+  local git_root = gitter.get_repository_root(Tools.get_cwd())
 
   local line_parts = vim.split(line, '\t')
   if #line_parts < 2 then
@@ -50,10 +31,29 @@ local parse_line_2_path = function(line)
   return Tools.path_join(git_root, relative_path)
 end
 
+gitter.get_repository_root = (function()
+  local git_root = nil
+
+  return function(path)
+    if git_root == nil then
+      local args = { '-C', path, 'rev-parse', '--show-toplevel' }
+
+      local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
+      if not ok then
+        return nil
+      end
+
+      git_root = Tools.to_path(result[1])
+    end
+
+    return git_root
+  end
+end)()
+
 gitter.status_diff = function()
   local ret = {}
 
-  local args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--' }
+  local args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--' }
 
   local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
   if ok then
@@ -73,7 +73,7 @@ gitter.if_has_diff = function(cb_ok, cb_err, path)
   local await_has_diff = libP.async.wrap(function(callback)
     libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path or '.' },
+      args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path or '.' },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -96,7 +96,7 @@ gitter.if_has_diff_sync = function(path)
 
   local job = libP.job:new({
     command = 'git',
-    args = { '-C', get_repository_root(Tools.get_cwd()), 'diff-index', 'HEAD', '--', path },
+    args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff-index', 'HEAD', '--', path },
     on_stdout = function(_, data, self)
       if not self.is_shutdown then
         ret = true
@@ -116,7 +116,7 @@ gitter.if_has_log = libP.async.void(function(path, cb)
   local await_has_log = libP.async.wrap(function(callback)
     libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(Tools.get_cwd()), 'log', '-1', '--pretty=format:"%h"', '--', path },
+      args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'log', '-1', '--pretty=format:"%h"', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -138,7 +138,7 @@ gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
   local await_is_untracked = libP.async.wrap(function(callback)
     libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(Tools.get_cwd()), 'ls-files', '--exclude-standard', '--others', '--', path },
+      args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'ls-files', '--exclude-standard', '--others', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -156,7 +156,7 @@ gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
   local await_has_diff = libP.async.wrap(function(callback)
     libP.job:new({
       command = 'git',
-      args = { '-C', get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
+      args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff', '--name-status', 'HEAD', '--', path },
       on_exit = function(j, _)
         result = j:result()
         callback()
