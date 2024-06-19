@@ -15,7 +15,7 @@ M.setup = function()
   -- vim.opt.completeopt = vim.opt.completeopt + 'preview'  -- 等lsp那些配置完事儿了后测试下
   -- vim.opt.completeopt = vim.opt.completeopt + 'noselect'
 
-  -- 代码补全体验增强 
+  -- 代码补全体验增强
   -- REF: https://neovim.io/doc/user/options.html#'wildmenu'
   vim.go.wildmenu = false
 

@@ -1,16 +1,44 @@
 {
     "Starter Template": {
-    "prefix": "st",
-    "body": [
-        "#include <iostream>",
-        "",
-        "std::int32_t main (std::int32_t argc, char *argv[]) {",
-            "\t$1",
+        "prefix": "st",
+        "body": [
+            "#include <iostream>",
             "",
-            "\treturn 0;",
-        "}"
-        ],
-        "description": "Standard starter template for a tiny C++ program"
+            "std::int32_t main (std::int32_t argc, char *argv[]) {",
+                "\t$1",
+                "",
+                "\treturn 0;",
+            "}"
+            ],
+            "description": "Standard starter template for a tiny C++ program"
+    },
+    "Benchmark Starter Template": {
+        "prefix": "bst",
+        "body": [
+            "#include <benchmark/benchmark.h>",
+            "",
+            "static void BM_${1:f}(benchmark::State& state) {",
+                "\tfor (auto _ : state) {",
+                "\t\t$0",
+                "\t}",
+            "}",
+            "BENCHMARK(BM_$1);",
+            "",
+            "BENCHMARK_MAIN();"
+            ],
+            "description": "Standard benchmark starter template for google-benchmark"
+    },
+    "Benchmark handler Template": {
+        "prefix": "bht",
+        "body": [
+            "static void BM_${1:f}(benchmark::State& state) {",
+                "\tfor (auto _ : state) {",
+                "\t\t$0",
+                "\t}",
+            "}",
+            "BENCHMARK(BM_$1);"
+            ],
+            "description": "benchmark handler template for google-benchmark"
     },
     "for": {
         "prefix": "for",
