@@ -120,9 +120,9 @@ local setup_global = function()
       comparators = {
         -- https://www.reddit.com/r/neovim/comments/14k7pbc/what_is_the_nvimcmp_comparatorsorting_you_are/
 
-        cmp_compare.offset, -- 似乎是标准的排序行为，默认带上吧
-        cmp_compare.exact,  -- 似乎是标准的排序行为，默认带上吧
-        cmp_compare.score,  -- 似乎是标准的排序行为，默认带上吧
+        cmp_compare.offset, -- 似乎是 lsp 标准的排序行为，默认带上吧
+        cmp_compare.exact,  -- 似乎是 lsp 标准的排序行为，默认带上吧
+        cmp_compare.score,  -- 似乎是 lsp 标准的排序行为，默认带上吧
 
         cmp_compare.locality,         -- 距离光标更近的词会被排在前面
         -- cmp_compare.recently_used, -- 最近使用的词会被排在前面
