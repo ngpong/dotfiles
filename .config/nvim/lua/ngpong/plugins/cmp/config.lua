@@ -123,16 +123,16 @@ local setup_global = function()
         cmp_compare.offset, -- 似乎是 lsp 标准的排序行为，默认带上吧
         cmp_compare.exact,  -- 似乎是 lsp 标准的排序行为，默认带上吧
         cmp_compare.score,  -- 似乎是 lsp 标准的排序行为，默认带上吧
+        cmp_compare.clangd_extensions, -- clangd 的额外排序功能；我习惯性会将长度较小的排在前面，而该排序源会打乱这个功能
 
         cmp_compare.locality,         -- 距离光标更近的词会被排在前面
         -- cmp_compare.recently_used, -- 最近使用的词会被排在前面
 
-        cmp_compare.length,   -- 长度更小的词会被排在前面
-        cmp_compare.under,    -- 将下划线相关的词都排在一块，参见：https://github.com/lukas-reineke/cmp-under-comparator
         cmp_compare.kind,     -- 根据 lsp 的 kind 分组，枚举值越小则被排在前面，参见：lsp.CompletionItemKind 枚举
-        -- cmp_compare.order, -- id更小的词会被排在前面
+        cmp_compare.length,   -- 长度更小的词会被排在前面
+        cmp_compare.order, -- id更小的词会被排在前面
 
-        -- cmp_compare.clangd_extensions, -- clangd 的额外排序功能；我习惯性会将长度较小的排在前面，而该排序源会打乱这个功能
+        cmp_compare.under, -- 将下划线相关的词都排在一块，参见：https://github.com/lukas-reineke/cmp-under-comparator
       },
     },
   }

@@ -5,7 +5,7 @@ M.setup = function()
   vim.g.mapleader = ' '
 
   -- 全局编码
-  vim.go.encoding = "utf-8"
+  vim.go.encoding = 'utf-8'
   vim.opt.fileencoding = 'utf-8'
 
   -- 剪切板设置
@@ -46,7 +46,7 @@ M.setup = function()
   -- 禁用鼠标模式
   vim.go.mouse = ''
 
-  -- 侧边显示行号
+  -- 侧边显示行号；该选项与 statuscolumn 关联
   vim.wo.number = true
   vim.wo.relativenumber = true
   -- vim.opt.nu = true
@@ -110,17 +110,24 @@ M.setup = function()
   -- 左右滚动时可看到的最好列数
   vim.go.sidescrolloff = 0
 
-  -- 显示左侧图标指示列
-  vim.wo.signcolumn = 'auto:1-2'
-
   -- comment段换行时继承换行符
   vim.opt.formatoptions:remove({ 'j', 'q' })
   vim.opt.formatoptions = vim.opt.formatoptions + 'c'
   vim.opt.formatoptions = vim.opt.formatoptions + 'r'
   vim.opt.formatoptions = vim.opt.formatoptions + 'o'
 
+  -- 目前一个符号必定会占用两列，可能是一个修复项：https://github.com/neovim/neovim/issues/13098
+  -- 显示左侧图标指示列
+  vim.wo.signcolumn = 'auto:1-2'
+
   -- 组织状态线
-  vim.wo.statuscolumn = '%s %r'
+  vim.wo.statuscolumn = '  %=%{v:relnum?v:relnum:v:lnum}%=%s' -- https://www.reddit.com/r/neovim/comments/10j0vyf/finally_figured_out_a_statuscolumn_i_am_happy/
+
+  -- 控制状态线中数组得长度
+  vim.wo.numberwidth = 5
+
+  -- 禁用 foldcolumn
+  vim.wo.foldcolumn = '0'
 
   -- 当文件被外部修改时则自动加载
   vim.go.autoread = true

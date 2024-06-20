@@ -23,6 +23,8 @@ events.e_name = {
   INIT_NEOTREE = 21,
   FREE_NEOTREE = 22,
   CREATE_NEOTREE_SOURCE = 23,
+  OPEN_NEOTREE = 24,
+  CLOSE_NEOTREE = 25,
 
   -- buffer
   -- NOTE: 目前这些事件好像没啥用

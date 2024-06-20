@@ -1,9 +1,12 @@
 local M = {}
 
+local Events          = require('ngpong.common.events')
 local Lazy            = require('ngpong.utils.lazy')
 local Neotree         = Lazy.require('neo-tree')
 local NeotreeRenderer = Lazy.require('neo-tree.ui.renderer')
 local SourceManager   = Lazy.require('neo-tree.sources.manager')
+
+local e_name = Events.e_name
 
 M.is_neotree_bufnr = function(bufnr)
   local success, _ = pcall(vim.api.nvim_buf_get_var, bufnr, "neo_tree_source")
@@ -73,8 +76,10 @@ end
 M.open_tree = function()
   if M.is_opened(Helper.get_cur_tabpage()) then
     vim.cmd('Neotree action=close')
+    Events.emit(e_name.CLOSE_NEOTREE, { bufnr = Helper.get_cur_winid() })
   else
-    vim.cmd('Neotree action=show')
+    vim.cmd('Neotree action=focus')
+    Events.emit(e_name.OPEN_NEOTREE, { bufnr = Helper.get_cur_winid() })
   end
 end
 
