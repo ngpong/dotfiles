@@ -381,8 +381,8 @@ local set_native_keymaps = function()
   Keymap.register(e_mode.COMMAND, '<A-\'>', Tools.wrap_f(Helper.feedkeys, '<RIGHT>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-q>', Tools.wrap_f(Helper.feedkeys, '<C-LEFT>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-w>', Tools.wrap_f(Helper.feedkeys, '<C-RIGHT>'), { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.COMMAND, '<A-[>', Tools.wrap_f(Helper.feedkeys, '<HOME>'), { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.COMMAND, '<A-]>', Tools.wrap_f(Helper.feedkeys, '<END>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-->', Tools.wrap_f(Helper.feedkeys, '<HOME>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-=>', Tools.wrap_f(Helper.feedkeys, '<END>'), { remap = false, desc = 'which_key_ignore' })
 
   -- search command
   Keymap.register(e_mode.NORMAL, '<C-.>', function()
@@ -451,13 +451,18 @@ local del_buffer_keymaps = function(bufnr)
   bufnr = bufnr or true
 
   Keymap.unregister(e_mode.VISUAL, 'a', { buffer = bufnr })
+
+  -- 屏蔽一些容易误触的按键
+  Keymap.unregister(e_mode.INSERT, '<A-0>')
+  Keymap.unregister(e_mode.INSERT, '<A-9>')
+  Keymap.unregister(e_mode.INSERT, '<A-BS>')
 end
 
 local set_buffer_keymaps = function(bufnr)
   bufnr = bufnr or true
 
   -- 改善 <HOME> 的功能
-  Keymap.register(e_mode.INSERT, '<A-[>', function()
+  Keymap.register(e_mode.INSERT, '<A-->', function()
     local byteidx = vim.fn.col('.')
     local sub = string.sub(vim.fn.getline('.'), 1, (byteidx == 1 and 1 or byteidx - 1))
 
@@ -470,14 +475,14 @@ local set_buffer_keymaps = function(bufnr)
       Helper.set_cursor(row, pos - 1)
     end
   end, { remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '[', function()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '-', function()
     local byteidx = vim.fn.col('.')
     local sub = string.sub(vim.fn.getline('.'), 1, (byteidx == 1 and 1 or byteidx - 1))
     return sub:match('%S') == nil and '<HOME>' or '^'
   end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'MONTION: move cursor to head of line.' })
 
   -- 改善 <END> 的功能
-  Keymap.register(e_mode.NORMAL, ']', function()
+  Keymap.register(e_mode.NORMAL, '=', function()
     local line = vim.fn.getline('.')
 
     if line:match('%S') == nil then
@@ -495,8 +500,8 @@ local set_buffer_keymaps = function(bufnr)
       end
     end
   end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'MONTION: move cursor to end of line.' })
-  Keymap.register(e_mode.INSERT, '<A-]>', '<END>', { remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.VISUAL, ']', function()
+  Keymap.register(e_mode.INSERT, '<A-=>', '<END>', { remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.VISUAL, '=', function()
     local line = vim.fn.getline('.')
     return line:match('%S') == nil and 'g$' or 'g_'
   end, { expr = true, remap = false, buffer = bufnr, nowait = true, desc = 'which_key_ignore' })
