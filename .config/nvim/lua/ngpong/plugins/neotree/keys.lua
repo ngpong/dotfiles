@@ -114,11 +114,6 @@ local set_filesys_commands = function(...)
   }
 end
 
-local set_gitstaus_commands = function(...)
-  return {
-  }
-end
-
 local mapping_opts = function(...)
   return {
     silent = true,
@@ -213,9 +208,6 @@ local set_global_keymaps = function(...)
     ['<C-CR>']     = { command = 'toggle_node', desc = 'NEOTREE: toggle selected node.', config = { use_float = true } },
     ['<C-s>']      = { command = 'toggle_preview', desc = 'NEOTREE: preview(seek) selected node.', config = { use_float = true } },
     ['<C-S-s>']    = { command = 'focus_preview', desc = 'NEOTREE: focus preview(seek) window.', config = { use_float = true } },
-    -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/942
-    ['<']          = { command = 'prev_source', desc = 'NEOTREE: switch to previous source.' },
-    ['>']          = { command = 'next_source' , desc = 'NEOTREE: switch to next source.'},
     ['R']          = { command = 'refresh' , desc = 'NEOTREE: refresh neotree.'},
   }
 end
@@ -235,33 +227,12 @@ local set_filesys_keymaps = function(...)
     ['fx']    = { command = 'cut_to_clipboard', desc = 'cut file.' },
     ['fe']    = { command = 'expand_all_nodes', desc = 'expand all directories.' },
     ['fE']    = { command = 'close_all_nodes', desc = 'closepand all directories.' },
-    ['frv']   = { command = 'split_with_window_picker', desc = 'vertically.' },
-    ['frh']   = { command = 'vsplit_with_window_picker', desc = 'horizontally' },
     ['ft']    = { command = 'open_tabnew', desc = 'tabpage split selected node.' },
     ['gu']    = { command = 'git_unstage_file', desc = 'unstage the selected node.' },
     ['ga']    = { command = 'git_add_file', desc = 'stage the selected node.' },
     ['gr']    = { command = 'ngpong_git_revert_file', desc = 'restore this selected node.' },
     ['g,']    = { command = 'prev_git_modified', desc = 'jump to previous git modified node.' },
     ['g.']    = { command = 'next_git_modified', desc = 'jump to next git modified node.' },
-  }
-end
-
-local set_gitstaus_keymaps = function(...)
-  return {
-    ['fa']  = { command = 'add', desc = 'add file.' },
-    ['fd']  = { command = 'delete', desc = 'delete file.' },
-    ['fn']  = { command = 'rename', desc = 'rename file.' },
-    ['fi']  = { command = 'show_file_details', desc = 'open file info.' },
-    ['fm']  = { command = 'move', desc = 'move file.' },
-    ['fy']  = { command = 'copy_to_clipboard', desc = 'copy file.' },
-    ['fu']  = { command = 'paste_from_clipboard', desc = 'paste file.' },
-    ['fx']  = { command = 'cut_to_clipboard', desc = 'cut file.' },
-    ['frv'] = { command = 'split_with_window_picker', desc = 'vertically.' },
-    ['frh'] = { command = 'vsplit_with_window_picker', desc = 'horizontally' },
-    ['ft']  = { command = 'open_tabnew', desc = 'tabpage split selected node.' },
-    ['gu']  = { command = 'git_unstage_file', desc = 'unstage the selected node.' },
-    ['ga']  = { command = 'git_add_file', desc = 'stage the selected node.' },
-    ['gr']  = { command = 'ngpong_git_revert_file', desc = 'restore this selected node.' },
   }
 end
 
@@ -288,13 +259,6 @@ M.setup = function()
         window = {
           mapping_options = mapping_opts(),
           mappings = set_filesys_keymaps(),
-        }
-      },
-      git_status = {
-        commands = set_gitstaus_commands(),
-        window = {
-          mapping_options = mapping_opts(),
-          mappings = set_gitstaus_keymaps(),
         }
       },
     })

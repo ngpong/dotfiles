@@ -10,7 +10,6 @@ return {
   end,
   config = function()
     Plgs.record_seq('neo-tree.nvim config')
-    Plgs.neotree.behavior.setup()
     Plgs.neotree.config.setup()
   end
 }

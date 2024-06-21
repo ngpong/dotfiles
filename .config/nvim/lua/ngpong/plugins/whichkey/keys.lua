@@ -112,9 +112,6 @@ local fix_keymap_neotree = libP.async.void(function(bufnr)
   WK.register({
     ['f'] = {
       name = 'NEOTREE FILE:',
-      ['r'] = {
-        name = 'WINDOW SPLIT',
-      },
     },
 
     ['g'] = {
@@ -150,18 +147,8 @@ local setup = function()
     fix_keymap_gitsigns(state.bufnr)
   end)
 
-  Events.rg(e_name.CREATE_NEOTREE_SOURCE, function(state)
-    if 'filesystem' == state.source then
-      fix_keymap_neotree(state.bufnr)
-    elseif 'git_status' == state.source then
-      fix_keymap_neotree(state.bufnr)
-    elseif 'buffers' == state.source then
-      -- ...
-    elseif 'document_symbols' == state.source then
-      -- ...
-    else
-      return
-    end
+  Events.rg(e_name.OPEN_NEOTREE, function(state)
+    fix_keymap_neotree(state.bufnr)
   end)
 end
 

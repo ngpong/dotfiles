@@ -121,15 +121,6 @@ tool.split = function(inputString, sep)
   return fields
 end
 
-tool.get_cwd = function()
-  local success, cwd = pcall(vim.fn.getcwd)
-  if success then
-    return cwd
-  else
-    return ''
-  end
-end
-
 tool.exec_cmd = function(cmd)
   local result = vim.fn.systemlist(cmd)
 
@@ -324,6 +315,22 @@ tool.get_homepath = function()
   end
 
   return tool.__home_path;
+end
+
+tool.get_cwd = function()
+  if (tool.__cwd == nil) then
+    tool.__cwd = vim.fn.getcwd()
+  end
+
+  return tool.__cwd;
+end
+
+tool.get_cwd_tail = function()
+  if (tool.__cwd_tail == nil) then
+    tool.__cwd_tail = vim.fn.fnamemodify(tool.get_cwd(), ':t')
+  end
+
+  return tool.__cwd_tail;
 end
 
 return tool

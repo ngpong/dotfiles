@@ -99,10 +99,10 @@ local del_native_keymaps = function(_)
   Keymap.unregister(e_mode.NORMAL, ')')
   Keymap.unregister(e_mode.NORMAL, '{')
   Keymap.unregister(e_mode.NORMAL, '}')
-  Keymap.unregister(e_mode.NORMAL, ']]')
-  Keymap.unregister(e_mode.NORMAL, '[[')
-  Keymap.unregister(e_mode.NORMAL, '[]')
-  Keymap.unregister(e_mode.NORMAL, '][')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL }, ']]')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL }, '[[')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL }, '[]')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL }, '][')
   Keymap.unregister(e_mode.VISUAL, 'ip')
   Keymap.unregister(e_mode.VISUAL, 'i\'')
   Keymap.unregister(e_mode.VISUAL, 'a\'')
@@ -269,6 +269,12 @@ local del_native_keymaps = function(_)
   Keymap.unregister(e_mode.NORMAL, 'grn')
   Keymap.unregister({ e_mode.NORMAL, e_mode.VISUAL_X }, 'gcc')
   Keymap.unregister(e_mode.NORMAL, 'gc')
+  Keymap.unregister(e_mode.INSERT, '<A-0>')
+  Keymap.unregister(e_mode.INSERT, '<A-9>')
+  Keymap.unregister(e_mode.INSERT, '<A-BS>')
+  Keymap.unregister(e_mode.NORMAL, '-')
+  Keymap.unregister(e_mode.NORMAL, '=')
+  Keymap.unregister(e_mode.NORMAL, '<BS>')
 end
 
 local set_native_keymaps = function()
@@ -451,11 +457,6 @@ local del_buffer_keymaps = function(bufnr)
   bufnr = bufnr or true
 
   Keymap.unregister(e_mode.VISUAL, 'a', { buffer = bufnr })
-
-  -- 屏蔽一些容易误触的按键
-  Keymap.unregister(e_mode.INSERT, '<A-0>')
-  Keymap.unregister(e_mode.INSERT, '<A-9>')
-  Keymap.unregister(e_mode.INSERT, '<A-BS>')
 end
 
 local set_buffer_keymaps = function(bufnr)

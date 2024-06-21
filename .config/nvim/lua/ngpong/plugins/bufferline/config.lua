@@ -32,8 +32,7 @@ M.setup = function()
       offsets = {
         {
           filetype = 'neo-tree',
-          text = 'EXPLORER',
-          -- highlight = 'Directory',
+          text = Icons.files_1 .. Icons.space ..  'EXPLORER [' .. string.upper(Tools.get_cwd_tail()) .. ']',
           text_align = 'center',
           padding = 0,
           separator = '|',

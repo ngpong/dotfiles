@@ -20,11 +20,8 @@ events.e_name = {
 
   -- explore tree
   SETUP_NEOTREE = 20,
-  INIT_NEOTREE = 21,
+  OPEN_NEOTREE = 21,
   FREE_NEOTREE = 22,
-  CREATE_NEOTREE_SOURCE = 23,
-  OPEN_NEOTREE = 24,
-  CLOSE_NEOTREE = 25,
 
   -- buffer
   -- NOTE: 目前这些事件好像没啥用
@@ -102,7 +99,7 @@ end
 
 events.track_events = function()
   local filter = {
-    -- [events.e_name.INIT_NEOTREE] = true,
+    -- [events.e_name.OPEN_NEOTREE] = true,
     -- [events.e_name.BUFFER_READ] = true,
   }
 
