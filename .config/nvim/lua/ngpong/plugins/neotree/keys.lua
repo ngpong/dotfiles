@@ -206,8 +206,8 @@ local set_global_keymaps = function(...)
     ['<ESC>']      = { command = 'ngpong_esc', desc = 'which_key_ignore' },
     ['<CR>']       = { command = 'ngpong_select_node', desc = 'NEOTREE: open selected node.' },
     ['<C-CR>']     = { command = 'toggle_node', desc = 'NEOTREE: toggle selected node.', config = { use_float = true } },
-    ['<C-s>']      = { command = 'toggle_preview', desc = 'NEOTREE: preview(seek) selected node.', config = { use_float = true } },
-    ['<C-S-s>']    = { command = 'focus_preview', desc = 'NEOTREE: focus preview(seek) window.', config = { use_float = true } },
+    ['<C-p>']      = { command = 'toggle_preview', desc = 'NEOTREE: preview selected node.', config = { use_float = true } },
+    ['<C-S-p>']    = { command = 'focus_preview', desc = 'NEOTREE: focus preview window.', config = { use_float = true } },
     ['R']          = { command = 'refresh' , desc = 'NEOTREE: refresh neotree.'},
   }
 end

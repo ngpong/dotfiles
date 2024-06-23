@@ -13,8 +13,8 @@ local telescope = Plgs.telescope
 local del_native_keymaps = function() end
 
 local set_native_keymaps = function()
-  Keymap.register(e_mode.NORMAL, 'd.', Tools.wrap_f(vim.diagnostic.goto_next, { float = false, wrap = false }), { remap = false, desc = 'jump to next diagnostic.' })
-  Keymap.register(e_mode.NORMAL, 'd,', Tools.wrap_f(vim.diagnostic.goto_prev, { float = false, wrap = false }), { remap = false, desc = 'jump to prev diagnostic.' })
+  Keymap.register(e_mode.NORMAL, 'd]', Tools.wrap_f(vim.diagnostic.goto_next, { float = false, wrap = false }), { remap = false, desc = 'jump to next diagnostic.' })
+  Keymap.register(e_mode.NORMAL, 'd[', Tools.wrap_f(vim.diagnostic.goto_prev, { float = false, wrap = false }), { remap = false, desc = 'jump to prev diagnostic.' })
   Keymap.register(e_mode.NORMAL, 'dd', Tools.wrap_f(trouble.api.toggle, 'document_diagnostics'), { silent = true, remap = false, desc = 'toggle document diagnostics list.' })
   Keymap.register(e_mode.NORMAL, 'dD', Tools.wrap_f(trouble.api.toggle, 'workspace_diagnostics'), { silent = true, remap = false, desc = 'toggle workspace diagnostics list.' })
   Keymap.register(e_mode.NORMAL, 'dp', function()

@@ -59,12 +59,12 @@ local set_native_keymaps = function()
     end
   end
 
-  Keymap.register(e_mode.NORMAL, 'm,', function()
+  Keymap.register(e_mode.NORMAL, 'm[', function()
     Helper.add_jumplist()
     Marks.prev()
     Helper.add_jumplist()
   end, { remap = false, desc = 'jump to prev.' })
-  Keymap.register(e_mode.NORMAL, 'm.', function()
+  Keymap.register(e_mode.NORMAL, 'm]', function()
     Helper.add_jumplist()
     Marks.next()
     Helper.add_jumplist()

@@ -11,8 +11,8 @@ local del_native_keymaps = function(_)
 end
 
 local set_native_keymaps = function(_)
-  Keymap.register(e_mode.NORMAL, 'b.', this.api.cycle_next, { remap = false, desc = 'cycle next buffer.' })
-  Keymap.register(e_mode.NORMAL, 'b,', this.api.cycle_prev, { remap = false, desc = 'cycle prev buffer.' })
+  Keymap.register(e_mode.NORMAL, 'b]', this.api.cycle_next, { remap = false, desc = 'cycle next buffer.' })
+  Keymap.register(e_mode.NORMAL, 'b[', this.api.cycle_prev, { remap = false, desc = 'cycle prev buffer.' })
   Keymap.register(e_mode.NORMAL, 'bb', function()
     local is_pinned  = this.api.is_pinned('all')
     local components = this.api.get_components()

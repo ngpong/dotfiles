@@ -15,10 +15,10 @@ local fix_keymap_native = libP.async.void(function()
     ['v'] = { 'COMMON: enter visual mode.' },
     ['V'] = { 'COMMON: enter line-visual mode.' },
 
-    ['L'] = {
+    ['K'] = {
       name = 'which_key_ignore',
     },
-    ['\"'] = {
+    [':'] = {
       name = 'which_key_ignore',
     },
 

@@ -13,7 +13,7 @@ M.setup = function()
       -- delete       = { text = '┋' },
       -- topdelete    = { text = '┋' },
       changedelete = { text = '┃' },
-      -- untracked    = { text = '┋' },
+      untracked    = { text = '┋' },
     },
     debug_mode = false,
     signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`

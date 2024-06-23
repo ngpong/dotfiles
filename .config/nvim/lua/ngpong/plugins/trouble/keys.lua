@@ -3,6 +3,7 @@ local M = {}
 -- stylua: ignore start
 local Events = require('ngpong.common.events')
 local Keymap = require('ngpong.common.keybinder')
+local libP   = require('ngpong.common.libp')
 
 local this = Plgs.trouble
 
@@ -83,23 +84,25 @@ local del_buffer_keymaps = function(bufnr)
   Keymap.register(e_mode.NORMAL, 'e5,', function() end, { buffer = bufnr, desc = 'which_key_ignore' })
   Keymap.register(e_mode.NORMAL, 'n,', function() end, { buffer = bufnr, desc = 'which_key_ignore' })
   Keymap.register(e_mode.NORMAL, 'n.', function() end, { buffer = bufnr, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, '<leftmouse>', function() end, { buffer = bufnr, desc = 'which_key_ignore' })
 end
 
 local set_buffer_keymaps = function(bufnr)
   Keymap.register(e_mode.NORMAL, '<ESC>', this.api.close, { remap = false, buffer = bufnr, desc = 'TROUBLE: close trouble list.' })
   Keymap.register(e_mode.NORMAL, '<S-CR>', this.api.jump_close, { remap = false, buffer = bufnr, desc = 'TROUBLE: open selected entry into buffer and close trouble.' })
   Keymap.register(e_mode.NORMAL, '<CR>', this.api.jump, { remap = false, buffer = bufnr, desc = 'TROUBLE: open selected entry into buffer.' })
-  Keymap.register(e_mode.NORMAL, '<C-s>', this.api.toggle_preview, { remap = false, buffer = bufnr, desc = 'TROUBLE: toggle preview(seek) with selected entry.' })
+  Keymap.register(e_mode.NORMAL, '<C-p>', this.api.toggle_preview, { remap = false, buffer = bufnr, desc = 'TROUBLE: toggle preview with selected entry.' })
   -- Keymap.register(e_mode.NORMAL, 'R', Tools.wrap_f(this.api.refresh), { remap = false, buffer = bufnr, desc = 'TROUBLE: refresh trouble list.' })
 end
 
 M.setup = function()
   set_native_keymaps()
 
-  Events.rg(e_name.CREATE_TROUBLE_LIST, function(state)
+  Events.rg(e_name.CREATE_TROUBLE_LIST, libP.async.void(function(state)
+    libP.async.util.scheduler()
     del_buffer_keymaps(state.buf)
     set_buffer_keymaps(state.buf)
-  end)
+  end))
 end
 
 return M

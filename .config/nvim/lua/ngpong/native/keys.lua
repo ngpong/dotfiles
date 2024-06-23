@@ -2,7 +2,7 @@ local M = {}
 
 local Events = require('ngpong.common.events')
 local Keymap = require('ngpong.common.keybinder')
-local UI     = require('ngpong.common.ui')
+local UI = require('ngpong.common.ui')
 
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
@@ -215,6 +215,7 @@ local del_native_keymaps = function(_)
 
   -- https://neovim.io/doc/user/pattern.html#search-commands
   Keymap.unregister(e_mode.NORMAL, '?')
+  Keymap.unregister(e_mode.NORMAL, '/')
   Keymap.unregister(e_mode.NORMAL, 'n')
   Keymap.unregister(e_mode.NORMAL, 'N')
 
@@ -275,11 +276,12 @@ local del_native_keymaps = function(_)
   Keymap.unregister(e_mode.NORMAL, '-')
   Keymap.unregister(e_mode.NORMAL, '=')
   Keymap.unregister(e_mode.NORMAL, '<BS>')
+  Keymap.unregister(e_mode.NORMAL, '<C-.>')
 end
 
 local set_native_keymaps = function()
   Keymap.register(e_mode.NORMAL, '<ESC>', Helper.close_floating_wins, { remap = false, mixture = 'native', desc = 'which_key_ignore' })
-  Keymap.register(e_mode.INSERT, '<ESC>', '<ESC>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register({ e_mode.INSERT, e_mode.COMMAND, e_mode.SELECT }, '<ESC>', '<C-c>', { remap = false, desc = 'which_key_ignore' })
 
   -- 重新映射 enter 功能
   Keymap.register(e_mode.NORMAL, '<CR>', '<C-m>', { remap = false, desc = 'which_key_ignore' })
@@ -292,38 +294,38 @@ local set_native_keymaps = function()
   Keymap.register(e_mode.NORMAL, '<C-v>', '<C-v>', { remap = false, desc = 'COMMON: enter blockwise-visual mode.' })
 
   -- Left-Right-Up-Down montions
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'l', 'h', { remap = false, desc = 'MONTION: left.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '\'', 'l', { remap = false, desc = 'MONTION: right.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'p', function()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'k', 'h', { remap = false, desc = 'MONTION: left.' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, ';', 'l', { remap = false, desc = 'MONTION: right.' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'o', function()
     if vim.v.count > 0 then
       return 'm\'' .. vim.v.count .. 'k'
     else
       return 'k'
     end
   end, { expr = true, remap = false, desc = 'MONTION: top.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, ';', function()
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'l', function()
     if vim.v.count > 0 then
       return 'm\'' .. vim.v.count .. 'j'
     else
       return 'j'
     end
   end, { expr = true, remap = false, desc = 'MONTION: down.' })
-  Keymap.register(e_mode.INSERT, '<A-l>', '<LEFT>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.INSERT, '<A-\'>', '<RIGHT>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.INSERT, '<A-p>', '<UP>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.INSERT, '<A-;>', '<DOWN>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.NORMAL, '<S-p>', '<C-y>', { remap = false, desc = 'MONTION: keep cursor and scroll window upwards.' })
-  Keymap.register(e_mode.NORMAL, ':', '<C-e>', { remap = false, desc = 'MONTION: keep cursor and scroll window downwards.' })
-  Keymap.register(e_mode.VISUAL, '<S-p>', '<C-y>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.VISUAL, ':', '<C-e>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.NORMAL, 'L\"', 'zz', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.NORMAL, '\"L', 'zz', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-p>', '<C-u>', { remap = false, desc = 'MONTION: updown.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-;>', '<C-d>', { remap = false, desc = 'MONTION: backward.' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-S-p>', '<C-b>', { remap = false, desc = 'MONTION: pageup' })
-  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-:>', '<C-f>', { remap = false, desc = 'MONTION: pagedown' })
-  Keymap.register(e_mode.INSERT, '<C-p>', '<C-o><C-u>', { remap = false, desc = 'MONTION: updown.' })
-  Keymap.register(e_mode.INSERT, '<C-;>', '<C-o><C-d>', { remap = false, desc = 'MONTION: backward.' })
+  Keymap.register(e_mode.INSERT, '<A-k>', '<LEFT>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<A-;>', '<RIGHT>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<A-o>', '<UP>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<A-l>', '<DOWN>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, '<S-o>', '<C-y>', { remap = false, desc = 'MONTION: keep cursor and scroll window upwards.' })
+  Keymap.register(e_mode.NORMAL, '<S-l>', '<C-e>', { remap = false, desc = 'MONTION: keep cursor and scroll window downwards.' })
+  Keymap.register(e_mode.VISUAL, '<S-o>', '<C-y>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.VISUAL, '<S-l>', '<C-e>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'K:', 'zz', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, ':K', 'zz', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-o>', '<C-u>', { remap = false, desc = 'MONTION: updown.' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-l>', '<C-d>', { remap = false, desc = 'MONTION: backward.' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-S-o>', '<C-b>', { remap = false, desc = 'MONTION: pageup' })
+  Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '<C-S-l>', '<C-f>', { remap = false, desc = 'MONTION: pagedown' })
+  Keymap.register(e_mode.INSERT, '<C-o>', '<C-o><C-u>', { remap = false, desc = 'MONTION: updown.' })
+  Keymap.register(e_mode.INSERT, '<C-l>', '<C-o><C-d>', { remap = false, desc = 'MONTION: backward.' })
 
   -- jump to
   Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, 'eh', function()
@@ -338,8 +340,8 @@ local set_native_keymaps = function()
     Helper.presskeys('N50%')
     Helper.add_jumplist()
   end, { remap = false, desc = 'file center.' })
-  Keymap.register(e_mode.NORMAL, 'e,', '<C-O>', { remap = false, desc = 'older entry.' })
-  Keymap.register(e_mode.NORMAL, 'e.', '<C-I>', { remap = false, desc = 'next entry.' })
+  Keymap.register(e_mode.NORMAL, 'e[', '<C-O>', { remap = false, desc = 'older entry.' })
+  Keymap.register(e_mode.NORMAL, 'e]', '<C-I>', { remap = false, desc = 'next entry.' })
 
   -- windows
   Keymap.register(e_mode.NORMAL, 'rv', '<CMD>vsp<CR>', { desc = 'split window vertically.' })
@@ -367,31 +369,31 @@ local set_native_keymaps = function()
       vim.cmd('horizontal resize -5')
     end
   end, { desc = 'window (vertical/horizontal) resize -5.' })
-  Keymap.register(e_mode.NORMAL, 'rp', '<CMD>wincmd k<CR>', { remap = false, desc = 'move cursor to top window.' })
-  Keymap.register(e_mode.NORMAL, 'r;', '<CMD>wincmd j<CR>', { remap = false, desc = 'move cursor to down window.' })
-  Keymap.register(e_mode.NORMAL, 'rl', '<CMD>wincmd h<CR>', { remap = false, desc = 'move cursor to left window.' })
-  Keymap.register(e_mode.NORMAL, 'r\'', '<CMD>wincmd l<CR>', { remap = false, desc = 'move cursor to right window.' })
+  Keymap.register(e_mode.NORMAL, 'ro', '<CMD>wincmd k<CR>', { remap = false, desc = 'move cursor to top window.' })
+  Keymap.register(e_mode.NORMAL, 'rl', '<CMD>wincmd j<CR>', { remap = false, desc = 'move cursor to down window.' })
+  Keymap.register(e_mode.NORMAL, 'rk', '<CMD>wincmd h<CR>', { remap = false, desc = 'move cursor to left window.' })
+  Keymap.register(e_mode.NORMAL, 'r;', '<CMD>wincmd l<CR>', { remap = false, desc = 'move cursor to right window.' })
 
   -- windows(tabline)
   Keymap.register(e_mode.NORMAL, 'ts', '<CMD>tab split<CR>', { desc = 'create a new tabpage.' })
   Keymap.register(e_mode.NORMAL, 'tc', '<CMD>tabclose<CR>', { desc = 'close current tabpage.' })
-  Keymap.register(e_mode.NORMAL, 't.', '<CMD>tabnext<CR>', { desc = 'switch to next tabpage.' })
-  Keymap.register(e_mode.NORMAL, 't,', '<CMD>tabprev<CR>', { desc = 'switch to prev tabpage.' })
+  Keymap.register(e_mode.NORMAL, 't]', '<CMD>tabnext<CR>', { desc = 'switch to next tabpage.' })
+  Keymap.register(e_mode.NORMAL, 't[', '<CMD>tabprev<CR>', { desc = 'switch to prev tabpage.' })
   Keymap.register(e_mode.NORMAL, 'to', '<CMD>tabonly<CR>', { desc = 'close all tabpage except current.' })
 
   -- cmdline
   Keymap.register({ e_mode.NORMAL, e_mode.VISUAL }, '|', ':', { remap = false, silent = false, desc = 'COMMON: enter command mode.' })
-  Keymap.register(e_mode.COMMAND, '<A-p>', Tools.wrap_f(Helper.feedkeys, '<UP>'), { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.COMMAND, '<A-;>', Tools.wrap_f(Helper.feedkeys, '<DOWN>'), { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.COMMAND, '<A-l>', Tools.wrap_f(Helper.feedkeys, '<LEFT>'), { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.COMMAND, '<A-\'>', Tools.wrap_f(Helper.feedkeys, '<RIGHT>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-o>', Tools.wrap_f(Helper.feedkeys, '<UP>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-l>', Tools.wrap_f(Helper.feedkeys, '<DOWN>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-k>', Tools.wrap_f(Helper.feedkeys, '<LEFT>'), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.COMMAND, '<A-;>', Tools.wrap_f(Helper.feedkeys, '<RIGHT>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-q>', Tools.wrap_f(Helper.feedkeys, '<C-LEFT>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-w>', Tools.wrap_f(Helper.feedkeys, '<C-RIGHT>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-->', Tools.wrap_f(Helper.feedkeys, '<HOME>'), { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.COMMAND, '<A-=>', Tools.wrap_f(Helper.feedkeys, '<END>'), { remap = false, desc = 'which_key_ignore' })
 
   -- search command
-  Keymap.register(e_mode.NORMAL, '<C-.>', function()
+  Keymap.register(e_mode.NORMAL, '<C-]>', function()
     if vim.fn.getreg('/') == '' then
       return
     end
@@ -402,7 +404,7 @@ local set_native_keymaps = function()
       Helper.clear_commandline()
     end
   end, { remap = false, desc = 'SEARCH: jump to next match pattern.' })
-  Keymap.register(e_mode.NORMAL, '<C-,>', function()
+  Keymap.register(e_mode.NORMAL, '<C-[>', function()
     if vim.fn.getreg('/') == '' then
       return
     end
@@ -413,7 +415,8 @@ local set_native_keymaps = function()
       Helper.clear_commandline()
     end
   end, { remap = false, desc = 'SEARCH: jump to prev match pattern.' })
-  Keymap.register(e_mode.NORMAL, '?', function()
+  Keymap.register(e_mode.NORMAL, '<C-s>', '/', { remap = false, silent = false, desc = 'SEARCH: enter search pattern mode.' })
+  Keymap.register(e_mode.NORMAL, '<C-S-s>', function()
     Helper.clear_searchpattern()
     Helper.clear_commandline()
   end, { remap = false, desc = 'SEARCH: quit search pattern mode.' })

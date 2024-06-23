@@ -35,25 +35,25 @@ end
 local set_normal_keymaps = function(cfg)
   Tools.tbl_r_extend(cfg, {
     normal_keys = {
-      ['<C-.>'] = {
+      ['<C-]>'] = {
         method = function()
           mc_n.find_next()
         end,
         opts = { desc = 'MULTICURSORS: find next match.' }
       },
-      ['<C-,>'] = {
+      ['<C-[>'] = {
         method = function()
           mc_n.find_prev()
         end,
         opts = { desc = 'MULTICURSORS: find previous match.' }
       },
-      ['<'] = {
+      ['{'] = {
         method = function()
           mc_n.skip_find_prev()
         end,
         opts = { desc = 'MULTICURSORS: skip current and find previous match.'  }
       },
-      ['>'] = {
+      ['}'] = {
         method = function()
           mc_n.skip_find_next()
         end,
@@ -89,19 +89,19 @@ local set_normal_keymaps = function(cfg)
         end,
         opts = { desc = 'MULTICURSORS: paste text.'  }
       },
-      ['<S-l>'] = {
+      ['<S-k>'] = {
         method = mc_e.h_method,
         opts = { desc = 'MULTICURSORS: select left.'  }
       },
-      ['"'] = {
+      [':'] = {
         method = mc_e.l_method,
         opts = { desc = 'MULTICURSORS: select right.'  }
       },
-      ['{'] = {
+      ['_'] = {
         method = mc_e.caret_method,
         opts = { desc = 'MULTICURSORS: select to head of line.'  }
       },
-      ['}'] = {
+      ['+'] = {
         method = mc_e.dollar_method,
         opts = { desc = 'MULTICURSORS: select to end of line.'  }
       },
@@ -219,27 +219,27 @@ end
 local set_insert_keymaps = function(cfg)
   Tools.tbl_r_extend(cfg, {
     insert_keys = {
-      ['<A-[>'] = {
+      ['<A-->'] = {
         method = mc_i.Home_method,
         opts = { desc = 'which_key_ignore'  }
       },
-      ['<A-]>'] = {
+      ['<A-=>'] = {
         method = mc_i.End_method,
         opts = { desc = 'which_key_ignore'  }
       },
-      ['<A-l>'] = {
+      ['<A-k>'] = {
         method = mc_i.Left_method,
         opts = { desc = 'which_key_ignore'  }
       },
-      ['<A-\'>'] = {
+      ['<A-;>'] = {
         method = mc_i.Right_method,
         opts = { desc = 'which_key_ignore'  }
       },
-      ['<A-p>'] = {
+      ['<A-o>'] = {
         method = mc_i.UP_method,
         opts = { desc = 'which_key_ignore'  }
       },
-      ['<A-;>'] = {
+      ['<A-l>'] = {
         method = mc_i.Down_method,
         opts = { desc = 'which_key_ignore'  }
       },

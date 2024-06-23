@@ -38,11 +38,9 @@ M.append_to_history = function(bufnr)
   ActionsState.get_current_history():append(line, picker)
 end
 
-M.close_telescope = function()
-  return function(bufnr)
-    M.append_to_history(bufnr)
-    Actions.close(bufnr)
-  end
+M.close_telescope = function(bufnr)
+  M.append_to_history(bufnr)
+  Actions.close(bufnr)
 end
 
 M.toggle_preview = function(bufnr)
