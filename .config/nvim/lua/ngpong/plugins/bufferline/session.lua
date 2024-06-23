@@ -2,15 +2,16 @@ local session = {}
 
 -- stylua: ignore start
 local Events           = require('ngpong.common.events')
-local Lazy             = require('ngpong.utils.lazy')
 local Json             = require('ngpong.utils.json')
+local Lazy             = require('ngpong.utils.lazy')
 local libP             = require('ngpong.common.libp')
 local BufferlineState  = Lazy.require('bufferline.state')
 local BufferlineGroup  = Lazy.require('bufferline.groups')
 local BufferlineUI     = Lazy.require("bufferline.ui")
 
-local this = Plgs.bufferline
+local this   = Plgs.bufferline
 local e_name = Events.e_name
+-- stylua: ignore end
 
 session.setup = function()
   local file = libP.path:new(vim.fn.stdpath('data') .. '/bufferline/' .. Tools.get_workspace_sha1() .. '.json')
@@ -66,6 +67,12 @@ session.setup = function()
       libP.async.util.sleep(1)
     end
 
+    -- 检查第一个buffer是否为 [NONAME-BUFFER]。这对应着没有指定任何文件打开 neovim 的情况。
+    local is_have_noname = false
+    if Helper.is_unnamed_buf(1) then
+      is_have_noname = true
+    end
+
     -- 按照顺序追加持久化的 buffers
     local final_buffs = {}
     for _, _data in pairs(pre_buffs) do
@@ -78,6 +85,12 @@ session.setup = function()
           bufnr = vim.fn.bufadd(_data.file)
 
           vim.bo[bufnr].buflisted = true
+        end
+
+        -- 我们将擦除第一个 [NONAME-BUFFER] 的工作放在与第一个创建的 buffer 一起同步进行，这样在终端的视觉效果会稍微好一点
+        if is_have_noname then
+          is_have_noname = false
+          Helper.wipeout_buffer(1, true)
         end
 
         -- 此段逻辑会有一点延迟
@@ -95,11 +108,6 @@ session.setup = function()
       if final_buffs[_bufnr] == nil then
         final_buffs[_bufnr] = { file = _file, is_pinned = false }
       end
-    end
-
-    -- 擦除第一个默认打开的 [NONAME] BUFFERS
-    if Helper.is_unnamed_buf(1) then
-      Helper.wipeout_buffer(1, true)
     end
 
     -- 等待 bufferline components 初始化完毕
