@@ -15,9 +15,23 @@ lua版本5.1
     {
       "command": {
         "action": "sendInput",
+        "input": "\u001b[123;5u"
+      },
+      "keys": "ctrl+shift+{"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[125;5u"
+      },
+      "keys": "ctrl+shift+}"
+    },
+    {
+      "command": {
+        "action": "sendInput",
         "input": "\u001b[83;5u"
       },
-      "keys": "ctrl+shift+S"
+      "keys": "ctrl+shift+s"
     },
     {
       "command": {
@@ -29,6 +43,27 @@ lua版本5.1
     {
       "command": {
         "action": "sendInput",
+        "input": "\u001b[91;3u"
+      },
+      "keys": "alt+["
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[93;3u"
+      },
+      "keys": "alt+]"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[91;5u"
+      },
+      "keys": "ctrl+["
+    },
+    {
+      "command": {
+        "action": "sendInput",
         "input": "\u001b[44;5u"
       },
       "keys": "ctrl+comma"
@@ -36,9 +71,35 @@ lua版本5.1
     {
       "command": {
         "action": "sendInput",
-        "input": "\u001b[80;5u"
+        "input": "\u001b[76;5u"
       },
-      "keys": "ctrl+shift+p"
+      "keys": "ctrl+shift+l"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[79;5u"
+      },
+      "keys": "ctrl+shift+o"
+    },
+    {
+      "command": "unbound",
+      "keys": "alt+enter"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+c"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+v"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[13;5u"
+      },
+      "keys": "ctrl+enter"
     },
     {
       "command": {
@@ -53,20 +114,6 @@ lua版本5.1
         "input": "\u001b[39;5u"
       },
       "keys": "ctrl+'"
-    },
-    {
-      "command": {
-        "action": "sendInput",
-        "input": "\u001b[13;5u"
-      },
-      "keys": "ctrl+enter"
-    },
-    {
-      "command": {
-        "action": "sendInput",
-        "input": "\u001b[91;5u"
-      },
-      "keys": "ctrl+["
     },
     {
       "command": {
@@ -89,25 +136,6 @@ lua版本5.1
       },
       "keys": "ctrl+shift+z"
     },
-    {
-      "command": "unbound",
-      "keys": "alt+enter"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+c"
-    },
-    {
-      "command": "unbound",
-      "keys": "ctrl+v"
-    },
-    {
-      "command": {
-        "action": "sendInput",
-        "input": "\u001b[58;5u"
-      },
-      "keys": "ctrl+shift+;"
-    }
   ]
 }
 ----------------------------------------------------------------------------------

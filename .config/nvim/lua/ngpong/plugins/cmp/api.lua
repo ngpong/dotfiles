@@ -16,7 +16,7 @@ M.is_visible = function()
 end
 
 M.is_docvisible = function ()
-  return cmp.core.view.docs_view:visible()
+  return Cmp.core.view.docs_view:visible()
 end
 
 return M
