@@ -11,7 +11,7 @@ local this = Plgs.marks
 local e_mode = Keymap.e_mode
 
 local del_native_keymaps = function()
-  Keymap.unregister(e_mode.NORMAL, 'm')
+  Keymap.unregister({ e_mode.NORMAL, e_mode.SELECT, e_mode.VISUAL }, 'm')
 end
 
 local set_native_keymaps = function()
