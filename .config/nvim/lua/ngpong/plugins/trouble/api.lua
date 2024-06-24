@@ -94,10 +94,19 @@ M.find_view_by_mode = function(mode)
   return nil
 end
 
----@param winid number? window id
 M.find_view_by_winid = function(winid)
   for v, _ in pairs(View._views or {}) do
     if v.win.win == winid then
+      return v
+    end
+  end
+
+  return nil
+end
+
+M.find_view_by_bufnr = function(bufnr)
+  for v, _ in pairs(View._views or {}) do
+    if v.win.buf == bufnr then
       return v
     end
   end
