@@ -1,7 +1,7 @@
 local M = {}
 
 local Icons = require('ngpong.utils.icon')
-local libP = require('ngpong.common.libp')
+local libP  = require('ngpong.common.libp')
 
 local setup_jumping = function()
   local real_textDocument_definition = vim.lsp.handlers['textDocument/definition']
@@ -45,6 +45,12 @@ local setup_diagnostics = function()
   --
   -- 如果想要该配置应用于全局(因为可能会有不同的源会设置 diagnostic)
   --  REF1: https://neovim.io/doc/user/diagnostic.html#vim.diagnostic.config()
+  --  vim.diagnostic.config({
+  --    update_in_insert = true,
+  --    virtual_text = true,
+  --    signs = false,
+  --    underline = true,
+  --  })
   --
   -- 对于 windows terimal 下划线没有颜色的问题
   --  REF1: https://github.com/microsoft/language-server-protocol/issues/257
@@ -129,9 +135,9 @@ local setup_signaturehelp = function()
     fix_pos = false, -- set to true, the floating window will not auto-close until finish all parameters
     hint_enable = false, -- virtual hint enable
     hint_prefix = {
-      above = "↙ ",  -- when the hint is on the line above the current line
-      current = "← ",  -- when the hint is on the same line
-      below = "↖ "  -- when the hint is on the line below the current line
+      above = '↙ ', -- when the hint is on the line above the current line
+      current = '← ', -- when the hint is on the same line
+      below = '↖ ', -- when the hint is on the line below the current line
     },
     hint_scheme = 'String',
     hint_inline = function()

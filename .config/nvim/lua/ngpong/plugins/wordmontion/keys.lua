@@ -18,11 +18,11 @@ M.setup = function()
     montion_b()
   end, { remap = false, desc = 'MONTION: cursor world backward.' })
   Keymap.register(e_mode.INSERT, '<A-w>', function()
-    return '<C-o><cmd>lua require(\'spider\').motion(\'e\')<CR>'
-  end, { expr = true, remap = false, desc = 'which_key_ignore' })
+    montion_e()
+  end, { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.INSERT, '<A-q>', function()
-    return '<C-o><cmd>lua require(\'spider\').motion(\'b\')<CR>'
-  end, { expr = true, remap = false, desc = 'which_key_ignore' })
+    montion_b()
+  end, { remap = false, desc = 'which_key_ignore' })
 end
 
 return M

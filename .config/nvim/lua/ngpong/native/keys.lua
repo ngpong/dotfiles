@@ -284,7 +284,8 @@ end
 
 local set_native_keymaps = function()
   Keymap.register(e_mode.NORMAL, '<ESC>', Helper.close_floating_wins, { remap = false, mixture = 'native', desc = 'which_key_ignore' })
-  Keymap.register({ e_mode.INSERT, e_mode.COMMAND, e_mode.SELECT }, '<ESC>', '<C-c>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register({ e_mode.INSERT, e_mode.SELECT }, '<ESC>', '<ESC>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register({ e_mode.COMMAND }, '<ESC>', '<C-c>', { remap = false, desc = 'which_key_ignore' })
 
   -- 重新映射 enter 功能
   Keymap.register(e_mode.NORMAL, '<CR>', '<C-m>', { remap = false, desc = 'which_key_ignore' })
