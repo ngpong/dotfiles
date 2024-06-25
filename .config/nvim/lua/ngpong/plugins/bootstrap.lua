@@ -1,14 +1,16 @@
 local M = {}
 
-local Icons   = require('ngpong.utils.icon')
-local Lazy    = require('ngpong.utils.lazy')
-local Keymap  = require('ngpong.common.keybinder')
+-- stylua: ignore start
 local Autocmd = require('ngpong.common.autocmd')
 local Events  = require('ngpong.common.events')
+local Icons   = require('ngpong.utils.icon')
+local Keymap  = require('ngpong.common.keybinder')
+local Lazy    = require('ngpong.utils.lazy')
 local libP    = require('ngpong.common.libp')
 
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
+-- stylua: ignore end
 
 M.ensure_install = function()
   local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -139,6 +141,9 @@ M.laungh = function()
     change_detection = {
       enabled = false,
       notify = false,
+    },
+    pkg = {
+      enabled = false,
     },
     performance = {
       cache = {
@@ -278,7 +283,7 @@ M.register_keymap = function()
   -- hijack plugin manager native key setup
   require('lazy.view.config').keys.close = '<esc>'
   require('lazy.view.config').keys.hover = '<nop>'
-  require('lazy.view.config').keys.diff  = '<nop>'
+  require('lazy.view.config').keys.diff = '<nop>'
   Tools.tbl_r_extend(require('lazy.view.config').commands.help, { key = 'M' })
 end
 
