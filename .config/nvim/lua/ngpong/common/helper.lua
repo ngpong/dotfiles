@@ -239,7 +239,7 @@ helper.get_last_winid = function(...)
 end
 
 helper.get_winid = function(bufnr, tabpage)
-  bufnr = bufnr or helper.get_cur_bufnr()
+  bufnr   = bufnr or helper.get_cur_bufnr()
   tabpage = tabpage or helper.get_cur_tabpage()
 
   for _, _winid in pairs(helper.get_list_winids(tabpage)) do
@@ -248,7 +248,7 @@ helper.get_winid = function(bufnr, tabpage)
     end
   end
 
-  return -1
+  return nil
 end
 
 helper.get_winid_by_path = function(path)
@@ -268,8 +268,7 @@ helper.is_win_valid = function(winid)
 end
 
 helper.is_floating_win = function(winid)
-  winid = winid or helper.get_cur_winid()
-  return vim.api.nvim_win_get_config(winid).relative ~= ''
+  return winid and vim.api.nvim_win_get_config(winid).relative ~= '' or false
 end
 
 helper.is_notify_win = function(winid)

@@ -68,6 +68,7 @@ M.setup = function()
       },
       buffer_selected = {
         sp = colors.bright_red,
+        italic = true,
       },
       separator_selected = {
         sp = colors.bright_red,

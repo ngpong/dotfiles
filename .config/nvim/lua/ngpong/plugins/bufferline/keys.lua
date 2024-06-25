@@ -37,7 +37,11 @@ local set_native_keymaps = function(_)
     return not this.api.is_pinned(bufnr)
   end), { remap = false, desc = 'wipeout current buffer.' })
   Keymap.register(e_mode.NORMAL, 'bo', Tools.wrap_f(Helper.delete_all_buffers, false, function(bufnr)
-    return bufnr == Helper.get_cur_bufnr()
+    local is_current  = Helper.get_cur_bufnr() == bufnr
+    local is_pinned   = this.api.is_pinned(bufnr)
+    local is_floating = Helper.is_floating_win(Helper.get_winid(bufnr))
+
+    return not is_current and not is_pinned and not is_floating
   end), { remap = false, desc = 'wipeout all buffers except current.' })
 end
 
