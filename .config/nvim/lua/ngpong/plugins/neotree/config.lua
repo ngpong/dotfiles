@@ -43,7 +43,7 @@ M.setup = function()
     },
     window = {
       position = 'left',
-      width = 40,
+      width = 30,
     },
     filesystem = {
       filtered_items = {

@@ -1,3 +1,4 @@
+-- https://github.com/neovim/neovim/issues/7257
 return {
   'NGPONG/multicursors.nvim',
   lazy = true,
