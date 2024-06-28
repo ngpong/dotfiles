@@ -420,6 +420,14 @@ local set_native_keymaps = function()
     end
   end, { remap = false, desc = 'SEARCH: jump to prev match pattern.' })
   Keymap.register(e_mode.NORMAL, 'S', '/', { remap = false, silent = false, desc = 'SEARCH: enter search pattern mode.' })
+  Keymap.register({ e_mode.SELECT, e_mode.VISUAL }, 'S', function ()
+    local success, _ = pcall(vim.fn.setreg, '/', '\\<' .. Helper.get_visual_selected() .. '\\>')
+    if not success then
+      Helper.notify_warn('Not found any match by search patterns.')
+    end
+
+    Helper.feedkeys('<ESC>')
+  end, { remap = false, silent = false, desc = 'SEARCH: enter search pattern mode.' })
   Keymap.register(e_mode.NORMAL, '<C-s>', function()
     Helper.clear_searchpattern()
     Helper.clear_commandline()
@@ -522,6 +530,11 @@ end
 M.setup = function()
   del_native_keymaps()
   set_native_keymaps()
+
+  Events.rg(e_name.BUFFER_READ, function(state)
+    del_buffer_keymaps(state.buf)
+    set_buffer_keymaps(state.buf)
+  end)
 
   Events.rg(e_name.BUFFER_ENTER_ONCE, function(state)
     del_buffer_keymaps(state.buf)
