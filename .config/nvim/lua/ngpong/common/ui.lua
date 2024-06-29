@@ -54,9 +54,9 @@ ui.popup_fileinfo = function(bufnr)
       },
       style = 'rounded',
     },
-    win_options = {
-      winblend = 20,
-    },
+    -- win_options = {
+    --   winblend = 20,
+    -- },
     buf_options = {
       bufhidden = 'delete',
       buflisted = false,

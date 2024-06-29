@@ -20,7 +20,7 @@ M.setup = function()
       touch_regex = '[%w(%[{]',
       pair_spaces = false,
       auto_indent = true,
-      disable_command_mode = false,
+      disable_command_mode = true,
     },
     disabled = false,
   })

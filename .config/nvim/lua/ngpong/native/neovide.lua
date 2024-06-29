@@ -40,7 +40,7 @@ M.setup = function()
   vim.g.neovide_refresh_rate_idle = 30
 
   -- 浮动窗口阴影
-  vim.g.neovide_floating_shadow = true
+  vim.g.neovide_floating_shadow = false
 
   -- 记住窗口大小
   vim.g.neovide_remember_window_size = true

@@ -10,5 +10,6 @@ return {
   config = function()
     Plgs.record_seq('bufferline.nvim config')
     Plgs.bufferline.config.setup()
+    Plgs.bufferline.behavior.setup()
   end
 }

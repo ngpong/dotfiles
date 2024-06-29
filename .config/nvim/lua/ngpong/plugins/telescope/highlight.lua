@@ -13,6 +13,11 @@ local setup = function()
   vim.api.nvim_set_hl(0, 'TelescopeResultsDiffDelete', { fg = colors.bright_red })
   -- vim.api.nvim_set_hl(0, 'TelescopeResultsDiffuntracked', { fg = colors.bright_red })
 
+  -- vim.api.nvim_set_hl(0, 'TelescopeBorder', { fg = colors.gray })
+  -- vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = colors.gray })
+  -- vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = colors.gray })
+  -- vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { fg = colors.gray })
+
   -- vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', { fg = colors.bright_green, italic = true, bold = true })
   -- vim.api.nvim_set_hl(0, 'TelescopeMultiSelection', { fg = colors.bright_red })
   -- vim.api.nvim_set_hl(0, 'TelescopeSelection', { fg = colors.bright_blue, italic = true, bold = true })

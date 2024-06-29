@@ -77,6 +77,8 @@ local fix_keymap_native = libP.async.void(function()
       ['C'] = { 'wipeout all buffer except current.' },
       ['['] = { 'move current buffer prev in sequence.' },
       [']'] = { 'move current buffer next in sequence.' },
+      ['{'] = { 'move current buffer prev in sequence.' },
+      ['}'] = { 'move current buffer next in sequence.' },
     },
     ['B'] = {
       name = 'which_key_ignore',
