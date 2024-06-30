@@ -42,9 +42,7 @@ session.setup = function()
     end)
   )
 
-  Events.rg(
-    e_name.VIM_ENTER,
-    libP.async.void(function()
+  Events.rg(e_name.VIM_ENTER, libP.async.void(function()
       if not file:exists() then
         return
       end

@@ -10,5 +10,6 @@ return {
   config = function()
     Plgs.record_seq('lualine.nvim config')
     Plgs.lualine.config.setup()
+    Plgs.lualine.hacker.setup()
   end
 }
