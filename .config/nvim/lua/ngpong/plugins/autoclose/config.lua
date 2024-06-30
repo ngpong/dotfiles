@@ -3,14 +3,14 @@ local M = {}
 M.setup = function()
   require('autoclose').setup({
     keys = {
-      -- ['('] = { escape = false, close = true, pair = '()' },
-      -- ['['] = { escape = false, close = true, pair = '[]' },
-      -- ['{'] = { escape = false, close = true, pair = '{}' },
+      ['('] = { escape = false, close = false, pair = '()' },
+      ['['] = { escape = false, close = false, pair = '[]' },
+      ['{'] = { escape = false, close = false, pair = '{}' },
 
-      -- ['>'] = { escape = true, close = false, pair = '<>' },
-      -- [')'] = { escape = true, close = false, pair = '()' },
-      -- [']'] = { escape = true, close = false, pair = '[]' },
-      -- ['}'] = { escape = true, close = false, pair = '{}' },
+      ['>'] = { escape = false, close = false, pair = '<>' },
+      [')'] = { escape = false, close = false, pair = '()' },
+      [']'] = { escape = false, close = false, pair = '[]' },
+      ['}'] = { escape = false, close = false, pair = '{}' },
 
       ['<CR>'] = { disable_command_mode = true },
     },
