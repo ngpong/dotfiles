@@ -21,7 +21,8 @@ M.setup = function()
       'perl',
       'cmake',
       'markdown',
-      'markdown_inline'
+      'markdown_inline',
+      'editorconfig'
     },
     sync_install = false,
     auto_install = false,

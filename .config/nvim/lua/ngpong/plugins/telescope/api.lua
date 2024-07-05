@@ -105,6 +105,7 @@ M.select_entries = function(bufnr)
 
   if next(picker:get_multi_selection()) ~= nil then
     M.open_multselected_trouble(picker, bufnr)
+    M.append_to_history(bufnr)
   else
     Actions.select_default(bufnr)
     vim.schedule(Helper.keep_screen_center)

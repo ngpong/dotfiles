@@ -1,7 +1,7 @@
 -- stylua: ignore start
-local libP  = require('ngpong.common.libp')
 local Icons = require('ngpong.utils.icon')
 local Lazy  = require('ngpong.utils.lazy')
+local libP  = require('ngpong.common.libp')
 local Marks = Lazy.require('marks')
 local Item  = Lazy.require('trouble.item')
 
@@ -74,7 +74,7 @@ function M.fetch_list(all)
         mark = _mark,
         lnum = _data.line,
         col = vim.v.maxcol,
-        text = vim.api.nvim_buf_get_lines(bufnr, _data.line - 1, _data.line, true)[1],
+        text = Helper.getline(bufnr, _data.line),
       })
     end
   end
@@ -92,16 +92,13 @@ function M.fetch_list(all)
         local file_path = libP.path:new(_data.file):expand()
 
         if file_path:match(workspace) then
-          local lines = libP.path:new(file_path):readlines()
-          local line = (lines == nil and '' or lines[row])
-
           table.insert(results, {
             filename = file_path,
             tag = 'Uppercase mark',
             lnum = row,
             mark = mark,
             col = vim.v.maxcol,
-            text = line,
+            text = Helper.getline(file_path, row),
           })
         end
       end

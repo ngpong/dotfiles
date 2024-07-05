@@ -1,8 +1,8 @@
 local helper = {}
 
-local libP      = require('ngpong.common.libp')
-local Icons     = require('ngpong.utils.icon')
+local Icons = require('ngpong.utils.icon')
 local Timestamp = require('ngpong.utils.timestamp')
+local libP = require('ngpong.common.libp')
 
 helper.get_cur_bufnr = function(_)
   return vim.api.nvim_get_current_buf and vim.api.nvim_get_current_buf() or vim.fn.bufnr()
@@ -163,7 +163,8 @@ helper.hide_cursor = function()
   end
 
   libP.async.async.run(function()
-    libP.async.util.scheduler() f()
+    libP.async.util.scheduler()
+    f()
   end)
 end
 
@@ -175,7 +176,8 @@ helper.unhide_cursor = function()
   end
 
   libP.async.run(function()
-    libP.async.util.scheduler() f()
+    libP.async.util.scheduler()
+    f()
   end)
 end
 
@@ -205,8 +207,53 @@ helper.get_bufnr = function(winid)
   end
 end
 
-helper.get_buflines = function(bufnr)
-  return vim.api.nvim_buf_line_count(bufnr or helper.get_cur_bufnr())
+helper.isbuf_exists = function(buffer)
+  return vim.fn.bufexists(buffer) > 0
+end
+
+helper.get_bufnr_by_name = function(full_path, force)
+  if force or helper.isbuf_exists(full_path) then
+    return vim.fn.getbufinfo(full_path)[1].bufnr
+  else
+    return nil
+  end
+end
+
+helper.getline = function(buffer, row)
+  local getline_by_file = function(path)
+    local path_obj = libP.path:new(path)
+
+    local success, lines = pcall(libP.path:new(path).readlines, path_obj)
+    if not success then
+      return ''
+    end
+
+    local line = (lines == nil and '' or lines[row])
+
+    return line or ''
+  end
+
+  local getline_by_cache = function(bufnr)
+    return vim.api.nvim_buf_get_lines(bufnr, row - 1, row, true)[1] or ''
+  end
+
+  if type(buffer) == 'number' then
+    if not helper.isbuf_exists(buffer) then
+      return ''
+    end
+
+    if helper.is_loaded_buf(buffer) then
+      return getline_by_cache(buffer)
+    else
+      return getline_by_file(Helper.get_buf_name(buffer))
+    end
+  else
+    if helper.isbuf_exists(buffer) and helper.is_loaded_buf(Helper.get_bufnr_by_name(buffer)) then
+      return getline_by_cache(helper.get_bufnr_by_name(buffer, true))
+    else
+      return getline_by_file(buffer)
+    end
+  end
 end
 
 helper.get_bufsize = function(bufnr, cb)
@@ -239,7 +286,7 @@ helper.get_last_winid = function(...)
 end
 
 helper.get_winid = function(bufnr, tabpage)
-  bufnr   = bufnr or helper.get_cur_bufnr()
+  bufnr = bufnr or helper.get_cur_bufnr()
   tabpage = tabpage or helper.get_cur_tabpage()
 
   for _, _winid in pairs(helper.get_list_winids(tabpage)) do

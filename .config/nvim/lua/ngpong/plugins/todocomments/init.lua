@@ -1,5 +1,5 @@
 return {
-  'folke/todo-comments.nvim',
+  'NGPONG/todo-comments.nvim',
   lazy = true,
   event = 'VeryVeryLazy',
   init = function()

@@ -1,10 +1,8 @@
 local M = {}
 
 -- stylua: ignore start
-local libP    = require('ngpong.common.libp')
-local Bouncer = require('ngpong.utils.debounce')
-local Icons   = require('ngpong.utils.icon')
 local Lazy    = require('ngpong.utils.lazy')
+local libP    = require('ngpong.common.libp')
 local API     = Lazy.require('trouble.api')
 local View    = Lazy.require('trouble.view')
 local Preview = Lazy.require('trouble.view.preview')
@@ -53,36 +51,13 @@ M.toggle_preview = function()
   end
 end
 
-M.toggle = setmetatable({
-  ___open_state = {},
-}, {
-  __call = function(self, mode)
-    local is_open = API.is_open({ mode = mode })
+M.toggle = function(mode)
+  API.toggle({ mode = mode or '' })
+end
 
-    if not is_open and self.___open_state[mode] then
-      return
-    end
-
-    API.toggle({ mode = mode or '' })
-
-    if not is_open then
-      self.___open_state[mode] = true
-    end
-  end,
-})
-
-M.open = setmetatable({
-  ___open_state = {},
-}, {
-  __call = function(self, mode)
-    if self.___open_state[mode] then
-      return
-    end
-
-    API.open({ mode = mode or '' })
-    self.___open_state[mode] = true
-  end,
-})
+M.open = function(mode)
+  API.open({ mode = mode or '' })
+end
 
 M.find_view_by_mode = function(mode)
   for v, _ in pairs(View._views or {}) do
