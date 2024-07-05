@@ -111,6 +111,14 @@ lua版本5.1
     {
       "command": {
         "action": "sendInput",
+        "input": "\u001b[8;5u"
+      },
+      "id": "User.sendInput.8882FD6D",
+      "keys": "shift+backspace"
+    },
+    {
+      "command": {
+        "action": "sendInput",
         "input": "\u001b[39;5u"
       },
       "keys": "ctrl+'"

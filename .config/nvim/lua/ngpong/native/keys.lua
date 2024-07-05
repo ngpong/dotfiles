@@ -455,7 +455,8 @@ local set_native_keymaps = function()
 
   -- 重新映射一些键在insert模式下的行为
   Keymap.register(e_mode.INSERT, '<A-Enter>', '<CR>', { remap = false, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.INSERT, '<A-backspace>', '<BS>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<A-BS>', '<BS>', { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.INSERT, '<C-h>'--[[ S-BS ]], '<DEL>', { remap = false, desc = 'which_key_ignore' })
   Keymap.register(e_mode.INSERT, '<TAB>', '<C-I>', { remap = false, desc = 'which_key_ignore' })
 
   -- 获取文件信息
