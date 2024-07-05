@@ -164,6 +164,7 @@ M.setup = function()
       },
       telescope_multi_selected_lines = {
         desc = 'Telescope multi-selected result',
+        events = {},
         source = 'telescope',
         sort = { 'filename', 'pos' },
         groups = {

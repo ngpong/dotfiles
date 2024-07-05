@@ -1,6 +1,7 @@
 return {
   'NGPONG/barbecue.nvim',
   lazy = true,
+  enabled = true,
   event = 'LazyFile',
   dependencies = {
     'SmiteshP/nvim-navic'
