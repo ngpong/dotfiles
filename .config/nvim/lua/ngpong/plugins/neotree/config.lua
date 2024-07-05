@@ -77,6 +77,7 @@ M.setup = function()
         leave_dirs_open = false,
       },
       group_empty_dirs = true,
+      async_directory_scan = 'always',
       scan_mode = 'deep',
     },
     -- 仅保留 filesystem，其余功能例如 buffer symbols 都有其余按键可以替代
