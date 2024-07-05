@@ -14,7 +14,7 @@ M.setup = function()
     popup_border_style = 'rounded', -- 'double', 'none', 'rounded', 'shadow', 'single' or 'solid'
     enable_diagnostics = true,
     enable_opened_markers = false,
-    enable_refresh_on_write = false,
+    enable_refresh_on_write = true,
     enable_modified_markers = true,
     enable_git_status = true,
     open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf' },
@@ -70,7 +70,7 @@ M.setup = function()
           --'.null-ls_*',
         },
       },
-      use_libuv_file_watcher = true,
+      use_libuv_file_watcher = false,
       bind_to_cwd = true,
       follow_current_file = {
         enabled = false,
