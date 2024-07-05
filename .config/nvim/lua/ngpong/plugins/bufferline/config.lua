@@ -2,7 +2,7 @@ local M = {}
 
 local Icons = require('ngpong.utils.icon')
 
-local this   = Plgs.bufferline
+local this = Plgs.bufferline
 local colors = Plgs.colorscheme.colors
 
 M.setup = function()
@@ -32,18 +32,18 @@ M.setup = function()
       offsets = {
         {
           filetype = 'neo-tree',
-          text = Icons.files_1 .. Icons.space ..  'EXPLORER [' .. string.upper(Tools.get_cwd_tail()) .. ']',
+          text = Icons.files_1 .. Icons.space .. 'EXPLORER [' .. string.upper(Tools.get_cwd_tail()) .. ']',
           text_align = 'center',
           padding = 0,
           separator = '|',
-        }
+        },
       },
       groups = {
         items = {
-          require('bufferline.groups').builtin.pinned:with({ icon = Icons.pinned_3 })
-        }
+          require('bufferline.groups').builtin.pinned:with({ icon = Icons.pinned_3 }),
+        },
       },
-      custom_filter = this.filter()
+      custom_filter = this.filter(),
       -- style_preset = {
       --   buffline.style_preset.no_italic,
       --   buffline.style_preset.no_bold
