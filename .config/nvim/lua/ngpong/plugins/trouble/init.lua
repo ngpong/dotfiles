@@ -2,7 +2,7 @@ return {
   'folke/trouble.nvim',
   lazy = true,
   dependencies = {
-    'NGPONG/todo-comments.nvim'
+    'folke/todo-comments.nvim'
   },
   cmd = { 'TroubleToggle', 'Trouble' },
   init = function()
