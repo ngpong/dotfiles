@@ -597,6 +597,13 @@ helper.dclock = {
     self.begin = self.begin or 0
     self.begin = Timestamp.get_microsecond()
   end,
+  wrap = function(self, f, key)
+    return function(...)
+      self.reset(self)
+      f(...)
+      self(key)
+    end
+  end
 }
 setmetatable(helper.dclock, {
   __call = function(self, key)

@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = function()
-  require('mini.indentscope').setup {
+  require('mini.indentscope').setup({
     -- Draw options
     draw = {
       -- Delay (in ms) between event and start of drawing scope indicator
@@ -30,7 +30,7 @@ M.setup = function()
     },
     -- Which character to use for drawing scope indicator
     symbol = '⁞', -- '▏'
-  }
+  })
 end
 
 return M
