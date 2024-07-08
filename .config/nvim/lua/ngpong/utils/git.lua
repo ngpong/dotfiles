@@ -97,9 +97,19 @@ gitter.if_has_diff_sync = function(path)
   local job = libP.job:new({
     command = 'git',
     args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff-index', 'HEAD', '--', path },
-    on_stdout = function(_, data, self)
+    on_stdout = function(err, data, self)
+      Logger.info(data)
+      Logger.info(err)
       ret = true
     end,
+    on_stderr = function(err, data, self)
+      Logger.info(data)
+      Logger.info(err)
+    end,
+    on_exit = function(self, code, signal)
+      Logger.info(code)
+      Logger.info(signal)
+    end
   })
 
   job:sync()
