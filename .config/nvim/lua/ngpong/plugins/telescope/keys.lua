@@ -204,7 +204,7 @@ local set_native_keymaps = function()
   Keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
   Keymap.register(e_mode.NORMAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', { remap = false, silent = true, desc = 'find string with live grep mode.' })
   Keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args({ default_text = Helper.get_visual_selected() })<cr>', { silent = true, desc = 'which_key_ignore' })
-  Keymap.register(e_mode.NORMAL, 'fl', this.api.open_multselected_trouble, { silent = true, desc = 'open last multi-selected trouble list.' })
+  Keymap.register(e_mode.NORMAL, 'f<CR>', this.api.open_multselected_trouble, { silent = true, desc = 'open last multi-selected trouble list.' })
 end
 
 local set_buffer_keymaps = function(state)
