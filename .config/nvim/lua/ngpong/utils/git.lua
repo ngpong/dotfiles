@@ -107,6 +107,8 @@ gitter.if_has_diff_sync = function(path)
 
   job:sync()
 
+  Helper.notify_info(ret)
+
   return ret
 end
 
