@@ -98,10 +98,7 @@ gitter.if_has_diff_sync = function(path)
     command = 'git',
     args = { '-C', gitter.get_repository_root(Tools.get_cwd()), 'diff-index', 'HEAD', '--', path },
     on_stdout = function(_, data, self)
-      if not self.is_shutdown then
-        ret = true
-        self:shutdown()
-      end
+      ret = true
     end,
   })
 
