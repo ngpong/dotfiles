@@ -47,7 +47,7 @@ M.config = {
         { 'filename', format = '{file_icon}{filename} {count}' },
       },
       sort = { { buf = 0 }, 'filename', 'pos' },
-      format = '{mark_icon} {mark_text}: {text:ts} {pos}',
+      format = '{mark_icon} {mark_text} {text:ts} {pos}',
     },
   },
 }

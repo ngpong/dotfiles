@@ -41,7 +41,7 @@ local setup_cleanup = function()
 end
 
 local setup_cursor_persist = function()
-  local caches = {}
+  local key = 'cursor_presist_native'
 
   local file = libP.path:new(vim.fn.stdpath('data') .. '/cursor_presist/' .. Tools.get_workspace_sha1() .. '.json')
 
@@ -55,7 +55,12 @@ local setup_cursor_persist = function()
       return
     end
 
-    caches = Json.decode(data)
+    Variable.set(key, Json.decode(data) or {})
+
+    local caches = Variable.get(key)
+    if not caches then
+      return
+    end
 
     -- 对于使用命令行参数打开的文件，其在打开后不会触发 BUFFER_READ_POST 事件，需要我们手动触发一次
     for _, _bufnr in pairs(Helper.get_all_bufs()) do
@@ -81,6 +86,11 @@ local setup_cursor_persist = function()
       file:touch({ parents = true })
     end
 
+    local caches = Variable.get(key)
+    if not caches then
+      return
+    end
+
     file:write(Json.encode(caches), 'w')
   end)
 
@@ -97,6 +107,11 @@ local setup_cursor_persist = function()
       return
     end
     if bufname:match('COMMIT_EDITMSG') then
+      return
+    end
+
+    local caches = Variable.get(key)
+    if not caches then
       return
     end
 
@@ -118,6 +133,11 @@ local setup_cursor_persist = function()
 
     -- 浮动窗口下不更新
     if Helper.is_floating_win(Helper.get_winid(args.buf)) then
+      return
+    end
+
+    local caches = Variable.get(key)
+    if not caches then
       return
     end
 

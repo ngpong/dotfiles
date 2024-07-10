@@ -19,7 +19,7 @@ return {
   end,
   config = function()
     Plgs.record_seq('telescope.nvim config')
-    Plgs.telescope.hacker.setup()
     Plgs.telescope.config.setup()
+    Plgs.telescope.entry_maker.setup()
   end
 }

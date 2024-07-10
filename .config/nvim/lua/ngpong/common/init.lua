@@ -28,6 +28,7 @@ return {
 
     _G.VAR = require('ngpong.common.variable')
     _G.Helper = require('ngpong.common.helper')
+    _G.Variable = require('ngpong.common.variable')
 
     -- require('ngpong.common.events').track_events()
   end,

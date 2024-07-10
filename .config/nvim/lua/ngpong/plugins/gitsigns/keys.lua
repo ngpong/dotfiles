@@ -9,24 +9,15 @@ local Gitsigns = Lazy.require('gitsigns')
 
 local this = Plgs.gitsigns
 local telescope = Plgs.telescope
+local trouble = Plgs.trouble
 local dressing = Plgs.dressing
 
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
 
 local set_native_keymaps = function()
-  Keymap.register(e_mode.NORMAL, 'gg', function()
-    -- NOTE:
-    -- 为了避免在没有 diff 的情况下打开 status 会出现闪烁的情况，这里
-    -- 又加了一层判断。
-    --
-    -- 按道理来说应当使用异步逻辑，但是这里使用异步逻辑会出现一些问题
-    if Git.if_has_diff_sync() then
-      telescope.api.builtin_picker('git_status')
-    else
-      Helper.notify_warn('No result from git_status', 'Telescope')
-    end
-  end, { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
+  Keymap.register(e_mode.NORMAL, 'gg', Tools.wrap_f(trouble.api.toggle, 'document_git'), { silent = true, remap = false, desc = 'toggle current buffer gitsigns list.' })
+  Keymap.register(e_mode.NORMAL, 'gG', Tools.wrap_f(trouble.api.toggle, 'workspace_git'), { silent = true, remap = false, desc = 'toggle workspace buffer gitsigns list.' })
 end
 
 local set_git_buffer_diffthis_keymaps = function(bufnr)

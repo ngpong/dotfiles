@@ -563,6 +563,10 @@ helper.set_wincursor = function(winid, row, col)
   pcall(vim.api.nvim_win_set_cursor, winid, { row, col })
 end
 
+helper.strim = function(str)
+  return vim.trim(str)
+end
+
 -- will causes a lazy loading with nvim-notify plugin.
 helper.notify = function(msg, title, opts, lv)
   vim.schedule(function()

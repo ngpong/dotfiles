@@ -1,7 +1,11 @@
 local M = {}
 
-local Events = require('ngpong.common.events')
-local Keymap = require('ngpong.common.keybinder')
+local Events    = require('ngpong.common.events')
+local Git       = require('ngpong.utils.git')
+local Keymap    = require('ngpong.common.keybinder')
+local libP      = require('ngpong.common.libp')
+local Lazy      = require('ngpong.utils.lazy')
+local telescope = Lazy.require('telescope')
 
 local this = Plgs.telescope
 
@@ -199,12 +203,42 @@ end
 local del_native_keymaps = function() end
 
 local set_native_keymaps = function()
-  Keymap.register(e_mode.NORMAL, 'f<leader>', '<CMD>Telescope<CR>', { remap = false, silent = true, desc = 'find builtin.' })
-  Keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
-  Keymap.register(e_mode.NORMAL, 'fb', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true<CR>', { remap = false, silent = true, desc = 'find string in local(current) buffer.' })
-  Keymap.register(e_mode.NORMAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', { remap = false, silent = true, desc = 'find string with live grep mode.' })
-  Keymap.register(e_mode.VISUAL, 'fs', '<CMD>lua require("telescope").extensions.live_grep_args.live_grep_args({ default_text = Helper.get_visual_selected() })<cr>', { silent = true, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'f<leader>', '<CMD>Telescope<CR>', { remap = false, silent = true, desc = 'open builtin pickers.' })
   Keymap.register(e_mode.NORMAL, 'f<CR>', this.api.open_multselected_trouble, { silent = true, desc = 'open last multi-selected trouble list.' })
+  Keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
+  -- Keymap.register(e_mode.NORMAL, 'fc', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true lnum_highlight_group=LineNr<CR>', { remap = false, silent = true, desc = 'find string in current buffer.' })
+  Keymap.register(e_mode.NORMAL, 'fd', '<CMD>Telescope diagnostics<CR>', { remap = false, desc = 'find workspace diagnostics.' })
+  Keymap.register(e_mode.NORMAL, 'fm', Tools.wrap_f(this.picker.marks), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'fs', function()
+    telescope.extensions.live_grep_args.live_grep_args({ only_sort_text = true })
+  end, { remap = false, silent = true, desc = 'find string with live grep mode.' })
+  Keymap.register(e_mode.VISUAL, 'fs', function ()
+    telescope.extensions.live_grep_args.live_grep_args({ default_text = Helper.get_visual_selected() })
+  end, { silent = true, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'fw', function()
+    local opts = { show_line = true }
+    if Helper.get_filetype() == 'lua' then
+      opts.ignore_symbols = { 'package' }
+    end
+
+    this.api.builtin_picker('lsp_document_symbols', opts)
+  end, { silent = true, remap = false, desc = 'find document symbols in the current buffer.' })
+  Keymap.register(e_mode.NORMAL, 'fg', function()
+    -- NOTE:
+    -- 为了避免在没有 diff 的情况下打开 status 会出现闪烁的情况，这里
+    -- 又加了一层判断。
+    --
+    -- 按道理来说应当使用异步逻辑，但是这里使用异步逻辑会出现一些问题
+    if Git.if_has_diff_sync() then
+      this.api.builtin_picker('git_status')
+    else
+      Helper.notify_warn('No result from git_status', 'Telescope')
+    end
+  end, { silent = true, remap = false, desc = 'find git status list.' })
+
+  Keymap.register(e_mode.NORMAL, 'fn', function()
+    this.picker.todo()
+  end, { silent = true, remap = false, desc = 'find todo comment list.' })
 end
 
 local set_buffer_keymaps = function(state)

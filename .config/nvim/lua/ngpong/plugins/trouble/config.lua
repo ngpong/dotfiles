@@ -82,6 +82,7 @@ M.setup = function()
           { 'severity', format = '{severity_icon}{severity} {count}' },
         },
         desc = 'Document diagnostics',
+        focus = false,
       },
       workspace_diagnostics = {
         mode = 'diagnostics',
@@ -90,6 +91,7 @@ M.setup = function()
           { 'severity', format = '{severity_icon}{severity} {count}' },
           { 'filename', format = '{file_icon}{filename} {count}' },
         },
+        focus = false,
       },
       todo = {
         groups = {

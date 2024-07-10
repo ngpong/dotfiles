@@ -24,9 +24,9 @@ M.setup = function()
         path = '~/.local/share/nvim/databases/telescope_history.sqlite3',
         limit = 100,
       },
-      multi_icon = Icons.small_dot,
+      multi_icon = '', -- Icons.small_dot,
       prompt_prefix = Icons.space .. Icons.search .. Icons.space,
-      selection_caret = Icons.dapstopped .. Icons.space,
+      selection_caret = '> ', --Icons.dapstopped .. Icons.space,
       vimgrep_arguments = {
         'rg',
         -- telescope defaults
@@ -35,7 +35,7 @@ M.setup = function()
         '--with-filename',
         '--line-number',
         '--column',
-        '--smart-case',
+        -- '--smart-case',
         -- custom
         '--fixed-strings',
         '--sort=path',
@@ -53,6 +53,9 @@ M.setup = function()
         -- treesitter = false,
         hide_on_startup = true,
         timeout = 250,
+      },
+      cache_picker = {
+        num_pickers = -1,
       },
     },
   }
@@ -104,6 +107,15 @@ M.setup = function()
           unmerged = Icons.git_conflict,
           untracked = Icons.git_untracked,
         },
+      },
+      lsp_document_symbols = {
+        symbol_kinds = Icons.lsp_kinds
+      },
+      lsp_workspace_symbols = {
+        symbol_kinds = Icons.lsp_kinds
+      },
+      lsp_dynamic_workspace_symbols = {
+        symbol_kinds = Icons.lsp_kinds
       },
       -- current_buffer_fuzzy_find = {
       --   preview = {

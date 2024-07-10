@@ -61,6 +61,11 @@ M.is_lower_mark = function(mark)
   return code >= 97 and code <= 122
 end
 
+M.is_char_mark = function(mark)
+  local code = string.byte(mark)
+  return (code >= 97 and code <= 122) or code >= 65 and code <= 90
+end
+
 M.on_mark_change = function()
   Autocmd.exec('User', { pattern = 'MarkDeleteUser' })
 end

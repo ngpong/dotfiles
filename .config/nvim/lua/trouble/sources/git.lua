@@ -1,33 +1,54 @@
 -- stylua: ignore start
-local libP           = require('ngpong.common.libp')
 local Icons          = require('ngpong.utils.icon')
 local Lazy           = require('ngpong.utils.lazy')
+local libP           = require('ngpong.common.libp')
 local Item           = Lazy.require('trouble.item')
-local Gitsigns_async = Lazy.require('gitsigns.async')
-local Gitsigns_cache = Lazy.require('gitsigns.cache')
-local Gitsigns_git   = Lazy.require('gitsigns.git')
-local Gitsigns_diff  = Lazy.require('gitsigns.diff')
+local GitsignsAsync  = Lazy.require('gitsigns.async')
+local GitsignsAttach = Lazy.require('gitsigns.attach')
+local GitsignsCache  = Lazy.require('gitsigns.cache')
+local GitsignsGit    = Lazy.require('gitsigns.git')
+local GitsignsDiff   = Lazy.require('gitsigns.diff')
 
 local colors   = Plgs.colorscheme.colors
 -- stylua: ignore end
 
+local gitsigns_sleep = GitsignsAsync.wrap(2, function(duration, acb)
+  vim.defer_fn(acb, duration)
+end)
+
 local M = {}
 
 M.config = {
+  formatters = {
+    git_info = function(ctx)
+      local type = ctx.item.type
+
+      local hl = 'GitSigns' .. string.upper(string.sub(type, 1, 1)) .. string.sub(type, 2)
+      local icon = Icons['git_' .. type]
+
+      return {
+        text = icon .. ' ' .. ctx.item.text,
+        hl = hl,
+      }
+    end,
+    git_pos = function(ctx)
+      return ctx.item.text
+    end,
+  },
   modes = {
     git = {
-      events = { 'BufEnter', 'BufWritePost', { event = 'User', pattern = { 'GitSignsChanged', 'GitSignsUpdate' } } },
+      events = { 'BufEnter', 'BufWritePost' }, -- , { event = 'User', pattern = { 'GitSignsChanged', 'GitSignsUpdate' } }
       source = 'git',
       groups = {
-        { 'filename', format = '{file_icon}{filename} {count}' },
+        { 'directory', format = '{directory_icon}{directory} {count}' },
       },
-      sort = { { buf = 0 }, 'filename', 'pos' },
-      format = '{text:ts} {pos}',
+      sort = { { buf = 0 }, 'pos' },
+      format = '{file_icon}{basename} {git_info}',
     },
   },
 }
 
-M.get = Gitsigns_async.create(2, function(cb, ctx)
+M.get = GitsignsAsync.create(2, function(cb, ctx)
   local params = ctx.opts.params or {}
 
   local target = params.target or Helper.get_cur_bufnr()
@@ -35,21 +56,31 @@ M.get = Gitsigns_async.create(2, function(cb, ctx)
   local items = {}
 
   if type(target) == 'number' then
-    local cache = Gitsigns_cache.cache[target] or {}
+    local cache = GitsignsCache.cache[target]
 
-    for _, hunk in ipairs(cache.hunks) do
+    if not cache then
+      GitsignsAttach.attach(target)
+
+      -- wait for attach complete
+      while not cache or not cache.hunks do
+        gitsigns_sleep(50)
+        cache = GitsignsCache.cache[target]
+      end
+    end
+
+    for _, hunk in ipairs(cache.hunks or {}) do
       local _item = {
         filename = Helper.get_buf_name(target),
         lnum = hunk.added.start,
         col = vim.v.maxcol,
-        text = string.format('%d ~ %d', hunk.added.start, hunk.vend),
+        text = string.format('%d,%d', hunk.added.start, hunk.vend),
         type = hunk.type,
-        vend = hunk.vend
+        vend = hunk.vend,
       }
 
-      items[#items+1] = Item.new({
+      items[#items + 1] = Item.new({
         buf = vim.fn.bufadd(_item.filename),
-        pos = { _item.lnum , 0 },
+        pos = { _item.lnum, 0 },
         end_pos = { _item.vend, _item.col },
         text = _item.text,
         filename = _item.filename,
@@ -58,7 +89,7 @@ M.get = Gitsigns_async.create(2, function(cb, ctx)
       })
     end
   elseif target == 'all' then
-    local cache = Gitsigns_cache.cache
+    local cache = GitsignsCache.cache
 
     local repos = {}
 
@@ -69,8 +100,8 @@ M.get = Gitsigns_async.create(2, function(cb, ctx)
       end
     end
 
-    local repo = Gitsigns_git.Repo.new(assert(vim.loop.cwd()))
-    if not repos[repo.gitdir] then
+    local repo = GitsignsGit.Repo.get(assert(vim.loop.cwd()))
+    if repo and not repos[repo.gitdir] then
       repos[repo.gitdir] = repo
     end
 
@@ -81,25 +112,25 @@ M.get = Gitsigns_async.create(2, function(cb, ctx)
         if stat and stat.type == 'file' then
           local a = r:get_show_text(':0:' .. f)
 
-          Gitsigns_async.scheduler()
+          GitsignsAsync.scheduler()
 
-          local hunks = Gitsigns_diff(a, libP.path:new(f_abs):readlines())
+          local hunks = GitsignsDiff(a, libP.path:new(f_abs):readlines())
 
-          Gitsigns_async.scheduler()
+          GitsignsAsync.scheduler()
 
           for _, hunk in ipairs(hunks) do
             local _item = {
               filename = f_abs,
               lnum = hunk.added.start,
-              col = 1000,
-              text = string.format('%d ~ %d', hunk.added.start, hunk.vend),
+              col = vim.v.maxcol,
+              text = string.format('%d,%d', hunk.added.start, hunk.vend),
               type = hunk.type,
-              vend = hunk.vend
+              vend = hunk.vend,
             }
 
-            items[#items+1] = Item.new({
+            items[#items + 1] = Item.new({
               buf = vim.fn.bufadd(_item.filename),
-              pos = { _item.lnum , 0 },
+              pos = { _item.lnum, 0 },
               end_pos = { _item.vend, _item.col },
               text = _item.text,
               filename = _item.filename,
