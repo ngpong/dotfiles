@@ -36,9 +36,8 @@ M.setup = function()
         '--line-number',
         '--column',
         -- '--smart-case',
-        -- custom
+        '--sort-files',
         '--fixed-strings',
-        '--sort=path',
         '--hidden',
         '--no-ignore-vcs',
       },
@@ -95,6 +94,7 @@ M.setup = function()
           'rg',
           '--files',
           '--hidden',
+          '--sort-files',
           '--no-ignore-vcs',
         },
       },

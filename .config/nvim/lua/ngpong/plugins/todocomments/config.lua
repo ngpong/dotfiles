@@ -59,6 +59,7 @@ M.setup = function()
         '--with-filename',
         '--line-number',
         '--column',
+        '--sort-files',
         '--hidden',
         '--no-ignore-vcs',
       },
