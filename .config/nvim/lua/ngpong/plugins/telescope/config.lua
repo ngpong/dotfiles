@@ -64,6 +64,7 @@ M.setup = function()
       layout_strategy = 'horizontal', -- horizontal, vertical, center
       layout_config = { -- configure if you need change the default layout strategy
         horizontal = {
+          anchor = 'S',
           height = this.api.resolve_height(0.9),
           preview_cutoff = 1,
           preview_width = this.api.resolve_width(0.6),
@@ -71,17 +72,21 @@ M.setup = function()
           width = this.api.resolve_width(0.9),
         },
         center = {
+          anchor = 'N',
           height = 0.4,
           preview_cutoff = 1,
           prompt_position = 'top',
-          width = 0.8,
+          preview_width = this.api.resolve_width(0.6),
+          mirror = true,
+          width = 0.9,
         },
         vertical = {
           anchor = 'S',
+          mirror = true,
           height = 0.9,
           preview_cutoff = 10,
           prompt_position = 'bottom',
-          width = 0.8,
+          width = 0.9,
         },
       },
     },
