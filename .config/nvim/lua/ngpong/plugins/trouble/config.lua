@@ -97,12 +97,6 @@ M.setup = function()
           { 'filename', format = '{file_icon}{filename} {count}' },
         },
       },
-      todo = {
-        groups = {
-          { 'filename', format = '{file_icon}{filename} {count}' },
-        },
-        format = '{todo_icon}{text} {pos}',
-      },
       document_todo = {
         mode = 'todo',
         desc = 'Document todo comments',
@@ -132,11 +126,14 @@ M.setup = function()
       },
       document_git = {
         mode = 'git',
-        desc = 'Document git diff.',
+        desc = 'Document git diff',
+        groups = {
+          { 'head', format = '{git_head}' },
+        },
       },
       workspace_git = {
         mode = 'git',
-        desc = 'Workspace git diff.',
+        desc = 'Workspace git diff',
         params = {
           target = 'all',
         },
@@ -144,7 +141,7 @@ M.setup = function()
       lsp_document_symbols_extra = {
         desc = 'Lsp document symbols',
         follow = true,
-        win = { position = 'right', size = 0.3 },
+        win = { position = 'right', size = 0.4 },
         mode = 'lsp_document_symbols',
         focus = false,
         preview = {

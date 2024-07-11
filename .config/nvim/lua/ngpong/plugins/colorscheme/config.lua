@@ -74,6 +74,7 @@ M.setup = function()
       ['@keyword.operator'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@keyword.repeat'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@keyword.conditional'] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ['@keyword.function'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@keyword.conditional.ternary'] = { link = 'GruvboxFg4' },
       ['@keyword'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@repeat'] = { fg = Gruvbox.palette.bright_red, italic = true },

@@ -138,6 +138,8 @@ function M.get(cb, ctx)
     })
   end
 
+  Item.add_id(items)
+
   cb(items)
 end
 
