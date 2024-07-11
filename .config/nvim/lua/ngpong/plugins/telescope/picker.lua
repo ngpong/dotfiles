@@ -103,13 +103,15 @@ M.todo = function(opts)
         local icon = config.options.keywords[kw].icon or ''
         local speactor = '│ '
         local file_icon, icon_hl = Utils.get_devicons(entry.filename)
+        local text = vim.trim(text:sub(start))
 
-        display = icon .. speactor .. file_icon .. ' ' .. rel_path .. pos .. ': ' .. vim.trim(text:sub(start))
+        display = icon .. speactor .. file_icon .. ' ' .. rel_path .. ': ' .. text .. ' ' .. pos
 
         hl = Utils.merge_styles(hl, { { { 0, #icon }, 'TodoFg' .. kw } }, 0)
         hl = Utils.merge_styles(hl, { { { 0, #speactor }, 'LineNr' } }, #icon)
         hl = Utils.merge_styles(hl, { { { 0, #file_icon }, icon_hl } }, #icon + #speactor)
-        hl = Utils.merge_styles(hl, { { { 0, #pos }, 'GruvboxBg3' } }, #icon + #speactor + #file_icon + #rel_path + 1)
+        hl = Utils.merge_styles(hl, { { { 0, 1 }, 'GruvboxYellow' } }, #icon + #speactor + #file_icon + #rel_path + 1)
+        hl = Utils.merge_styles(hl, { { { 0, #pos }, 'GruvboxBg3' } }, #icon + #speactor + #file_icon + #rel_path + #text + 4)
       end
 
       return display, hl

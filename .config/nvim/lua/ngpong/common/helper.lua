@@ -567,6 +567,16 @@ helper.strim = function(str)
   return vim.trim(str)
 end
 
+helper.sfill_tail = function(str, char, count)
+  local ret = str
+
+  for i = 1, count, 1 do
+    ret = ('%s%s'):format(ret, char)
+  end
+
+  return ret
+end
+
 -- will causes a lazy loading with nvim-notify plugin.
 helper.notify = function(msg, title, opts, lv)
   vim.schedule(function()

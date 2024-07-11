@@ -235,10 +235,25 @@ local set_native_keymaps = function()
       Helper.notify_warn('No result from git_status', 'Telescope')
     end
   end, { silent = true, remap = false, desc = 'find git status list.' })
-
   Keymap.register(e_mode.NORMAL, 'fn', function()
     this.picker.todo()
   end, { silent = true, remap = false, desc = 'find todo comment list.' })
+  Keymap.register(e_mode.NORMAL, 'fb', function()
+    local is_pinned  = Plgs.bufferline.api.is_pinned('all')
+    local components = Plgs.bufferline.api.get_components()
+
+    local sorted_cache = {}
+    for i = 1, #components do
+      sorted_cache[components[i]:as_element().id] = i
+    end
+
+    this.api.builtin_picker('buffers', {
+      is_have_pinned = is_pinned,
+      sort_buffers = function(l, r)
+        return sorted_cache[l] < sorted_cache[r]
+      end
+    })
+  end, { remap = false, silent = true, desc = 'find active buffers.' })
 end
 
 local set_buffer_keymaps = function(state)

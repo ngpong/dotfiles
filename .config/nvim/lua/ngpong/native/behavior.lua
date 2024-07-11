@@ -55,12 +55,7 @@ local setup_cursor_persist = function()
       return
     end
 
-    Variable.set(key, Json.decode(data) or {})
-
-    local caches = Variable.get(key)
-    if not caches then
-      return
-    end
+    local caches = Variable.set(key, Json.decode(data) or {})
 
     -- 对于使用命令行参数打开的文件，其在打开后不会触发 BUFFER_READ_POST 事件，需要我们手动触发一次
     for _, _bufnr in pairs(Helper.get_all_bufs()) do
@@ -86,12 +81,7 @@ local setup_cursor_persist = function()
       file:touch({ parents = true })
     end
 
-    local caches = Variable.get(key)
-    if not caches then
-      return
-    end
-
-    file:write(Json.encode(caches), 'w')
+    file:write(Json.encode(Variable.get(key, true)), 'w')
   end)
 
   Events.rg(e_name.CURSOR_NORMAL, Bouncer.throttle_trailing(400, true, libP.async.void(function(args)
@@ -110,11 +100,6 @@ local setup_cursor_persist = function()
       return
     end
 
-    local caches = Variable.get(key)
-    if not caches then
-      return
-    end
-
     -- 仅刷新指定文件类型的文件
     if Filter(1, bufnr) then
       return
@@ -122,7 +107,7 @@ local setup_cursor_persist = function()
 
     local row, col = Helper.get_cursor()
 
-    caches[bufname] = { row = row, col = col, ts = Timestamp.get_utc() }
+    Variable.get(key, true)[bufname] = { row = row, col = col, ts = Timestamp.get_utc() }
   end)))
 
   Events.rg(e_name.BUFFER_READ_POST, libP.async.void(function(args)
@@ -136,14 +121,9 @@ local setup_cursor_persist = function()
       return
     end
 
-    local caches = Variable.get(key)
-    if not caches then
-      return
-    end
-
     local bufname = Helper.get_buf_name(args.buf):gsub(Tools.get_workspace() .. '/', '')
 
-    local cache = caches[bufname]
+    local cache = Variable.get(key, true)[bufname]
     if cache ~= nil and Filter(2) then
       Helper.set_cursor(cache.row, cache.col)
       Helper.keep_screen_center()

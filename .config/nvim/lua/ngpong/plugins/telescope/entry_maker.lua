@@ -16,6 +16,9 @@ local Config       = Lazy.require("telescope.config")
 
 local bufferline = Plgs.bufferline
 
+local pos_hl = 'GruvboxBg3'
+local comma_hl = 'GruvboxYellow'
+
 local function buffers_entrymaker()
   local workspace = Tools.get_workspace()
 
@@ -33,11 +36,9 @@ local function buffers_entrymaker()
         separator = '',
         items = {
           { width = opts.bufnr_width + 1 },
-          { width = 4 },
-          { width = 2 },
-          { width = 2 },
+          { width = 1 },
           { width = fname_icon_width + 2 },
-          { remaining = true },
+          { width = 2 },
           { remaining = true },
           { remaining = true },
           { remaining = true },
@@ -49,10 +50,8 @@ local function buffers_entrymaker()
         separator = '',
         items = {
           { width = opts.bufnr_width + 1 },
-          { width = 4 },
           { width = 2 },
           { width = 2 },
-          { remaining = true },
           { remaining = true },
           { remaining = true },
           { remaining = true },
@@ -64,28 +63,33 @@ local function buffers_entrymaker()
     local make_display = function(entry)
       local icon, hl_group = Utils.get_devicons(entry.filename, disable_devicons)
 
+      local bufnr, bufnr_hl = entry.bufnr, (entry.is_current and 'GruvboxYellow' or 'GruvboxGray')
+      local spector, spector_hl = '│', 'LineNr'
+      local filename = entry.filename
+      local pos = (entry.has_pos and '[' .. entry.lnum .. ',' .. entry.col .. ']' or '')
+      local comma = (entry.has_pos and ': ' or '')
+      local text = Helper.strim(Helper.getline(entry.bufnr, entry.lnum)) .. ' '
+
       if opts.is_have_pinned then
         return displayer({
-          { entry.bufnr, 'TelescopeResultsNumber' },
-          { entry.indicator, 'TelescopeResultsComment' },
-          { '│', 'LineNr' },
-          { icon, hl_group },
+          { bufnr, bufnr_hl },
+          { spector, spector_hl },
           { bufferline.api.is_pinned(entry.bufnr) and Icons.pinned_3 or Icons.space },
-          { entry.filename },
-          { '[' .. entry.lnum .. ',' .. entry.col .. ']', 'GruvboxBg3' },
-          { ': ' },
-          { Helper.strim(Helper.getline(entry.bufnr, entry.lnum)) },
+          { icon, hl_group },
+          { filename },
+          { comma, comma_hl },
+          { text },
+          { pos, pos_hl },
         })
       else
         return displayer({
-          { entry.bufnr, 'TelescopeResultsNumber' },
-          { entry.indicator, 'TelescopeResultsComment' },
-          { '│', 'LineNr' },
+          { bufnr, bufnr_hl },
+          { spector, spector_hl },
           { icon, hl_group },
-          { entry.filename },
-          { '[' .. entry.lnum .. ',' .. entry.col .. ']', 'GruvboxBg3' },
-          { ': ' },
-          { Helper.strim(Helper.getline(entry.bufnr, entry.lnum)) },
+          { filename },
+          { comma, comma_hl },
+          { text },
+          { pos, pos_hl },
         })
       end
     end
@@ -93,17 +97,16 @@ local function buffers_entrymaker()
     return function(entry)
       local bufname = libP.path:new(entry.info.name):make_relative(workspace)
 
-      local hidden = entry.info.hidden == 1 and 'h' or 'a'
-      local readonly = vim.api.nvim_buf_get_option(entry.bufnr, 'readonly') and '=' or Icons.space
-      local changed = entry.info.changed == 1 and '+' or Icons.space
-      local indicator = entry.flag .. hidden .. readonly .. changed
+      local cursor_cache = Variable.get('cursor_presist_native') or {}
 
-      local lnum, col = 1, 1
-      for _k, _v in pairs(Variable.get('cursor_presist_native')) do
-        if _k == bufname then
-          lnum = _v.row
-          col = _v.col
-        end
+      local has_pos = false
+
+      local lnum, col = 0, 0
+      local pos = cursor_cache[bufname]
+      if pos then
+        lnum = pos.row
+        col = pos.col + 1
+        has_pos = true
       end
 
       return {
@@ -114,7 +117,8 @@ local function buffers_entrymaker()
         filename = bufname,
         lnum = lnum,
         col = col,
-        indicator = indicator,
+        is_current = opts.bufnr == entry.bufnr,
+        has_pos = has_pos,
       }
     end
   end
@@ -206,8 +210,6 @@ local function marks_entrymaker()
         { remaining = true },
         { remaining = true },
         { remaining = true },
-        { remaining = true },
-        { remaining = true },
       },
     })
 
@@ -215,15 +217,19 @@ local function marks_entrymaker()
       local rel_path = libP.path:new(entry.filename):make_relative(workspace)
 
       local icon, hl_group = Utils.get_devicons(rel_path)
+      local comma = ': '
+      local spector, spector_hl = '│', 'LineNr'
+      local pos = '[' .. entry.lnum .. ',' .. entry.col .. ']'
+      local text = Helper.strim(entry.value) .. ' '
 
       return displayer({
         { entry.mark, 'MarkSignHL' },
-        { '│', 'LineNr' },
+        { spector, spector_hl },
         { icon, hl_group },
         { rel_path },
-        { '[' .. entry.lnum .. ',' .. entry.col .. ']', 'GruvboxBg3' },
-        { ': ' },
-        { Helper.strim(entry.value) },
+        { comma, comma_hl },
+        { text },
+        { pos, pos_hl },
       })
     end
 
@@ -253,6 +259,7 @@ local function document_symbols_entrymaker()
       { width = 26 },
       { width = 2 },
       { remaining = true },
+      { remaining = true },
     }
 
     local displayer = EntryDisplay.create({
@@ -264,13 +271,18 @@ local function document_symbols_entrymaker()
       local symbol_icon = opts.symbol_kinds[entry.symbol_type].val
       local symbol_hl = opts.symbol_kinds[entry.symbol_type].hl_link
 
+      local spector, spector_hl = '│', 'LineNr'
+      local pos = '[' .. entry.lnum .. ',' .. entry.col .. ']'
+      local text = Helper.strim(Helper.getline(opts.bufnr, entry.lnum)) .. ' '
+
       return displayer({
         { symbol_icon, symbol_hl },
         { entry.symbol_type, symbol_hl },
-        { '│', 'LineNr' },
+        { spector, spector_hl },
         { entry.symbol_name },
-        { '│', 'LineNr' },
-        { Helper.strim(Helper.getline(opts.bufnr, entry.lnum)) },
+        { spector, spector_hl },
+        { text },
+        { pos, pos_hl }
       })
     end
 
@@ -411,9 +423,9 @@ local function diagnostics_entrymaker()
         { '│', 'LineNr' },
         { icon .. Icons.space, hl_group },
         rel_path,
-        { '[' .. entry.lnum .. ',' .. entry.col .. ']', 'GruvboxBg3' },
-        { ': ' },
+        { ': ', comma_hl },
         { entry.text, 'DiagnosticSign' .. entry.type },
+        { ' [' .. entry.lnum .. ',' .. entry.col .. ']', pos_hl },
       })
     end
 
@@ -443,17 +455,18 @@ local function vimgrep_entrymaker()
 
       ret.display = function(entry)
         local rel_path = libP.path:new(entry.filename):make_relative(workspace)
-
         local coordinates = string.format('[%s,%s]', entry.lnum, entry.col)
+        local text = Helper.strim(entry.text)
 
         local display, hl_group, icon = Utils.transform_devicons(
           entry.filename,
-          string.format("%s%s%s%s", rel_path, coordinates, ': ', Helper.strim(entry.text))
+          string.format("%s%s%s%s", rel_path, ': ', Helper.strim(entry.text) .. ' ', coordinates)
         )
 
         local style = {}
         style = Utils.merge_styles(style, { { { 0, #icon }, hl_group } }, 0)
-        style = Utils.merge_styles(style, { { { 0, #coordinates }, 'GruvboxBg3' } }, #icon + 1 + #rel_path)
+        style = Utils.merge_styles(style, { { { 0, 2 }, comma_hl } }, #icon + 1 + #rel_path)
+        style = Utils.merge_styles(style, { { { 0, #coordinates + 1 }, pos_hl } }, #icon + 3 + #rel_path + #text)
         return display, style
       end
 

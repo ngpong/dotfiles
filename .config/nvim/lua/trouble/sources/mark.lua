@@ -12,31 +12,11 @@ local M = {}
 
 M.config = {
   formatters = {
-    mark_icon = function(ctx)
-      if ctx.item.tag == 'Uppercase mark' then
-        return {
-          text = Icons.chars_4,
-          hl = 'GruvboxRed',
-        }
-      else
-        return {
-          text = Icons.chars_5,
-          hl = 'GruvboxAqua',
-        }
-      end
-    end,
     mark_text = function(ctx)
-      if ctx.item.tag == 'Uppercase mark' then
-        return {
-          text = ctx.item.mark,
-          hl = 'MarkTextRed',
-        }
-      else
-        return {
-          text = ctx.item.mark,
-          hl = 'MarkTextAqua',
-        }
-      end
+      return {
+        text = ctx.item.mark,
+        hl = 'MarkSignHL',
+      }
     end,
   },
   modes = {
@@ -47,7 +27,7 @@ M.config = {
         { 'filename', format = '{file_icon}{filename} {count}' },
       },
       sort = { { buf = 0 }, 'filename', 'pos' },
-      format = '{mark_icon} {mark_text} {text:ts} {pos}',
+      format = '{mark_text} {text:ts} {pos}',
     },
   },
 }

@@ -1,6 +1,7 @@
 local M = {}
 
 local Events         = require('ngpong.common.events')
+local Autocmd        = require('ngpong.common.autocmd')
 local Lazy           = require('ngpong.utils.lazy')
 local BufflineState  = Lazy.require('bufferline.state')
 local BufflineGroups = Lazy.require('bufferline.groups')
@@ -49,6 +50,7 @@ M.cycle_next = function(_)
 
   if success then
     Events.emit(e_name.CYCLE_NEXT_BUFFER)
+    Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
   end
 end
 
@@ -57,19 +59,23 @@ M.cycle_prev = function(_)
 
   if success then
     Events.emit(e_name.CYCLE_PREV_BUFFER)
+    Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
   end
 end
 
 M.move_next = function(_)
   pcall(vim.cmd, 'BufferLineMoveNext')
+  Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
 end
 
 M.move_prev = function(_)
   pcall(vim.cmd, 'BufferLineMovePrev')
+  Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
 end
 
 M.pin = function(_)
   pcall(vim.cmd, 'BufferLineTogglePin')
+  Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
 end
 
 M.select = function(_)
@@ -77,6 +83,7 @@ M.select = function(_)
 
   if success then
     Events.emit(e_name.SELECT_TARGET_BUFFER)
+    Autocmd.exec('User', { pattern = 'BufferLineStateChange' })
   end
 end
 

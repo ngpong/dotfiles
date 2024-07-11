@@ -41,6 +41,13 @@ M.setup = function()
       -- or you can define your own custom action.
       opts.keys = {}
     end,
+    formatters = {
+      pos = function(ctx)
+        return {
+          text = '[' .. ctx.item.pos[1] .. ',' .. (ctx.item.pos[2] + 1) .. ']',
+        }
+      end,
+    },
     modes = {
       lsp_base = {
         groups = {
@@ -79,23 +86,19 @@ M.setup = function()
         mode = 'diagnostics',
         filter = { buf = 0 },
         groups = {
-          { 'severity', format = '{severity_icon}{severity} {count}' },
+          { 'filename', format = '{file_icon}{filename} {count}' },
         },
         desc = 'Document diagnostics',
-        focus = false,
       },
       workspace_diagnostics = {
         mode = 'diagnostics',
         desc = 'Workspace diagnostics',
         groups = {
-          { 'severity', format = '{severity_icon}{severity} {count}' },
           { 'filename', format = '{file_icon}{filename} {count}' },
         },
-        focus = false,
       },
       todo = {
         groups = {
-          { 'tag', format = '{todo_icon}{tag}' },
           { 'filename', format = '{file_icon}{filename} {count}' },
         },
         format = '{todo_icon}{text} {pos}',
@@ -108,7 +111,6 @@ M.setup = function()
             buf = 0,
           },
         },
-        focus = false,
       },
       workspace_todo = {
         mode = 'todo',
@@ -120,7 +122,6 @@ M.setup = function()
         params = {
           all = false,
         },
-        focus = false,
       },
       workspace_mark = {
         mode = 'mark',
@@ -128,7 +129,6 @@ M.setup = function()
         params = {
           all = true,
         },
-        focus = false,
       },
       document_git = {
         mode = 'git',

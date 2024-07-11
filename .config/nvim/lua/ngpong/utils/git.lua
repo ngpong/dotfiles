@@ -104,10 +104,10 @@ gitter.if_has_diff_sync = function(path)
       end
     end,
     on_stderr = function(err, data, self)
-      Helper.notify_info(vim.inspect({ err = err, data = data }), 'ops!')
+      Logger.info(vim.inspect({ err = err, data = data }), 'ops!')
     end,
     on_exit = function(self, code, signal)
-      Helper.notify_info(vim.inspect({ code = code, signal = signal }), 'exit!')
+      Logger.info(vim.inspect({ code = code, signal = signal }), 'exit!')
     end,
   })
 
