@@ -1,8 +1,9 @@
 local M = {}
 
 local Autocmd = require('ngpong.common.autocmd')
-local Lazy    = require('ngpong.utils.lazy')
-local Marks   = Lazy.require('marks')
+local Lazy = require('ngpong.utils.lazy')
+local libP = require('ngpong.common.libp')
+local Marks = Lazy.require('marks')
 
 M.set = function(name)
   local compare = '\'' .. name
@@ -20,7 +21,7 @@ M.set = function(name)
       end
     end
   elseif M.is_lower_mark(name) then
-    for _, data in ipairs(vim.fn.getmarklist("%")) do
+    for _, data in ipairs(vim.fn.getmarklist('%')) do
       if data.mark == compare then
         if data.pos[2] == row then
           return
@@ -46,6 +47,19 @@ M.del = function(name)
   M.on_mark_change()
 end
 
+M.dels = function(marks)
+  if not next(marks) then
+    return
+  end
+
+  for _, _mark in pairs(marks) do
+    Marks.mark_state:delete_mark(_mark)
+    libP.async.util.scheduler()
+  end
+
+  M.on_mark_change()
+end
+
 M.jump = function(name)
   Helper.presskeys('`' .. name)
   Helper.add_jumplist()
@@ -67,7 +81,7 @@ M.is_char_mark = function(mark)
 end
 
 M.on_mark_change = function()
-  Autocmd.exec('User', { pattern = 'MarkDeleteUser' })
+  Autocmd.exec('User', { pattern = 'MarkChanged' })
 end
 
 return M

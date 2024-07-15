@@ -106,6 +106,11 @@ local set_plugin_keymaps = function()
       ['f<leader>'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['fs'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['fb'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['fw'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['fg'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['fn'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['fd'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
+      ['fm'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>e'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>l'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
       ['<leader>q'] = wrap_keymap(this.api.actions.nop, { desc = 'which_key_ignore' }),
@@ -163,10 +168,6 @@ local set_plugin_keymaps = function()
       ----------------------------------------------------------------------
 
       -----------------------------remap keymap-----------------------------
-      ['-'] = wrap_keymap(this.api.keep_cursor_outof_range(), { desc = 'MONTION: move cursor to end of line.' }),
-      ['k'] = wrap_keymap(this.api.keep_cursor_outof_range('h'), { desc = 'MONTION: left.' }),
-      ['q'] = wrap_keymap(this.api.keep_cursor_outof_range('b'), { desc = 'MONTION: cursor world backward.' }),
-
       -- history
       ['<C-[>'] = wrap_keymap(this.api.actions.cycle_history_prev, { desc = 'TELESCOPE: cycle previouse history.' }),
       ['<C-]>'] = wrap_keymap(this.api.actions.cycle_history_next, { desc = 'TELESCOPE: cycle next history.' }),
@@ -208,19 +209,25 @@ local set_native_keymaps = function()
   Keymap.register(e_mode.NORMAL, 'ff', '<CMD>Telescope find_files<CR>', { remap = false, silent = true, desc = 'find files.' })
   -- Keymap.register(e_mode.NORMAL, 'fc', '<CMD>Telescope current_buffer_fuzzy_find results_ts_highlight=true lnum_highlight_group=LineNr<CR>', { remap = false, silent = true, desc = 'find string in current buffer.' })
   Keymap.register(e_mode.NORMAL, 'fd', '<CMD>Telescope diagnostics<CR>', { remap = false, desc = 'find workspace diagnostics.' })
-  Keymap.register(e_mode.NORMAL, 'fm', Tools.wrap_f(this.picker.marks), { remap = false, desc = 'which_key_ignore' })
+  Keymap.register(e_mode.NORMAL, 'fm', Tools.wrap_f(this.picker.marks), { remap = false, desc = 'find workspace marks.' })
   Keymap.register(e_mode.NORMAL, 'fs', function()
-    telescope.extensions.live_grep_args.live_grep_args({ only_sort_text = true })
+    local args = {
+      only_sort_text = true,
+      custom_sorter = this.sorter.native_vim_grep()
+    }
+
+    telescope.extensions.live_grep_args.live_grep_args(args)
   end, { remap = false, silent = true, desc = 'find string with live grep mode.' })
   Keymap.register(e_mode.VISUAL, 'fs', function ()
-    telescope.extensions.live_grep_args.live_grep_args({ default_text = Helper.get_visual_selected() })
+    local args = {
+      default_text = Helper.get_visual_selected(),
+      custom_sorter = this.sorter.native_vim_grep()
+    }
+
+    telescope.extensions.live_grep_args.live_grep_args(args)
   end, { silent = true, desc = 'which_key_ignore' })
   Keymap.register(e_mode.NORMAL, 'fw', function()
     local opts = { show_line = true }
-    if Helper.get_filetype() == 'lua' then
-      opts.ignore_symbols = { 'package' }
-    end
-
     this.api.builtin_picker('lsp_document_symbols', opts)
   end, { silent = true, remap = false, desc = 'find document symbols in the current buffer.' })
   Keymap.register(e_mode.NORMAL, 'fg', function()
@@ -237,7 +244,7 @@ local set_native_keymaps = function()
   end, { silent = true, remap = false, desc = 'find git status list.' })
   Keymap.register(e_mode.NORMAL, 'fn', function()
     this.picker.todo()
-  end, { silent = true, remap = false, desc = 'find todo comment list.' })
+  end, { silent = true, remap = false, desc = 'find workspace todo comment list.' })
   Keymap.register(e_mode.NORMAL, 'fb', function()
     local is_pinned  = Plgs.bufferline.api.is_pinned('all')
     local components = Plgs.bufferline.api.get_components()

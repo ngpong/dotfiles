@@ -92,8 +92,9 @@ local set_buffer_keymaps = function(bufnr)
   Keymap.register(e_mode.NORMAL, '<S-CR>', this.api.jump_close, { remap = false, buffer = bufnr, desc = 'TROUBLE: open selected entry into buffer and close trouble.' })
   Keymap.register(e_mode.NORMAL, '<CR>', this.api.jump, { remap = false, buffer = bufnr, desc = 'TROUBLE: open selected entry into buffer.' })
   Keymap.register(e_mode.NORMAL, '<C-p>', this.api.toggle_preview, { remap = false, buffer = bufnr, desc = 'TROUBLE: toggle preview with selected entry.' })
+  Keymap.register(e_mode.NORMAL, 'z', this.api.fold_toggle, { remap = false, buffer = bufnr, desc = 'TROUBLE: toggle folds.' })
   Keymap.register(e_mode.NORMAL, '<C-z>', this.api.fold_close_all, { remap = false, buffer = bufnr, desc = 'TROUBLE: close all folds.' })
-  Keymap.register(e_mode.NORMAL, '<C-S-Z>', this.api.fold_open_all, { remap = false, buffer = bufnr, desc = 'TROUBLE: open all folds.' })
+  Keymap.register(e_mode.NORMAL, 'Z', this.api.fold_open_all, { remap = false, buffer = bufnr, desc = 'TROUBLE: open all folds.' })
   -- Keymap.register(e_mode.NORMAL, 'R', Tools.wrap_f(this.api.refresh), { remap = false, buffer = bufnr, desc = 'TROUBLE: refresh trouble list.' })
 end
 

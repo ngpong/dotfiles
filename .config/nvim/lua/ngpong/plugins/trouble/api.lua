@@ -36,19 +36,25 @@ M.jump_close = libP.async.void(function()
   VAR.unset('DisablePresistCursor')
 end)
 
+M.is_previewing = function()
+  return Preview.is_open()
+end
+
 M.toggle_preview = function()
   local v = M.find_view_by_winid(Helper.get_cur_winid())
   if not v then
     return
   end
 
-  if Preview.is_open() then
+  if M.is_previewing() then
     v.opts.auto_preview = false
     Preview.close()
   else
     v.opts.auto_preview = true
     Preview.open(v, v:at().item, { scratch = v.opts.preview.scratch })
   end
+
+  Plgs.lualine.api.refresh()
 end
 
 M.toggle = function(mode)

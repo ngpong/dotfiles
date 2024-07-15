@@ -1,10 +1,10 @@
 local M = {}
 
-local libP   = require('ngpong.common.libp')
+local Icons = require('ngpong.utils.icon')
 local Keymap = require('ngpong.common.keybinder')
-local Icons  = require('ngpong.utils.icon')
-local Lazy   = require('ngpong.utils.lazy')
-local Marks  = Lazy.require('marks')
+local Lazy = require('ngpong.utils.lazy')
+local libP = require('ngpong.common.libp')
+local Marks = Lazy.require('marks')
 
 local this = Plgs.marks
 
@@ -71,7 +71,7 @@ local set_native_keymaps = function()
   end, { remap = false, desc = 'jump to next.' })
   Keymap.register(e_mode.NORMAL, 'ms<leader>', Tools.wrap_f(Lazy.access('marks', 'set_next')), { remap = false, desc = '[NEXT]' })
   Keymap.register(e_mode.NORMAL, 'md<leader>', function()
-    local bufnr  = Helper.get_cur_bufnr()
+    local bufnr = Helper.get_cur_bufnr()
     local row, _ = Helper.get_cursor()
 
     local datas = Marks.mark_state.buffers[bufnr].marks_by_line[row]
@@ -79,53 +79,60 @@ local set_native_keymaps = function()
       return
     end
 
+    local delete_marks = {}
+    for _, _mark in pairs(datas) do
+      table.insert(delete_marks, _mark)
+    end
+
+    table.sort(delete_marks, function(r, l)
+      return string.byte(r) < string.byte(l)
+    end)
+
     local texts = {}
-    for _, mark in pairs(datas) do
-      table.insert(texts, string.format('[%s]', mark))
+    for _, _mark in pairs(delete_marks) do
+      table.insert(texts, string.format('[[%s]]', _mark))
     end
 
     Marks.delete_line()
+    this.api.on_mark_change()
 
     if next(texts) then
-      this.api.on_mark_change()
-
       Helper.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = Icons.lsp_loaded })
     end
   end, { remap = false, desc = '<LINE>' })
   Keymap.register(e_mode.NORMAL, 'md<CR>', libP.async.void(function()
-    local bufnr  = Helper.get_cur_bufnr()
+      local bufnr = Helper.get_cur_bufnr()
 
-    local datas = Marks.mark_state.buffers[bufnr].marks_by_line
-    if not datas then
-      return
-    end
-
-    local texts = {}
-    local delete_marks = {}
-    for _, _marks in pairs(datas) do
-      for _, _mark in pairs(_marks) do
-        table.insert(texts, string.format('[%s]', _mark))
-        table.insert(delete_marks, _mark)
+      local datas = Marks.mark_state.buffers[bufnr].marks_by_line
+      if not datas then
+        return
       end
-    end
 
-    table.sort(delete_marks, function (r, l)
-      return string.byte(r) < string.byte(l)
-    end)
+      local delete_marks = {}
+      for _, _marks in pairs(datas) do
+        for _, _mark in pairs(_marks) do
+          table.insert(delete_marks, _mark)
+        end
+      end
 
-    for _, _mark in pairs(delete_marks) do
-      this.api.del(_mark)
-      libP.async.util.scheduler()
-    end
+      table.sort(delete_marks, function(r, l)
+        return string.byte(r) < string.byte(l)
+      end)
 
-    if next(texts) then
-      this.api.on_mark_change()
+      local texts = {}
+      for _, _mark in pairs(delete_marks) do
+        table.insert(texts, string.format('[[%s]]', _mark))
+      end
 
-      Helper.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = Icons.lsp_loaded })
-    end
-  end), { remap = false, desc = '<BUFFER>' })
-  Keymap.register(e_mode.NORMAL, 'mm', Tools.wrap_f(Plgs.trouble.api.toggle, 'document_mark'), { silent = true, remap = false, desc = 'toggle document marks list.' })
-  Keymap.register(e_mode.NORMAL, 'mM', Tools.wrap_f(Plgs.trouble.api.toggle, 'workspace_mark'), { silent = true, remap = false, desc = 'toggle workspace mark list.' })
+      this.api.dels(delete_marks)
+
+      if next(texts) then
+        Helper.notify_info(string.format('Success to delete marks %s', table.concat(texts, ' ')), 'System: marks', { icon = Icons.lsp_loaded })
+      end
+    end),
+    { remap = false, desc = '<BUFFER>' }
+  )
+  Keymap.register(e_mode.NORMAL, 'mm', Tools.wrap_f(Plgs.trouble.api.toggle, 'mark'), { silent = true, remap = false, desc = 'toggle document marks list.' })
 end
 
 M.setup = function()

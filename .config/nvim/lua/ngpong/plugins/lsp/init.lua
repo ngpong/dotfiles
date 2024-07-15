@@ -12,10 +12,10 @@ return {
       Plgs.record_seq('nvim-lspconfig init')
       Plgs.lsp.opts.setup()
       Plgs.lsp.keys.setup()
-      Plgs.lsp.highlight.setup()
     end,
     config = function()
       Plgs.record_seq('nvim-lspconfig config')
+      Plgs.lsp.highlight.setup()
       Plgs.lsp.handlers.setup()
       Plgs.lsp.behavior.setup()
       Plgs.lsp.config.clangd.setup()

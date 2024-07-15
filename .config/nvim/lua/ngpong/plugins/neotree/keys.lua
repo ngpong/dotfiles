@@ -1,16 +1,18 @@
 local M = {}
 
-local Keymap            = require('ngpong.common.keybinder')
-local Events            = require('ngpong.common.events')
-local Lazy              = require('ngpong.utils.lazy')
-local Neotree           = Lazy.require('neo-tree')
-local SourceCommands   = Lazy.require('neo-tree.sources.common.commands')
-local FilesysCommands  = Lazy.require('neo-tree.sources.filesystem.commands')
-local CommonPreview    = Lazy.require('neo-tree.sources.common.preview')
-local NeotreeEvents    = Lazy.require('neo-tree.events')
+-- stylua: ignore start
+local Keymap          = require('ngpong.common.keybinder')
+local Events          = require('ngpong.common.events')
+local Lazy            = require('ngpong.utils.lazy')
+local Neotree         = Lazy.require('neo-tree')
+local SourceCommands  = Lazy.require('neo-tree.sources.common.commands')
+local FilesysCommands = Lazy.require('neo-tree.sources.filesystem.commands')
+local NeotreeEvents   = Lazy.require('neo-tree.events')
 local NeotreeUIInputs = Lazy.require('neo-tree.ui.inputs')
 
 local this = Plgs.neotree
+-- stylua: ignore end
+
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
 
@@ -43,18 +45,16 @@ local set_global_commands = function (...)
 
       Helper.notify_info('toggleterm + lazygit TODO')
     end,
+    ngpong_toggle_preview = function (state)
+      this.api.toggle_preview(state)
+    end,
     ngpong_esc = function(state)
       -- 0x1: 重置 file filter
       if state.name == 'filesystem' and state.search_pattern ~= nil then
         FilesysCommands.clear_filter(state)
       end
 
-      -- 0x2: 重置 preview
-      if CommonPreview.is_active() ~= nil then
-        SourceCommands.toggle_preview(state)
-      end
-
-      -- 0x3: 重置 copy/cut node
+      -- 0x2: 重置 copy/cut node
       if state.name ~= 'buffers' and state.clipboard ~= nil then
         local is_remove = false
         for _idx, _item in pairs(state.clipboard) do
@@ -128,8 +128,6 @@ local set_global_keymaps = function(...)
     ['X']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
     ['c']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['C']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
-    ['z']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
-    ['Z']          = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['a']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
     ['u']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
     ['U']          = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
@@ -173,6 +171,10 @@ local set_global_keymaps = function(...)
     ['fb']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['fl']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['fs']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['fw']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['fg']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['fn']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
+    ['fm']         = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['<leader>l']  = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['<leader>q']  = { command = 'ngpong_nop_map', desc = 'which_key_ignore' },
     ['<leader>c']  = { command = 'ngpong_nop_map_nv', desc = 'which_key_ignore' },
@@ -205,9 +207,12 @@ local set_global_keymaps = function(...)
     -- https://www.reddit.com/r/vim/comments/4ofv82/the_normal_command_is_really_cool/
     ['<ESC>']      = { command = 'ngpong_esc', desc = 'which_key_ignore' },
     ['<CR>']       = { command = 'ngpong_select_node', desc = 'NEOTREE: open selected node.' },
-    ['<C-CR>']     = { command = 'toggle_node', desc = 'NEOTREE: toggle selected node.', config = { use_float = true } },
-    ['<C-p>']      = { command = 'toggle_preview', desc = 'NEOTREE: preview selected node.', config = { use_float = true } },
-    ['<C-S-p>']    = { command = 'focus_preview', desc = 'NEOTREE: focus preview window.', config = { use_float = true } },
+    ['z']          = { command = 'toggle_node', desc = 'NEOTREE: toggle selected node.' },
+    ['<C-z>']      = { command = 'close_all_nodes', desc = 'NEOTREE: close all nodes.' },
+    ['Z']          = { command = 'expand_all_nodes', desc = 'NEOTREE: expand all nodes.' },
+    ['<C-p>']      = { command = 'ngpong_toggle_preview', desc = 'NEOTREE: preview selected node.', config = { use_float = false } },
+    ['O']          = { command = 'scroll_preview', desc = 'NEOTREE: scroll up preview window.', config = { direction = 5 } },
+    ['L']          = { command = 'scroll_preview', desc = 'NEOTREE: scroll down preview window.', config = { direction = -5 } },
     ['R']          = { command = 'refresh' , desc = 'NEOTREE: refresh neotree.'},
   }
 end

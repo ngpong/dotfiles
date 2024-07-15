@@ -64,7 +64,7 @@ end
 
 local set_buffer_keymaps = function(bufnr)
   Keymap.register(e_mode.NORMAL, 'gc', function()
-    if Git.get_repository_root('.') then
+    if Git.get_repository_root() then
       telescope.api.builtin_picker('git_commits')
     end
   end, { remap = false, buffer = bufnr, nowait = true, desc = 'show git commits list.' })

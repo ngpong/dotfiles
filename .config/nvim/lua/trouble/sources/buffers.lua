@@ -1,8 +1,9 @@
 -- stylua: ignore start
-local Icons = require('ngpong.utils.icon')
-local Lazy  = require('ngpong.utils.lazy')
-local libP  = require('ngpong.common.libp')
-local Item  = Lazy.require('trouble.item')
+local Icons   = require('ngpong.utils.icon')
+local Lazy    = require('ngpong.utils.lazy')
+local libP    = require('ngpong.common.libp')
+local Autocmd = require('ngpong.common.autocmd')
+local Item    = Lazy.require('trouble.item')
 
 local colors     = Plgs.colorscheme.colors
 local bufferline = Plgs.bufferline

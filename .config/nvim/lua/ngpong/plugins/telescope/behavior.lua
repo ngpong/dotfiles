@@ -1,6 +1,6 @@
 local M = {}
 
-local Events  = require('ngpong.common.events')
+local Events = require('ngpong.common.events')
 
 local this = Plgs.telescope
 
@@ -15,11 +15,6 @@ M.setup = function()
     vim.opt.number = true
   end)
 
-  -- 调整 telescope 刚打开时候的鼠标位置
-  Events.rg(e_name.TELESCOPE_LOAD, function(state)
-    Helper.presskeys('g$')
-  end)
-
   -- 在打开 telescope 退出 vim 的情况下不要报错
   Events.rg(e_name.VIM_EXIT_PRE, function(_)
     for _, tabpage in pairs(Helper.get_list_tabpage()) do
@@ -28,7 +23,7 @@ M.setup = function()
 
         if this.api.is_prompt_buf(bufnr) then
           this.api.actions.close(bufnr)
-          vim.cmd('qall')
+          vim.cmd('wqall')
           return
         end
       end

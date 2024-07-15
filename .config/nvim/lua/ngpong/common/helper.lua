@@ -614,8 +614,9 @@ helper.dclock = {
   wrap = function(self, f, key)
     return function(...)
       self.reset(self)
-      f(...)
+      local ret = f(...)
       self(key)
+      return ret
     end
   end
 }

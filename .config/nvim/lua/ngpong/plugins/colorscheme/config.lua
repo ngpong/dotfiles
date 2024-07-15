@@ -79,6 +79,7 @@ M.setup = function()
       ['@keyword'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@repeat'] = { fg = Gruvbox.palette.bright_red, italic = true },
       ['@namespace'] = { fg = Gruvbox.palette.bright_green, italic = true },
+      ['@markup.link.label.markdown_inline'] = { fg = Gruvbox.palette.bright_yellow },
     },
     transparent_mode = false,
   })

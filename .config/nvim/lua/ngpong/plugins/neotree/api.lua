@@ -1,18 +1,34 @@
 local M = {}
 
+-- stylua: ignore start
 local Lazy            = require('ngpong.utils.lazy')
 local Neotree         = Lazy.require('neo-tree')
 local NeotreeRenderer = Lazy.require('neo-tree.ui.renderer')
 local SourceManager   = Lazy.require('neo-tree.sources.manager')
+local CommonPreview   = Lazy.require('neo-tree.sources.common.preview')
+local SourceCommand   = Lazy.require('neo-tree.sources.common.commands')
+-- stylua: ignore end
 
 M.is_neotree_bufnr = function(bufnr)
-  local success, _ = pcall(vim.api.nvim_buf_get_var, bufnr, "neo_tree_source")
+  local success, _ = pcall(vim.api.nvim_buf_get_var, bufnr, 'neo_tree_source')
 
   return success
 end
 
 M.is_neotree_winid = function(winid)
   return M.is_neotree_bufnr(Helper.get_bufnr(winid))
+end
+
+M.toggle_preview = function(state)
+  state = state or M.get_state(Helper.get_cur_tabpage())
+
+  SourceCommand.toggle_preview(state)
+
+  Plgs.lualine.api.refresh()
+end
+
+M.is_previewing = function()
+  return CommonPreview.is_active()
 end
 
 M.is_opened = function(tabpage)

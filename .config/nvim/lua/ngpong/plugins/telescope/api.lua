@@ -43,8 +43,22 @@ M.close_telescope = function(bufnr)
   Actions.close(bufnr)
 end
 
+M.is_previewing = function(bufnr)
+  if not M.is_prompt_buf(bufnr) then
+    return false
+  end
+
+  local picker = M.get_current_picker(bufnr)
+  local status = State.get_status(picker.prompt_bufnr)
+
+  local preview_winid = status.layout.preview and status.layout.preview.winid
+
+  return picker.previewer and preview_winid
+end
+
 M.toggle_preview = function(bufnr)
   ActionsLayout.toggle_preview(bufnr)
+  Plgs.lualine.api.refresh()
 end
 
 M.delete_entries = function(bufnr)

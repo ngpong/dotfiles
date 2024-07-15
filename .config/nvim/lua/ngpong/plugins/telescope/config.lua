@@ -26,7 +26,7 @@ M.setup = function()
       },
       multi_icon = '', -- Icons.small_dot,
       prompt_prefix = Icons.space .. Icons.search .. Icons.space,
-      selection_caret = '> ', --Icons.dapstopped .. Icons.space,
+      selection_caret = Icons.dapstopped .. Icons.space,
       vimgrep_arguments = {
         'rg',
         -- telescope defaults

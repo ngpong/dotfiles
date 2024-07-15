@@ -1,16 +1,20 @@
 local M = {}
 
-local Events = require('ngpong.common.events')
-local Icons = require('ngpong.utils.icon')
-local Lazy = require('ngpong.utils.lazy')
+-- stylua: ignore start
+local Events  = require('ngpong.common.events')
+local Icons   = require('ngpong.utils.icon')
+local Lazy    = require('ngpong.utils.lazy')
 local Lualine = Lazy.require('lualine')
 
-local this = Plgs.lualine
-local mc = Plgs.multicursors
-local colors = Plgs.colorscheme.colors
-local trouble = Plgs.trouble
+local this      = Plgs.lualine
+local mc        = Plgs.multicursors
+local neotree   = Plgs.neotree
+local telescope = Plgs.telescope
+local trouble   = Plgs.trouble
+local colors    = Plgs.colorscheme.colors
 
 local e_name = Events.e_name
+-- stylua: ignore end
 
 local module = {
   space = {
@@ -22,98 +26,26 @@ local module = {
       right = 0,
     },
   },
-  mode_1 = {
-    function()
-      return '('
-    end,
-    component_name = 'mode_1',
-    color = { gui = 'bold', fg = colors.dark0 },
-    padding = {
-      left = 1,
-      right = 1,
-    },
-    separator = { left = Icons.left_half_1 },
-  },
-  mode_2 = {
-    function()
-      return Icons.rabbit
-    end,
-    component_name = 'mode_2',
-    color = { fg = '#ffffff' },
-    padding = {
-      left = 0,
-      right = 1,
-    },
-  },
-  mode_3 = {
-    function()
-      return Icons.cat
-    end,
-    component_name = 'mode_3',
-    color = { fg = colors.dark0 },
-    padding = {
-      left = 0,
-      right = 1,
-    },
-  },
-  mode_4 = {
-    function()
-      return Icons.cat
-    end,
-    component_name = 'mode_4',
-    color = { fg = '#f2d896' },
-    padding = {
-      left = 0,
-      right = 1,
-    },
-  },
-  mode_5 = {
-    function()
-      return ')'
-    end,
-    component_name = 'mode_5',
-    color = { gui = 'bold', fg = colors.dark0 },
-    padding = {
-      left = 0,
-      right = 1,
-    },
-  },
-  mode_6 = {
-    'mode',
-    fmt = function(str)
-      if mc.api.is_active() then
-        return '󰳽'
-      else
-        return str:sub(1, 1)
-      end
-    end,
-    component_name = 'mode_6',
-    separator = { right = Icons.right_half_1 },
-    color = { gui = 'italic,bold', fg = colors.dark0 },
-    padding = {
-      left = 0,
-      right = 1,
-    },
-  },
-  git_1 = {
+  git_branch = {
     'branch',
-    component_name = 'git_1',
+    component_name = 'git_branch',
     icon = { Icons.git, color = { fg = colors.bright_orange } },
     padding = {
       left = 1,
-      right = 1,
+      right = 0,
     },
     color = { bg = colors.dark3, fg = colors.light1 },
     separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
-  git_2 = {
+  git_diff = {
     'diff',
-    component_name = 'git_2',
+    component_name = 'git_diff',
     symbols = {
       added = Icons.git_add .. Icons.space,
       modified = Icons.git_change .. Icons.space,
       removed = Icons.git_delete .. Icons.space,
     },
+    colored = true,
     padding = {
       left = 0,
       right = 1,
@@ -129,7 +61,7 @@ local module = {
       end
     end,
   },
-  lsp_1 = {
+  lsp_client = {
     function()
       local clis = vim.lsp.get_clients({ bufnr = Helper.get_cur_bufnr() })
       if next(clis) then
@@ -138,18 +70,18 @@ local module = {
         return ''
       end
     end,
-    component_name = 'lsp_1',
+    component_name = 'lsp_client',
     icon = { Icons.activets, color = { fg = colors.bright_green } },
     padding = {
       left = 1,
-      right = 1,
+      right = 0,
     },
     color = { bg = colors.dark2, fg = colors.light1 },
     separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
-  lsp_2 = {
+  lsp_diagnostics = {
     'diagnostics',
-    component_name = 'lsp_2',
+    component_name = 'lsp_diagnostics',
     padding = {
       left = 0,
       right = 1,
@@ -209,29 +141,25 @@ local module = {
     },
     color = { fg = colors.dark4, gui = 'italic' },
   },
-  searchcount_1 = {
-    'searchcount',
-    component_name = 'searchcount',
-    icon = { Icons.search, color = { fg = colors.bright_yellow } },
+  mc_searchcount = {
+    'my_multicursors',
+    component_name = 'mc_searchcount',
     padding = {
       left = 0,
       right = 0,
     },
     separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
-    color = { fg = colors.light1, bg = colors.dark2 },
+    color = { bg = colors.dark2 },
   },
-  searchcount_2 = {
-    function()
-      return Icons.space
-    end,
-    component_name = 'searchcount_2',
-    cond = function()
-      return vim.fn.getreg('/') ~= ''
-    end,
+  searchcount = {
+    'my_searchcount',
+    component_name = 'searchcount',
     padding = {
       left = 0,
       right = 0,
     },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
+    color = { bg = colors.dark2 },
   },
   datetime = {
     function()
@@ -246,247 +174,65 @@ local module = {
     separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
     color = { fg = colors.light1, bg = colors.dark2, gui = 'italic' },
   },
-  progress_2 = {
-    'progress',
-    component_name = 'progress_2',
+  progress = {
+    'my_progress',
+    component_name = 'progress',
+    padding = {
+      left = 0,
+      right = 0,
+    },
+    separator = { left = Icons.left_half_1 },
+  },
+  location = {
+    'my_location',
+    component_name = 'location',
+    padding = {
+      left = 0,
+      right = 1,
+    },
+    separator = { left = Icons.left_half_1 },
+  },
+  mode = {
+    'my_mode',
+    component_name = 'mode',
+    padding = {
+      left = 1,
+      right = 1,
+    },
+    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
+  },
+  text = {
+    'my_text',
+    component_name = 'text',
     padding = {
       left = 1,
       right = 0,
-    },
-    color = { bg = colors.dark2, fg = colors.bright_yellow },
-  },
-  progress_1 = {
-    function()
-      -- return '%#GruvboxPurple#%#GruvboxPurple#%#GruvboxPurple# 1' -- 设置颜色的方法
-      return Icons.progress
-    end,
-    component_name = 'progress_1',
-    padding = {
-      left = 0,
-      right = 1,
-    },
-    separator = { left = Icons.left_half_1 },
-    color = { bg = colors.bright_yellow },
-  },
-  location_2 = {
-    function()
-      local line = vim.fn.line('.')
-      local col = vim.fn.virtcol('.')
-      return string.format('%3d:%-3d', line, col)
-    end,
-    component_name = 'location_2',
-    padding = {
-      left = 1,
-      right = 1,
-    },
-    color = { bg = colors.dark2, fg = colors.bright_green },
-  },
-  location_1 = {
-    function()
-      return Icons.location
-    end,
-    component_name = 'location_1',
-    padding = {
-      left = 0,
-      right = 1,
-    },
-    separator = { left = Icons.left_half_1 },
-    color = { bg = colors.bright_green },
-  },
-  touble_type = {
-    function()
-      return trouble.api.get_cur_view_name()
-    end,
-    component_name = 'touble_type',
-    color = { gui = 'italic,bold', fg = colors.dark0 },
-    padding = {
-      left = 1,
-      right = 1,
-    },
-    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
-  },
-  clangd_extensions = function(source)
-    return {
-      function()
-        return source
-      end,
-      component_name = 'clangd_extensions',
-      color = { gui = 'italic,bold', fg = colors.dark0 },
-      padding = {
-        left = 1,
-        right = 1,
-      },
-      separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
-    }
-  end,
-  lazy_indicator = {
-    function()
-      return 'Lazy plugins manager'
-    end,
-    component_name = 'lazy_indicator',
-    color = { gui = 'italic,bold', fg = colors.dark0 },
-    padding = {
-      left = 1,
-      right = 1,
-    },
-    separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
-  },
-  mason_indicator = {
-    function()
-      return 'Mason package manager'
-    end,
-    component_name = 'mason_indicator',
-    color = { gui = 'italic,bold', fg = colors.dark0 },
-    padding = {
-      left = 1,
-      right = 1,
     },
     separator = { left = Icons.left_half_1, right = Icons.right_half_1 },
   },
 }
 
 local extension = {
-  telescope = {
+  ref_plugins = {
     sections = {
       lualine_a = {
-        module.mode_1,
-        module.mode_2,
-        module.mode_3,
-        module.mode_4,
-        module.mode_5,
-        module.mode_6,
+        module.mode,
+        module.text,
       },
       lualine_x = {
-        module.filetype,
+        module.searchcount,
+        module.space,
         module.datetime,
       },
       lualine_y = {
         module.space,
       },
       lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
+        module.location,
+        module.progress,
       },
     },
-    filetypes = { 'TelescopePrompt' },
-  },
-  neotree = {
-    sections = {
-      lualine_a = {
-        module.mode_1,
-        module.mode_2,
-        module.mode_3,
-        module.mode_4,
-        module.mode_5,
-        module.mode_6,
-      },
-      lualine_x = {
-        module.filetype,
-        module.searchcount_1,
-        module.searchcount_2,
-        module.datetime,
-      },
-      lualine_y = {
-        module.space,
-      },
-      lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
-      },
-    },
-    filetypes = { 'neo-tree' },
-  },
-  trouble = {
-    sections = {
-      lualine_a = {
-        module.touble_type,
-      },
-      lualine_x = {
-        module.searchcount_1,
-        module.searchcount_2,
-        module.datetime,
-      },
-      lualine_y = {
-        module.space,
-      },
-      lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
-      },
-    },
-    filetypes = { 'trouble' },
-  },
-  clangd_typehierarchy = {
-    sections = {
-      lualine_a = {
-        module.clangd_extensions('Clangd type hierarchy'),
-      },
-      lualine_x = {
-        module.searchcount_1,
-        module.searchcount_2,
-        module.datetime,
-      },
-      lualine_y = {
-        module.space,
-      },
-      lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
-      },
-    },
-    filetypes = { 'ClangdTypeHierarchy' },
-  },
-  lazy = {
-    sections = {
-      lualine_a = {
-        module.lazy_indicator,
-      },
-      lualine_x = {
-        module.searchcount_1,
-        module.searchcount_2,
-        module.datetime,
-      },
-      lualine_y = {
-        module.space,
-      },
-      lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
-      },
-    },
-    filetypes = { 'lazy' },
-  },
-  mason = {
-    sections = {
-      lualine_a = {
-        module.mason_indicator,
-      },
-      lualine_x = {
-        module.searchcount_1,
-        module.searchcount_2,
-        module.datetime,
-      },
-      lualine_y = {
-        module.space,
-      },
-      lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
-      },
-    },
-    filetypes = { 'mason' },
+    filetypes = { 'TelescopePrompt', 'neo-tree', 'trouble', 'ClangdTypeHierarchy', 'lazy', 'mason' },
   },
 }
 
@@ -511,49 +257,13 @@ M.setup = function()
 
   local theme_cfg = {
     options = {
-      theme = {
-        normal = {
-          a = { bg = colors.bright_blue, fg = colors.dark0 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-        insert = {
-          a = { bg = colors.bright_red, fg = colors.dark0 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-        visual = {
-          a = { bg = colors.bright_orange, fg = colors.dark0 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-        replace = {
-          a = { bg = colors.dark1, fg = colors.dark0 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-        command = {
-          a = { bg = colors.bright_green, fg = colors.dark0 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-        inactive = {
-          a = { bg = colors.dark1, fg = colors.light4 },
-          b = { bg = colors.dark1, fg = colors.light4 },
-          c = { bg = colors.dark1, fg = colors.light4 },
-        },
-      },
+      theme = 'gruvbox',
     },
   }
 
   local extensions_cfg = {
     extensions = {
-      extension.telescope,
-      extension.neotree,
-      extension.trouble,
-      extension.clangd_typehierarchy,
-      extension.lazy,
-      extension.mason,
+      extension.ref_plugins,
     },
   }
 
@@ -571,38 +281,33 @@ M.setup = function()
   local active_section_cfg = {
     sections = {
       lualine_a = {
-        module.mode_1,
-        module.mode_2,
-        module.mode_3,
-        module.mode_4,
-        module.mode_5,
-        module.mode_6,
-        module.git_1,
-        module.lsp_1,
+        module.mode,
+        module.git_branch,
+        module.lsp_client,
       },
       lualine_b = {
         module.space,
       },
       lualine_c = {
-        module.git_2,
-        module.lsp_2,
+        module.git_diff,
+        module.lsp_diagnostics,
       },
       lualine_x = {
+        module.mc_searchcount,
+        module.space,
+        module.searchcount,
+        module.space,
         module.filetype,
         module.fileformat,
         module.encoding,
-        module.searchcount_1,
-        module.searchcount_2,
         module.datetime,
       },
       lualine_y = {
         module.space,
       },
       lualine_z = {
-        module.location_1,
-        module.location_2,
-        module.progress_1,
-        module.progress_2,
+        module.location,
+        module.progress,
       },
     },
   }

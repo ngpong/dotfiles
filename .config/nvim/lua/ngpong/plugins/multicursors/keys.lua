@@ -10,8 +10,6 @@ local mc_e          = Lazy.require('multicursors.extend_mode')
 local mc_utils      = Lazy.require('multicursors.utils')
 local mc_selections = Lazy.require('multicursors.selections')
 
-local this = Plgs.multicursors
-
 local e_mode = Keymap.e_mode
 local e_name = Events.e_name
 

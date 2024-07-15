@@ -22,6 +22,10 @@ local setup_autocmds = function()
           return
         end
 
+        if not vim.b[args.buf].barbecu_enable then
+          return
+        end
+
         BarbecueuUI.update()
       end)
     end)

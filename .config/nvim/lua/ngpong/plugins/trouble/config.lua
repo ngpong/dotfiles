@@ -22,11 +22,13 @@ M.setup = function()
     -- Window options for the preview window. Can be a split, floating window,
     -- or `main` to show the preview in the main editor window.
     preview = {
-      type = 'split',
-      relative = 'win',
-      position = 'right',
-      size = 0.5,
+      type = 'main',
       scratch = true,
+      -- type = 'split',
+      -- relative = 'win',
+      -- position = 'right',
+      -- size = 0.5,
+      -- scratch = true,
     },
     -- Throttle/Debounce settings. Should usually not be changed.
     throttle = {
@@ -41,13 +43,6 @@ M.setup = function()
       -- or you can define your own custom action.
       opts.keys = {}
     end,
-    formatters = {
-      pos = function(ctx)
-        return {
-          text = '[' .. ctx.item.pos[1] .. ',' .. (ctx.item.pos[2] + 1) .. ']',
-        }
-      end,
-    },
     modes = {
       lsp_base = {
         groups = {
@@ -100,60 +95,33 @@ M.setup = function()
       document_todo = {
         mode = 'todo',
         desc = 'Document todo comments',
-        filter = {
-          any = {
-            buf = 0,
-          },
+        params = {
+          target = 'document',
         },
       },
       workspace_todo = {
         mode = 'todo',
         desc = 'Workspace todo comments',
-      },
-      document_mark = {
-        mode = 'mark',
-        desc = 'Document marks',
         params = {
-          all = false,
-        },
-      },
-      workspace_mark = {
-        mode = 'mark',
-        desc = 'Workspace marks',
-        params = {
-          all = true,
+          target = 'workspace',
         },
       },
       document_git = {
         mode = 'git',
         desc = 'Document git diff',
         groups = {
-          { 'head', format = '{git_head}' },
+          { 'filename', format = '{file_icon}{filename} {count}' },
         },
       },
       workspace_git = {
         mode = 'git',
         desc = 'Workspace git diff',
+        groups = {
+          { 'filename', format = '{file_icon}{filename} {count}' },
+        },
         params = {
           target = 'all',
         },
-      },
-      lsp_document_symbols_extra = {
-        desc = 'Lsp document symbols',
-        follow = true,
-        win = { position = 'right', size = 0.4 },
-        mode = 'lsp_document_symbols',
-        focus = false,
-        preview = {
-          type = 'main',
-          scratch = true,
-        },
-        filter = {
-          -- remove Package since luals uses it for control flow structures
-          ['not'] = { ft = 'lua', kind = 'Package' },
-        },
-        title = '{filename} {count}',
-        groups = {},
       },
       telescope_multi_selected_files = {
         desc = 'Telescope multi-selected result',

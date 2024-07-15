@@ -13,6 +13,12 @@ tool.tbl_dump = function(o)
   end
 end
 
+tool.array_insert = function(l, r)
+  for _, item in ipairs(r) do
+    table.insert(l, item)
+  end
+end
+
 tool.tbl_contains = function(t, v)
   return vim.tbl_contains(t, v)
 end

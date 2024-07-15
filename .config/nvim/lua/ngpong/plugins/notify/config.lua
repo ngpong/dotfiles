@@ -21,14 +21,13 @@ M.setup = function()
         return
       end
 
+      vim.wo[win].spell = false
       vim.wo[win].conceallevel = 3
 
       local buf = vim.api.nvim_win_get_buf(win)
       if not pcall(vim.treesitter.start, buf, 'markdown') then
         vim.bo[buf].syntax = 'markdown'
       end
-
-      vim.wo[win].spell = false
     end,
     on_close = nil,
     minimum_width = 50,

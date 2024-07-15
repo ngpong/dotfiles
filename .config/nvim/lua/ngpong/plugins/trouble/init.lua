@@ -8,10 +8,10 @@ return {
   init = function()
     Plgs.record_seq('trouble.nvim init')
     Plgs.trouble.keys.setup()
-    Plgs.trouble.highlight.setup()
   end,
   config = function()
     Plgs.record_seq('trouble.nvim config')
+    Plgs.trouble.highlight.setup()
     Plgs.trouble.behavior.setup()
     Plgs.trouble.config.setup()
   end

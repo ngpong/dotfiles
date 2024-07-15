@@ -15,10 +15,10 @@ return {
     Plgs.record_seq('nvim-cmp init')
     Plgs.cmp.opts.setup()
     Plgs.cmp.keys.setup()
-    Plgs.cmp.highlight.setup()
   end,
   config = function()
     Plgs.record_seq('nvim-cmp config')
+    Plgs.cmp.highlight.setup()
     Plgs.cmp.config.setup()
   end
 }

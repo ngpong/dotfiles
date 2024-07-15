@@ -8,8 +8,8 @@ return {
   end,
   config = function()
     Plgs.record_seq('gitsigns.nvim config')
+    Plgs.gitsigns.highlight.setup()
     Plgs.gitsigns.config.setup()
     Plgs.gitsigns.autocmd.setup()
-    Plgs.gitsigns.highlight.setup()
   end
 }
