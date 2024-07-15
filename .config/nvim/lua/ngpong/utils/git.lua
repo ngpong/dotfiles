@@ -107,8 +107,8 @@ gitter.if_has_diff_sync = function(path)
     on_stderr = function(...) -- err, data, self
       -- Logger.info('on_stderr', {...})
     end,
-    on_exit = function(...) -- self, code, signal
-      -- Logger.info('on_exit', {...})
+    on_exit = function(self, code, signal)
+      Logger.info(self:result())
     end,
   }):sync()
 
