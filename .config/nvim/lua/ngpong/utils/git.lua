@@ -97,7 +97,8 @@ gitter.if_has_diff_sync = function(path)
 
   local job = libP.job:new({
     command = 'git',
-    args = { '-C', gitter.get_repository_root(), 'diff-index', 'HEAD', '--', path },
+    args = { '-C', gitter.get_repository_root(), 'diff', '--name-status', 'HEAD', '--', path },
+    -- args = { '-C', gitter.get_repository_root(), 'diff-index', 'HEAD', '--', path },
     on_stdout = function(err, data, self)
       if not self.is_shutdown then
         ret = true
