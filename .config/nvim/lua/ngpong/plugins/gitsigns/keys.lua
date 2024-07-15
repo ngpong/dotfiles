@@ -1,10 +1,10 @@
 local M = {}
 
-local Events = require('ngpong.common.events')
-local Git = require('ngpong.utils.git')
-local Keymap = require('ngpong.common.keybinder')
-local Lazy = require('ngpong.utils.lazy')
-local libP = require('ngpong.common.libp')
+local Events   = require('ngpong.common.events')
+local Git      = require('ngpong.utils.git')
+local Keymap   = require('ngpong.common.keybinder')
+local Lazy     = require('ngpong.utils.lazy')
+local libP     = require('ngpong.common.libp')
 local Gitsigns = Lazy.require('gitsigns')
 
 local this = Plgs.gitsigns
@@ -40,8 +40,8 @@ local set_git_buffer_keymaps = function(bufnr)
 
   set_git_buffer_diffthis_keymaps(bufnr)
 
-  Keymap.register(e_mode.NORMAL, 'g[', Tools.wrap_f(Gitsigns.prev_hunk, { wrap = false }), { remap = false, buffer = bufnr, nowait = true, desc = 'jump to prev hunk.' })
-  Keymap.register(e_mode.NORMAL, 'g]', Tools.wrap_f(Gitsigns.next_hunk, { wrap = false }), { remap = false, buffer = bufnr, nowait = true, desc = 'jump to next hunk.' })
+  Keymap.register(e_mode.NORMAL, 'g[', Tools.wrap_f(Gitsigns.prev_hunk, { wrap = false, navigation_message = true }), { remap = false, buffer = bufnr, nowait = true, desc = 'jump to prev hunk.' })
+  Keymap.register(e_mode.NORMAL, 'g]', Tools.wrap_f(Gitsigns.next_hunk, { wrap = false, navigation_message = true }), { remap = false, buffer = bufnr, nowait = true, desc = 'jump to next hunk.' })
   Keymap.register(e_mode.NORMAL, 'ghs', Gitsigns.select_hunk, { remap = false, buffer = bufnr, nowait = true, desc = 'select current hunk.' })
   -- Keymap.register(e_mode.NORMAL, 'gha', Gitsigns.stage_hunk, { remap = false, buffer = bufnr, nowait = true, desc = 'staged current hunk.' })
   Keymap.register(e_mode.NORMAL, 'ghr', Gitsigns.reset_hunk, { remap = false, buffer = bufnr, nowait = true, desc = 'restore current hunk.' })

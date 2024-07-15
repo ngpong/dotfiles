@@ -1,10 +1,10 @@
 local M = {}
 
-local Icons = require('ngpong.utils.icon')
+local Icons  = require('ngpong.utils.icon')
 local Keymap = require('ngpong.common.keybinder')
-local Lazy = require('ngpong.utils.lazy')
-local libP = require('ngpong.common.libp')
-local Marks = Lazy.require('marks')
+local Lazy   = require('ngpong.utils.lazy')
+local libP   = require('ngpong.common.libp')
+local Marks  = Lazy.require('marks')
 
 local this = Plgs.marks
 
@@ -60,14 +60,10 @@ local set_native_keymaps = function()
   end
 
   Keymap.register(e_mode.NORMAL, 'm[', function()
-    Helper.add_jumplist()
-    Marks.prev()
-    Helper.add_jumplist()
+    this.api.jump_2_prev()
   end, { remap = false, desc = 'jump to prev.' })
   Keymap.register(e_mode.NORMAL, 'm]', function()
-    Helper.add_jumplist()
-    Marks.next()
-    Helper.add_jumplist()
+    this.api.jump_2_next()
   end, { remap = false, desc = 'jump to next.' })
   Keymap.register(e_mode.NORMAL, 'ms<leader>', Tools.wrap_f(Lazy.access('marks', 'set_next')), { remap = false, desc = '[NEXT]' })
   Keymap.register(e_mode.NORMAL, 'md<leader>', function()
