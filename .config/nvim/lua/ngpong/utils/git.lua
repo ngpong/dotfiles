@@ -100,7 +100,6 @@ gitter.if_has_diff_sync = function(path)
     args = { '-C', gitter.get_repository_root(), 'diff-index', 'HEAD', '--', path },
     on_stdout = function(err, data, self)
       if not self.is_shutdown then
-        Logger.info('OK!!!')
         ret = true
         self:shutdown()
       end
@@ -111,9 +110,9 @@ gitter.if_has_diff_sync = function(path)
     on_exit = function(...) -- self, code, signal
       -- Logger.info('on_exit', {...})
     end,
-  })
+  }):sync()
 
-  job:sync()
+  Logger.info(ret)
 
   return ret
 end
