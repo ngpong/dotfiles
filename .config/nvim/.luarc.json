@@ -8,6 +8,7 @@
   "completion": {
     "displayContext": 0,
     "keywordSnippet": "Both",
+    "callSnippet": "Both",
     "showWord": "Fallback",
     "workspaceWord": true
   },
@@ -31,7 +32,9 @@
 
   "diagnostics": {
     "enable": true,
-    "globals": [ "vim" ],
+    "globals": [ "vim",
+            "MiniSnippets",
+            "m_cache_subwidth" ],
     "ignoredFiles": "Opened",
     "libraryFiles": "Opened",
     "workspaceDelay": 3000,
@@ -54,5 +57,12 @@
 
   "misc": {
     "parameters": [ "--loglevel=error" ]
-  }
+  },
+    "diagnostics.disable": [
+        "missing-parameter",
+        "redundant-value",
+        "duplicate-set-field",
+        "unused-function",
+        "empty-block"
+    ]
 }

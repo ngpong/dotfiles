@@ -34,6 +34,14 @@ lua版本5.1
       "keys": "ctrl+shift+s"
     },
     {
+      "command": 
+      {
+          "action": "sendInput",
+          "input": "\u001b[85;5u"
+      },
+      "keys": "ctrl+shift+u"
+    },
+    {
       "command": {
         "action": "sendInput",
         "input": "\u001b[46;5u"

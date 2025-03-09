@@ -1,0 +1,20 @@
+# version = "0.1"
+#
+# [assemblers]
+# gas = true
+# go = false
+#
+# [instruction_sets]
+# x86 = false
+# x86_64 = true
+
+[default_config]
+version = "0.10.0"
+assembler = "gas"
+instruction_set = "x86/x86-64"
+
+[default_config.opts]
+compiler = "asd"
+compile_flags_txt = []
+diagnostics = true
+default_diagnostics = false

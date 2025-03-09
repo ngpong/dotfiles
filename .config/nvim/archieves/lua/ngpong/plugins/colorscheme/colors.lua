@@ -1,0 +1,1 @@
+return vim.__lazy.access("gruvbox", "palette")

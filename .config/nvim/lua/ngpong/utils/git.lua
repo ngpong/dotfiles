@@ -1,15 +1,15 @@
-local gitter = {}
+local root = nil
 
-local libP = require('ngpong.common.libp')
+local function valid()
+  return root ~= nil
+end
 
-local parse_line_2_path = function(line)
-  if type(line) ~= 'string' then
+local function parse_line_2_path(line)
+  if type(line) ~= "string" then
     return
   end
 
-  local git_root = gitter.get_repository_root()
-
-  local line_parts = vim.split(line, '\t')
+  local line_parts = vim.split(line, "\t")
   if #line_parts < 2 then
     return
   end
@@ -17,64 +17,46 @@ local parse_line_2_path = function(line)
   local relative_path = line_parts[2]
 
   -- rename output is `R000 from/filename to/filename`
-  if status:match('^R') then
+  if status:match("^R") then
     relative_path = line_parts[3]
   end
 
   -- remove any " due to whitespace or utf-8 in the path
-  relative_path = relative_path:gsub('^"', ''):gsub('"$', '')
+  relative_path = relative_path:gsub('^"', ''):gsub('"$', "")
 
   -- convert windows path to unix
-  relative_path = Tools.to_path(relative_path)
+  relative_path = vim.__path.normalize(relative_path)
 
   -- convert octal encoded lines to utf-8
-  relative_path = Tools.octal_to_utf8(relative_path)
+  relative_path = vim.__str.octal_2utf8(relative_path)
 
-  return Tools.path_join(git_root, relative_path)
+  return vim.__path.join(root, relative_path)
 end
 
-gitter.get_repository_root = (function()
-  local git_root = nil
-
-  return function()
-    if git_root == nil then
-      libP.job:new({
-        command = 'git',
-        args = { '-C', '.', 'rev-parse', '--show-toplevel' },
-        on_exit = function(self, _, _)
-          git_root = self:result()[1]
-        end,
-      }):sync()
-    end
-
-    return git_root
-  end
-end)()
-
-gitter.status_diff = function()
+local function status_diff()
   local ret = {}
 
-  local args = { '-C', gitter.get_repository_root(), 'diff', '--name-status', 'HEAD', '--' }
+  local args = { "-C", root, "diff", "--name-status", "HEAD", "--" }
 
-  local ok, result = Tools.exec_cmd({ 'git', Tools.tbl_unpack(args) })
+  local ok, result = vim.__util.exec({ "git", vim.__tbl.unpack(args) })
   if ok then
     for _, line in ipairs(result) do
       ret[parse_line_2_path(line)] = true
     end
   else
-    Logger.error('exec git status command error.')
+    vim.__logger.error("exec git status command error.")
   end
 
   return ret
 end
 
-gitter.if_has_diff = function(cb_ok, cb_err, path)
+local function if_has_diff(cb_ok, cb_err, path)
   local result
 
-  local await_has_diff = libP.async.wrap(function(callback)
-    libP.job:new({
-      command = 'git',
-      args = { '-C', gitter.get_repository_root(), 'diff', '--name-status', 'HEAD', '--', path or '.' },
+  local await_has_diff = vim.__async.wrap(function(callback)
+    vim.__job.new({
+      command = "git",
+      args = { "-C", root, "diff", "--name-status", "HEAD", "--", path or "." },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -85,23 +67,23 @@ gitter.if_has_diff = function(cb_ok, cb_err, path)
   await_has_diff()
 
   if next(result) and cb_ok then
-    libP.async.util.scheduler()
+    vim.__async.scheduler()
     cb_ok(result)
   elseif cb_err then
     cb_err()
   end
 end
 
-gitter.if_has_diff_sync = function(path)
+local function if_has_diff_sync(path)
   local ret = false
 
-  libP.job:new({
-    command = 'git',
-    args = { '-C', gitter.get_repository_root(), 'diff', '--name-status', 'HEAD', '--', path },
-    on_stdout = function(err, data, self)
-      if not self.is_shutdown then
+  vim.__job.new({
+    command = "git",
+    args = { "-C", root, "diff", "--name-status", "HEAD", "--", path },
+    on_stdout = function(err, data, j)
+      if not j.is_shutdown then
         ret = true
-        self:shutdown()
+        j:shutdown()
       end
     end,
   }):sync()
@@ -109,13 +91,13 @@ gitter.if_has_diff_sync = function(path)
   return ret
 end
 
-gitter.if_has_log = libP.async.void(function(path, cb)
+local if_has_log = vim.__async.void(function(path, cb)
   local result
 
-  local await_has_log = libP.async.wrap(function(callback)
-    libP.job:new({
-      command = 'git',
-      args = { '-C', gitter.get_repository_root(), 'log', '-1', '--pretty=format:"%h"', '--', path },
+  local await_has_log = vim.__async.wrap(function(callback)
+    vim.__job.new({
+      command = "git",
+      args = { "-C", root, "log", "-1", "--pretty=format:\"%h\"", "--", path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -126,18 +108,18 @@ gitter.if_has_log = libP.async.void(function(path, cb)
   await_has_log()
 
   if next(result) and cb then
-    libP.async.util.scheduler()
+    vim.__async.scheduler()
     cb(result)
   end
 end)
 
-gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
+local if_has_diff_or_untracked = vim.__async.void(function(path, cb_ok, cb_err)
   local result
 
-  local await_is_untracked = libP.async.wrap(function(callback)
-    libP.job:new({
-      command = 'git',
-      args = { '-C', gitter.get_repository_root(), 'ls-files', '--exclude-standard', '--others', '--', path },
+  local await_is_untracked = vim.__async.wrap(function(callback)
+    vim.__job.new({
+      command = "git",
+      args = { "-C", root, "ls-files", "--exclude-standard", "--others", "--", path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -147,15 +129,15 @@ gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
 
   await_is_untracked()
   if next(result) and cb_ok then
-    libP.async.util.scheduler()
+    vim.__async.scheduler()
     cb_ok(result)
     return
   end
 
-  local await_has_diff = libP.async.wrap(function(callback)
-    libP.job:new({
-      command = 'git',
-      args = { '-C', gitter.get_repository_root(), 'diff', '--name-status', 'HEAD', '--', path },
+  local await_has_diff = vim.__async.wrap(function(callback)
+    vim.__job.new({
+      command = "git",
+      args = { "-C", root, "diff", "--name-status", "HEAD", "--", path },
       on_exit = function(j, _)
         result = j:result()
         callback()
@@ -164,8 +146,10 @@ gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
   end, 1)
 
   await_has_diff()
+
+  vim.__async.scheduler()
+
   if next(result) and cb_ok then
-    libP.async.util.scheduler()
     cb_ok(result)
     return
   end
@@ -175,4 +159,42 @@ gitter.if_has_diff_or_untracked = libP.async.void(function(path, cb_ok, cb_err)
   end
 end)
 
-return gitter
+local function get_workspace(cb)
+  if not valid() then
+    local job = vim.__job.new({
+      command = "git",
+      args = { "-C", ".", "rev-parse", "--show-toplevel" },
+      on_exit = function(j, _, _)
+        local res = j:result()[1]
+        if res then
+          root = res
+          if cb then cb(root) end
+        end
+      end
+    })
+
+    if cb then
+      job:start()
+      return nil
+    else
+      job:sync()
+      return root
+    end
+  else
+    if cb then
+      cb(root)
+    else
+      return root
+    end
+  end
+end
+get_workspace()
+
+return {
+  valid = valid,
+  status_diff = status_diff,
+  if_has_diff = if_has_diff,
+  if_has_diff_sync = if_has_diff_sync,
+  if_has_log = if_has_log,
+  if_has_diff_or_untracked = if_has_diff_or_untracked,
+}

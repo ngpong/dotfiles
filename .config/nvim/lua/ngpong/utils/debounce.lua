@@ -1,7 +1,5 @@
 local M = {}
 
-local libP = require('ngpong.common.libp')
-
 local uv = vim.loop
 
 function M.try_close(...)
@@ -57,7 +55,7 @@ function M.debounce_trailing(ms, rush_first, fn)
       lock = true
       fn(...)
     else
-      args = Tools.tbl_pack(...)
+      args = vim.__tbl.pack(...)
     end
 
     timer:start(ms, 0, function()
@@ -66,7 +64,7 @@ function M.debounce_trailing(ms, rush_first, fn)
       if args then
         local a = args
         args = nil
-        fn(Tools.tbl_unpack(a))
+        fn(vim.__tbl.unpack(a))
       end
     end)
   end)
@@ -98,7 +96,7 @@ function M.throttle_trailing(ms, rush_first, fn)
 
   throttled_fn = wrap(timer, function(...)
     if lock or (not rush_first and args == nil) then
-      args = Tools.tbl_pack(...)
+      args = vim.__tbl.pack(...)
     end
 
     if lock then return end
@@ -115,9 +113,9 @@ function M.throttle_trailing(ms, rush_first, fn)
         local a = args
         args = nil
         if rush_first then
-          throttled_fn(Tools.tbl_unpack(a))
+          throttled_fn(vim.__tbl.unpack(a))
         else
-          fn(Tools.tbl_unpack(a))
+          fn(vim.__tbl.unpack(a))
         end
       end
     end)
@@ -135,13 +133,13 @@ function M.throttle_render(framerate, fn)
   local throttled_fn
   local args, last
 
-  throttled_fn = libP.async.void(function(...)
-    args = Tools.tbl_pack(...)
+  throttled_fn = vim.__async.void(function(...)
+    args = vim.__tbl.pack(...)
     if lock then return end
 
     lock = true
-    libP.async.util.scheduler()
-    fn(Tools.tbl_unpack(args))
+    vim.__async.scheduler()
+    fn(vim.__tbl.unpack(args))
     args = nil
 
     if use_framerate then
@@ -149,7 +147,7 @@ function M.throttle_render(framerate, fn)
 
       if last and now - last < period then
         local wait = period - (now - last)
-        libP.async.util.sleep(wait / 1E6)
+        vim.__async.sleep(wait / 1E6)
         last = last + period
       else
         last = now
@@ -159,7 +157,7 @@ function M.throttle_render(framerate, fn)
     lock = false
 
     if args ~= nil then
-      throttled_fn(Tools.tbl_unpack(args))
+      throttled_fn(vim.__tbl.unpack(args))
     end
   end)
 

@@ -1,0 +1,178 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+format = "$username[@](italic)$hostname $directory $git_branch $git_status $docker_context $conda$fill$cmd_duration$line_break$character"
+right_format = ""
+
+palette = "gruvbox_dark"
+
+[palettes.gruvbox_dark]
+color_fg0 = "#fbf1c7"
+color_fg1 = "#ebdbb2"
+color_bg0 = "#282828"
+color_bg1 = "#3c3836"
+color_bg3 = "#665c54"
+color_blue = "#83A598"
+color_aqua = "#8ec07c"
+color_green = "#b8bb26"
+color_orange = "#fe8019"
+color_purple = "#d3869b"
+color_red = "#fb4934"
+color_yellow = "#fabd2f"
+color_gray = "#928374"
+
+[os]
+disabled = false
+style = "fg:color_bg0 bg:color_aqua"
+format = "[ $symbol]($style)"
+
+[os.symbols]
+Windows = "[󰍲](fg:color_bg0 bg:color_aqua)"
+Ubuntu = "[󰕈](fg:#d54713 bg:color_aqua)"
+SUSE = "[](fg:color_bg0 bg:color_aqua)"
+Raspbian = "[󰐿](fg:color_bg0 bg:color_aqua)"
+Mint = "[󰣭](fg:color_bg0 bg:color_aqua)"
+Macos = "[󰀵](fg:color_bg0 bg:color_aqua)"
+Manjaro = "[](fg:color_bg0 bg:color_aqua)"
+Linux = "[󰌽](fg:color_bg0 bg:color_aqua)"
+Gentoo = "[󰣨](fg:color_bg0 bg:color_aqua)"
+Fedora = "[󰣛](fg:color_bg0 bg:color_aqua)"
+Alpine = "[](fg:color_bg0 bg:color_aqua)"
+Amazon = "[](fg:color_bg0 bg:color_aqua)"
+Android = "[](fg:color_bg0 bg:color_aqua)"
+Arch = "[󰣇](fg:color_bg0 bg:color_aqua)"
+Artix = "[󰣇](fg:color_bg0 bg:color_aqua)"
+EndeavourOS = "[](fg:color_bg0 bg:color_aqua)"
+CentOS = "[](fg:color_bg0 bg:color_aqua)"
+Debian = "[󰣚](fg:color_bg0 bg:color_aqua)"
+Redhat = "[󱄛](fg:color_bg0 bg:color_aqua)"
+RedHatEnterprise = "[󱄛](fg:color_bg0 bg:color_aqua)"
+
+[username]
+show_always = true
+style_user = "fg:color_fg1"
+format = "[🐂 $user]($style)"
+
+[hostname]
+ssh_only = false
+ssh_symbol = ""
+style = "fg:color_fg1"
+format = "[$hostname]($style)"
+disabled = false
+
+[directory]
+style = "fg:color_blue bold"
+format = "[$path]($style)"
+truncate_to_repo = false
+home_symbol = "🏠"
+truncation_length = 9999
+# truncation_symbol = " "
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+format = "[$symbol $branch](fg:color_purple)"
+
+[git_status]
+untracked = "[󰞋](fg:color_orange) "
+stashed = "[󱩼](fg:color_aqua) "
+modified = "[󰦓](fg:color_yellow) "
+staged = "[󰺦](fg:color_green) "
+renamed = "[󰑕](fg:color_red) "
+deleted = "[󰍵](fg:color_red) "
+behind = "[󰛀](fg:color_red)"
+ahead = "[󰛃](fg:color_red)"
+typechanged = ""
+format = "[($all_status$ahead_behind)](fg:color_bg0)"
+
+[nodejs]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[c]
+symbol = " "
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[rust]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[golang]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[php]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[java]
+symbol = " "
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[kotlin]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[haskell]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[python]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $version) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[docker_context]
+symbol = ""
+style = "bg:color_blue"
+format = "[[ $symbol( $context) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[conda]
+style = "bg:color_blue"
+format = "[[ $symbol( $environment) ](fg:color_bg0 bg:color_blue)]($style)"
+
+[time]
+disabled = false
+time_format = "%r"
+style = "bold"
+format = "[ 󰥔 $time ]($style)"
+
+[line_break]
+disabled = false
+
+[cmd_duration]
+disabled = false
+min_time = 1000
+style = "fg:color_gray italic bold"
+format = "[took $duration]($style)"
+
+[fill]
+symbol = ' '
+
+[character]
+disabled = false
+success_symbol = "[](fg:color_fg1 bold)"
+error_symbol = "[](fg:color_fg1 bold)"
+# vicmd_symbol = "[](bold green)"
+# vimcmd_replace_one_symbol = "[](bold purple)"
+# vimcmd_replace_symbol = "[](bold purple)"
+# vimcmd_visual_symbol = "[](bold yellow)"
+
+[custom.vi_mode]
+disabled = true
+format="[$output]($style) "
+command = 'echo $vi_mode_symbol'
+when = 'test -n "$vi_mode_symbol"'

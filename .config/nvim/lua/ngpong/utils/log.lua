@@ -1,6 +1,6 @@
 local default_config = {
   -- Name of the plugin. Prepended to log messages
-  plugin = 'ngpong',
+  plugin = "ngpong",
   -- Should print the output to neovim while running
   use_console = false,
   -- Should highlighting be used in console (using echohl)
@@ -20,7 +20,7 @@ local default_config = {
   },
   -- Can limit the number of decimals displayed for floats
   float_precision = 0.01,
-  path = vim.api.nvim_call_function('stdpath', { 'config' }),
+  path = vim.api.nvim_call_function("stdpath", { "state" }),
   short_log = false,
 }
 
@@ -32,7 +32,7 @@ local unpack = unpack or table.unpack
 log.new = function(config, standalone)
   config = vim.tbl_deep_extend("force", default_config, config)
 
-  local outfile = string.format('%s/%s.log', config.path, config.plugin)
+  local outfile = string.format("%s/%s.log", config.path, config.plugin)
 
   local obj
   if standalone then
@@ -54,7 +54,7 @@ log.new = function(config, standalone)
 
   local make_string = function(...)
     local t = {}
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
       local x = select(i, ...)
 
       if type(x) == "number" and config.float_precision then
@@ -79,8 +79,11 @@ log.new = function(config, standalone)
     local nameupper = level_config.name:upper()
 
     local msg = message_maker(...)
+
     local info = debug.getinfo(2, "Sl")
-    local lineinfo = info.short_src .. ":" .. info.currentline
+    local short_src = info and info.short_src or "[string \":lua\"]"
+    local currentline = info and info.currentline or 1
+    local lineinfo = short_src .. ":" .. currentline
 
     -- Output to console
     if config.use_console then
@@ -133,7 +136,7 @@ log.new = function(config, standalone)
         local fmt = table.remove(passed, 1)
         local inspected = {}
         for _, v in ipairs(passed) do
-          table.insert(inspected, vim.inspect(v))
+          inspected[#inspected+1] = vim.inspect(v)
         end
         return string.format(fmt, unpack(inspected))
       end)
@@ -145,7 +148,7 @@ log.new(default_config, true)
 -- }}}
 
 log.inspect_arg = function(arg)
-  return '[' .. vim.inspect(arg) .. ']'
+  return "[" .. vim.inspect(arg) .. "]"
 end
 
 return log

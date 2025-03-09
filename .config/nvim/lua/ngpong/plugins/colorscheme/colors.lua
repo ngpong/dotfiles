@@ -1,1 +1,0 @@
-return require('ngpong.utils.lazy').access('gruvbox', 'palette')

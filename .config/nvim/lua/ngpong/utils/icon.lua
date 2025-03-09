@@ -1,200 +1,211 @@
 local icons = {
-  unix = '',
-  mac = '',
-  windows = '',
-  activelsp = '',
-  activets = '',
-  arrow_left_1 = '',
-  arrow_right_1 = '',
-  arrow_right_2 = '➜',
-  bookmarks = '',
-  bufferclose = '󰅖',
-  dapbreakpoint = '',
-  cursor_1 = '󰆿',
-  cursor_2 = '󰳽',
-  circular_big = '',
-  circular_mid = '●',
-  circular_mid_hollow = '●',
-  dapbreakpointcondition = '',
-  dapbreakpointrejected = '',
-  daplogpoint = '.>',
-  dapstopped = '󰁕',
-  debugger = '',
-  pen = '✎',
-  file_1 = '󰈙',
-  file_2 = '',
-  file_3 = '',
-  directory = '',
-  diagnostic = '󰒡',
-  diagnostic_err = '',
-  diagnostic_hint = '󰰁',
-  diagnostic_info = '',
-  diagnostic_warn = '', -- 󰰮
-  ellipsis = '…',
-  separator = '',
-  star = '★',
-  filenew = '',
-  filemodified = '',
-  filereadonly = '',
-  dir_closed = '',
-  dir_opened = '',
-  dir_empty_opend = '',
-  dir_empty_closed = '',
-  git = '󰊢',
-  git_add = '',
-  git_branch1 = '',
-  git_branch2 = '',
-  git_branch3 = '',
-  git_branch4 = '',
-  git_change = '',
-  git_conflict = '',
-  git_delete = '',
-  git_ignored = '◌',
-  git_renamed = '󰁕', -- ➜
-  git_sign = '▎',
-  git_staged = '',
-  git_unstaged = '',
-  git_untracked = '',
-  lsp_loaded = '',
-  lsp_loading1 = '',
-  lsp_loading2 = '󰀚',
-  lsp_loading3 = '',
-  eye_1 = '󰈈',
-  eye_2 = '󰷊',
-  macrorecording = '',
-  package = '󰏖',
-  paste = '󰅌',
-  refresh = '',
-  search = '',
-  selected = '❯',
-  session = '󱂬',
-  sort = '󰒺',
-  spellcheck = '󰓆',
-  tab = '󰓩',
-  tabclose = '󰅙',
-  terminal = '',
-  wordfile = '󰈭',
-  space = ' ',
-  type = '󰊄',
-  text = '󰉿',
-  func = '󰊕',
-  template = '',
-  box_1 = '󰆧',
-  box_2 = '',
-  box_3 = '',
-  setting = '',
-  config = '',
-  wrench = '',
-  tag = '󰜢',
-  alpha = '󰀫',
-  shape = '',
-  interface = '',
-  namespace = '',
-  ruler = '󰑭',
-  array = '󰅪',
-  numbers = '󰎠',
-  enum = '󰕘',
-  chars_1 = '',
-  chars_2 = '󰀬',
-  chars_3 = '󱀍',
-  chars_4 = '󰬈',
-  chars_5 = '󰯬',
-  key = '󰌋',
-  snippet = '',
-  source = '',
-  play = '',
-  colors = '󰏘',
-  entrance = '󰈇',
-  pi = '󰏿',
-  electricity_1 = '',
-  electricity_2 = '',
-  math = '󰆕',
-  struct = '󰙅',
-  rabbit = '󰤇',
-  cat = '󰄛',
-  left_half_1 = '',
-  right_half_1 = '',
-  left_harf_2 = '',
-  right_harf_2 = '',
-  progress = '',
-  location = '',
-  alarm = '󰀠',
-  clock = '',
-  closepand = '',
-  expand = '',
-  indent_marker_1 = '┆',
-  indent_marker_2 = '└',
-  indent_marker_3 = '│',
-  symbol = '󰆧',
-  files_1 = '󰉓',
-  files_2 = '󱔗',
-  static = '󰠄',
-  backhole = '󰟢',
-  window = '◩',
-  cmd = '',
-  import = '',
-  keyboard = '',
-  sleep = '󰒲',
-  vim = '',
-  lua = '󰢱',
-  yes = '✔',
-  yes_small = '',
-  pinned_1 = '',
-  pinned_2 = '',
-  pinned_3 = '📌',
-  fire = '',
-  small_dot = '',
-  spinner_frames = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
-}
-icons.lsp_kinds = {
-  Text = { val = icons.text, hl_link = 'GruvboxOrange' },
-  Method = { val = icons.box_1, hl_link = 'GruvboxBlue' },
-  Function = { val = icons.func, hl_link = 'GruvboxBlue' },
-  Constructor = { val = icons.wrench, hl_link = 'GruvboxYellow' },
-  Field = { val = icons.box_3, hl_link = 'GruvboxBlue' },
-  Variable = { val = icons.alpha, hl_link = 'GruvboxOrange' },
-  Class = { val = icons.shape, hl_link = 'GruvboxYellow' },
-  Object = { val = icons.shape, hl_link = 'GruvboxYellow' },
-  Interface = { val = icons.interface, hl_link = 'GruvboxYellow' },
-  Module = { val = icons.namespace, hl_link = 'GruvboxBlue' },
-  Namespace = { val = icons.namespace, hl_link = 'GruvboxBlue' },
-  Property = { val = icons.box_3, hl_link = 'GruvboxBlue' },
-  Unit = { val = icons.ruler, hl_link = 'GruvboxBlue' },
-  Value = { val = icons.numbers, hl_link = 'GruvboxOrange' },
-  Number = { val = icons.numbers, hl_link = 'GruvboxOrange' },
-  Array = { val = icons.array, hl_link = 'GruvboxOrange' },
-  Enum = { val = icons.enum, hl_link = 'GruvboxYellow' },
-  Keyword = { val = icons.key, hl_link = 'GruvboxPurple' },
-  Key = { val = icons.key, hl_link = 'GruvboxPurple' },
-  Snippet = { val = icons.snippet, hl_link = 'GruvboxGreen' },
-  Color = { val = icons.colors, hl_link = 'GruvboxPurple' },
-  File = { val = icons.file_1, hl_link = 'GruvboxBlue' },
-  Reference = { val = icons.entrance, hl_link = 'GruvboxPurple' },
-  Folder = { val = icons.directory, hl_link = 'GruvboxBlue' },
-  EnumMember = { val = icons.chars_1, hl_link = 'GruvboxAqua' },
-  String = { val = icons.chars_2, hl_link = 'GruvboxGreen' },
-  Constant = { val = icons.pi, hl_link = 'GruvboxOrange' },
-  Struct = { val = icons.struct, hl_link = 'GruvboxYellow' },
-  Event = { val = icons.electricity_1, hl_link = 'GruvboxPurple' },
-  Operator = { val = icons.math, hl_link = 'GruvboxYellow' },
-  TypeParameter = { val = icons.type, hl_link = 'GruvboxYellow' },
-  Package = { val = icons.package, hl_link = 'GruvboxAqua' },
-  StaticMethod = { val = icons.static, hl_link = 'GruvboxYellow' },
-  Null = { val = icons.backhole, hl_link = 'GruvboxGray' },
-  Boolean = { val = icons.window, hl_link = 'GruvboxPurple' },
-}
-icons.lsp_menus = {
-  nvim_lsp   = '[LSP]',
-  luasnip    = '[SNIP]',
-  buffer     = '[BUFF]',
-  async_path = '[PATH]',
+  unix = "",
+  mac = "",
+  windows = "",
+
+  activets = "",
+  activelsp = "",
+
+  arrow_left_1 = "",
+  arrow_right_1 = "",
+  arrow_right_2 = "➜",
+  arrow_right_3 = "󰁕",
+
+  cursor_1 = "󰆿",
+  cursor_2 = "󰳽",
+  bookmarks = "󰬔",
+  ok = "",
+  close = "󰅖",
+  big_dot = "",
+  mid_dot = "●",
+  small_dot = "",
+  debugger = "",
+  pen = "✎",
+  ellipsis = "…",
+  separator = " ",
+  star = "★",
+  caution = "󰒡",
+  eye_1 = "󰈈",
+  eye_2 = "󰷊",
+  record = "",
+  play = "",
+
+  diagnostic_err = "󰅙",
+  diagnostic_hint = "󰌵",
+  diagnostic_info = "󰰄",
+  diagnostic_warn = "󰀦",
+
+  file_1 = "󰈙",
+  file_2 = "",
+  file_3 = "",
+  files_1 = "󰉓",
+  files_2 = "󱔗",
+  filereadonly = "󰈡",
+  directory = "󰉋",
+  directory_opened = "󰝰",
+  empty_directory = "󰉖",
+  empty_directory_opened = "󰷏",
+
+  git_1 = "󰊢",
+  git_2 = "",
+  git_3 = "",
+  git_4 = "",
+  git_5 = "",
+  git_6 = "",
+  git_add = "󰐖",
+  git_change = "󰦓",
+  git_conflict = "󰀧",
+  git_delete = "󰍵",
+  git_ignored = "󰔌",
+  git_renamed = "󰑕",
+  git_staged = "󰺦",
+  git_unstaged = "󰺨",
+  git_untracked = "󰞋",
+
+  template = "",
+  box_1 = "󰆧",
+  box_2 = "",
+  tag = "󰜢",
+  source = "",
+
+  -- border = { "", "▄", "", "▌", "", "▀", "", "▐" },
+  -- border = { "", "", "", "", "", "", "", "" },
+  -- border = { "▄", "▄", "▄", "█", "▀", "▀", "▀", "█" },
+  -- border = { " ", " ", " ", " ", " ", " ", " ", " " },
+  border = {
+    yes = "rounded",
+    no = { "", "", "", " ", "", "", "", " " }
+  },
+
+  braces = "󰅩",
+  alpha = "󰀫",
+  skip_next = "󰒭",
+  repeatd = "󰑖",
+  paste = "󰅌",
+  refresh = "",
+  search = "",
+  selected = "❯",
+  session = "󱂬",
+  sort = "󰒺",
+  spellcheck = "󰓆",
+  terminal_1 = "",
+  terminal_2 = "",
+  space = " ",
+  setting_1 = "",
+  setting_2 = "",
+  electricity = "",
+  rabbit = "󰤇",
+  cat = "󰄛",
+  left_half_1 = "",
+  right_half_1 = "",
+  left_harf_2 = "",
+  right_harf_2 = "",
+  lines = "",
+  location = "",
+  alarm = "󰀠",
+  clock = "",
+  closepand = "",
+  expand = "",
+  indent_guid = vim.g.neovide and "▏" or "⁞",
+  indent_marker_1 = "┆",
+  indent_marker_2 = "└",
+  indent_marker_3 = "│",
+  import = "",
+  keyboard = "",
+  sleep = "󰒲",
+  vim = "",
+  lua = "󰢱",
+  yes = "✔",
+  yes_small = "",
+  pinned_1 = "",
+  pinned_2 = "󰐃",
+  pinned_3 = "📌",
+  fire = "",
+  spinner_frames_1 = {
+    spinner = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" },
+    ok = "󰩐",
+  },
+  spinner_frames_2 = {
+    spinner = { "⠴", "⠲", "⠖", "⠦" },
+    ok = "󰾨",
+  },
+  spinner_frames_3 = {
+    spinner = { "⠁", "⠂", "⠄", "⠠", "⠐", "⠈" },
+    ok = "󰾨",
+  },
+  spinner_frames_4 = {
+    spinner = { "⠉", "⠆", "⠤", "⠰" },
+    ok = "󰾨",
+  },
+  spinner_frames_5 = {
+    spinner = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
+    ok = "█",
+  },
+  spinner_frames_6 = {
+    spinner = { "▰▱▱▱▱▱▱", "▰▱▱▱▱▱▱", "▰▰▱▱▱▱▱", "▰▰▰▱▱▱▱", "▰▰▰▰▱▱▱", "▰▰▰▰▰▱▱", "▰▰▰▰▰▰▱", "▰▰▰▰▰▰▰" },
+    ok = "▰▰▰▰▰▰▰",
+  },
+  spinner_frames_7 = {
+    spinner = { "🌑", "🌒", "🌓", "🌔", "🌕" },
+    ok = "🌕",
+  },
+  spinner_frames_8 = {
+    spinner = { "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥", "󰪤", "󰪣", "󰪢", "󰪡", "󰪠", "󰪟", "󰪞" },
+    ok = "󰾨"
+  },
 }
 
-icons.get_all_lsp_hllink = function ()
+icons.lsp_kinds = {
+  Text = { val = "󰉿", hl = "BlinkCmpKindText" }, -- 󱀍 󰀬  󰉿
+  Method = { val = "󰊕", hl = "BlinkCmpKindMethod" }, -- 󰊕 󰆧
+  Function = { val = "󰊕", hl = "BlinkCmpKindFunction" },
+  Constructor = { val = "󰒓", hl = "BlinkCmpKindConstructor" }, -- 󰒓  
+  Field = { val = "", hl = "BlinkCmpKindField" }, --  󰜢
+  Variable = { val = "", hl = "BlinkCmpKindVariable" }, -- 󰀫 󰆦
+  Class = { val = "󱡠", hl = "BlinkCmpKindClass" }, -- 󱡠 
+  Struct = { val = "󱡠", hl = "BlinkCmpKindStruct" }, --   󱡠
+  Object = { val = "", hl = "BlinkCmpKindObject" },
+  Interface = { val = "", hl = "BlinkCmpKindInterface" },
+  Module = { val = "󰏗", hl = "BlinkCmpKindModule" }, -- 󰅩
+  Namespace = { val = "󰅴", hl = "BlinkCmpKindNamespace" }, -- 󰅩
+  Property = { val = "", hl = "BlinkCmpKindProperty" }, --   󰖷
+  Unit = { val = "󰑭", hl = "BlinkCmpKindUnit" },
+  Value = { val = "󱀍", hl = "BlinkCmpKindValue" }, -- 󰎠
+  Number = { val = "󰎠", hl = "BlinkCmpKindNumber" },
+  Array = { val = "󰅪", hl = "BlinkCmpKindArray" },
+  Enum = { val = "", hl = "BlinkCmpKindEnum" },
+  EnumMember = { val = "", hl = "BlinkCmpKindEnumMember" },
+  Keyword = { val = "󰻾", hl = "BlinkCmpKindKeyword" }, -- 󰻾 󰌋
+  Key = { val = "󰻾", hl = "BlinkCmpKindKey" },
+  Snippet = { val = "󰩫", hl = "BlinkCmpKindSnippet" }, --  󱄽
+  Color = { val = "󰏘", hl = "BlinkCmpKindColor" },
+  File = { val = "󰈙", hl = "BlinkCmpKindFile" }, -- 󰈔
+  Reference = { val = "󰈇", hl = "BlinkCmpKindReference" }, -- 󰬲
+  Folder = { val = "󰉋", hl = "BlinkCmpKindFolder" },
+  Copilot = { val = "", hl = "BlinkCmpKindCopilot" },
+  String = { val = "󰉾", hl = "BlinkCmpKindString" },
+  Constant = { val = "󰏿", hl = "BlinkCmpKindConstant" },
+  Event = { val = "󱐋", hl = "BlinkCmpKindEvent" }, -- 󱐋 
+  Operator = { val = "󰆕", hl = "BlinkCmpKindOperator" }, --  󰪚
+  Type = { val = "", hl = "BlinkCmpKindType" }, -- 󰆩 󰊄 
+  TypeParameter = { val = "󰊄", hl = "BlinkCmpKindTypeParameter" }, -- 󰆩 
+  Package = { val = "󰏖", hl = "BlinkCmpKindPackage" }, -- 󰆦
+  StaticMethod = { val = "󰠄", hl = "BlinkCmpKindStaticMethod" },
+  Null = { val = "󰢤", hl = "BlinkCmpKindNull" },
+  Boolean = { val = "◩", hl = "BlinkCmpKindBoolean" },
+}
+icons.lsp_menus = {
+  nvim_lsp = "[LSP]",
+  luasnip = "[SNIP]",
+  buffer = "[BUFF]",
+  async_path = "[PATH]",
+}
+
+function icons.get_all_lsp_hllink()
   local ret = {}
 
   for type, tb in pairs(icons.lsp_kinds) do
-    if Tools.is_callable(tb) then
+    if vim.__util.is_callable(tb) then
       goto continue
     end
 
@@ -204,6 +215,20 @@ icons.get_all_lsp_hllink = function ()
   end
 
   return ret
+end
+
+
+local icon_color_cache = {}
+local default_opts = { default = true }
+function icons.get_icon_color_by_ft(ft)
+  local cache = icon_color_cache[ft]
+  if not cache then
+    local icon, hl = vim.__webicons.get_icon_color_by_filetype(ft, default_opts)
+    cache = { icon, { fg = hl } }
+    icon_color_cache[ft] = cache
+  end
+
+  return cache[1], cache[2]
 end
 
 return icons

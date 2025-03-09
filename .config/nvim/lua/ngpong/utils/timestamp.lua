@@ -1,9 +1,21 @@
-local ffi = require "ffi"
-local luatz = require "luatz"
+local ffi = require("ffi")
+local luatz = require("luatz")
+
 local tz_time = luatz.time
 local tt_from_timestamp = luatz.timetable.new_from_timestamp
 local tt = luatz.timetable.new
 local math_floor = math.floor
+
+local C = ffi.C
+
+ffi.cdef([[
+  typedef struct timeval {
+   long tv_sec;
+   long tv_usec;
+  } timeval;
+
+ int gettimeofday(struct timeval* t, void* tzp);
+]])
 
 --- Current UTC time
 -- @return UTC time in milliseconds since epoch, but with SECOND precision.
@@ -20,7 +32,7 @@ end
 -- setup a validation value, any value above this is assumed to be in MS
 -- instead of S (a year value beyond the year 20000), it assumes current times
 -- as in 2016 and later.
-local ms_check = tt(20000 , 1 , 1 , 0 , 0 , 0):timestamp()
+local ms_check = tt(20000, 1, 1, 0, 0, 0):timestamp()
 
 -- Returns a time-table.
 -- @param now (optional) time to generate the time-table from. If omitted
@@ -29,7 +41,7 @@ local ms_check = tt(20000 , 1 , 1 , 0 , 0 , 0):timestamp()
 local function get_timetable(now)
   local timestamp = now and now or get_utc()
   if timestamp > ms_check then
-    return tt_from_timestamp(timestamp/1000)
+    return tt_from_timestamp(timestamp / 1000)
   end
   return tt_from_timestamp(timestamp)
 end
@@ -41,7 +53,7 @@ local function get_timestamps(now)
   local timetable = get_timetable(now)
   local stamps = {}
 
-  timetable.sec = math_floor(timetable.sec)   -- reduce to second precision
+  timetable.sec = math_floor(timetable.sec) -- reduce to second precision
   stamps.second = timetable:timestamp() * 1000
 
   timetable.sec = 0
@@ -62,21 +74,14 @@ local function get_timestamps(now)
   return stamps
 end
 
-if pcall(ffi.typeof, "struct timeval") then
-else
-  ffi.cdef [[
-     typedef struct timeval {
-      long tv_sec;
-      long tv_usec;
-     } timeval;
-
-    int gettimeofday(struct timeval* t, void* tzp);
-  ]]
-end
-local get_microsecond_struct = ffi.new("struct timeval")
+local gettimeofday_struct = ffi.new("struct timeval")
 local function get_microsecond()
-  ffi.C.gettimeofday(get_microsecond_struct, nil)
-  return tonumber(get_microsecond_struct.tv_sec) * 1000000 + tonumber(get_microsecond_struct.tv_usec)
+  C.gettimeofday(gettimeofday_struct, nil)
+  return tonumber(gettimeofday_struct.tv_sec) * 1000000 + tonumber(gettimeofday_struct.tv_usec)
+end
+local function get_millisecond()
+  C.gettimeofday(gettimeofday_struct, nil)
+  return (tonumber(gettimeofday_struct.tv_sec) * 1000) + (tonumber(gettimeofday_struct.tv_usec) / 1000)
 end
 
 return {
@@ -84,5 +89,6 @@ return {
   get_utc_ms = get_utc_ms,
   get_timetable = get_timetable,
   get_timestamps = get_timestamps,
-  get_microsecond = get_microsecond
+  get_microsecond = get_microsecond,
+  get_millisecond = get_millisecond,
 }

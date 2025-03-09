@@ -1,0 +1,96 @@
+local M = {}
+
+local Gruvbox = vim.__lazy.require("gruvbox")
+
+-- dark = {
+--   bg0 = p.dark0,
+--   bg1 = p.dark1,
+--   bg2 = p.dark2,
+--   bg3 = p.dark3,
+--   bg4 = p.dark4,
+--   fg0 = p.light0,
+--   fg1 = p.light1,
+--   fg2 = p.light2,
+--   fg3 = p.light3,
+--   fg4 = p.light4,
+--   red = p.bright_red,
+--   green = p.bright_green,
+--   yellow = p.bright_yellow,
+--   blue = p.bright_blue,
+--   purple = p.bright_purple,
+--   aqua = p.bright_aqua,
+--   orange = p.bright_orange,
+--   neutral_red = p.neutral_red,
+--   neutral_green = p.neutral_green,
+--   neutral_yellow = p.neutral_yellow,
+--   neutral_blue = p.neutral_blue,
+--   neutral_purple = p.neutral_purple,
+--   neutral_aqua = p.neutral_aqua,
+--   dark_red = p.dark_red,
+--   dark_green = p.dark_green,
+--   dark_aqua = p.dark_aqua,
+--   gray = p.gray,
+-- }
+
+M.setup = function()
+  Gruvbox.setup({
+    undercurl = true,
+    underline = true,
+    bold = true,
+    italic = {
+      strings = true,
+      comments = false,
+      operators = false,
+      folds = true,
+    },
+    strikethrough = true,
+    invert_selection = false,
+    invert_signs = false,
+    invert_tabline = false,
+    invert_intend_guides = false,
+    inverse = true,
+    contrast = "soft",
+    palette_overrides = {},
+    dim_inactive = false,
+    overrides = {
+      NormalFloat = { bg = Gruvbox.palette.dark0_soft },
+      FloatTitle = { fg = Gruvbox.palette.bright_green, italic = true },
+      SignColumn = { bg = Gruvbox.palette.dark0_soft, italic = true },
+      DevIconSharedObject = { fg = Gruvbox.palette.dark4 },
+      FloatBorder = { fg = Gruvbox.palette.light1 },
+      CursorLineNr = { fg = Gruvbox.palette.bright_yellow, bg = Gruvbox.palette.dark0_soft },
+      CursorLine = { bg = Gruvbox.palette.dark1 },
+      -- CurSearch = { link = "Search" },
+      -- IncSearch = { link = "Search" },
+      -- DiagnosticInfo = { fg = vim.__color.bright_green },
+      ["@string"] = { fg = Gruvbox.palette.bright_green },
+      ["@operator"] = { fg = vim.__color.light1 },
+      ["@operators"] = { fg = vim.__color.light2 },
+      ["@parameter"] = { fg = vim.__color.light2 },
+      ["@conditional"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@lsp.type.parameter"] = { fg = vim.__color.light1 },
+      ["@lsp.type.operator"] = { fg = nil },
+      ["@punctuation.bracket"] = { fg = vim.__color.light2 },
+      ["@punctuation.delimiter"] = { fg = vim.__color.light2 },
+      ["@constructor.lua"] = { fg = vim.__color.light2 },
+      ["@constant.builtin.lua"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@type.qualifier"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.return"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.operator"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.repeat"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.conditional"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.function"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@keyword.conditional.ternary"] = { fg = vim.__color.light1 },
+      ["@keyword"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@repeat"] = { fg = Gruvbox.palette.bright_red, italic = true },
+      ["@namespace"] = { fg = Gruvbox.palette.bright_green, italic = true },
+      ["@markup.link.label.markdown_inline"] = { fg = Gruvbox.palette.bright_yellow },
+    },
+    transparent_mode = false,
+  })
+
+  vim.go.background = "dark"
+  vim.cmd.colorscheme("gruvbox")
+end
+
+return M

@@ -9,3 +9,39 @@
 3. git_revert 需要加一个 yes or no 的选项？
 4. neovim-pair？ neovim-surround？
 5. go.nvim？
+
+trouble 的列表还差点
+1. git 不要了，改用 lazygit
+
+filter 的逻辑还是没做好
+
+nvimtree 配置
+1. my_text.lua
+2. keymaps
+3. neotree 的配置先提前一遍，然后再整体清除，搜索关键字 neo-tree neotree 等
+
+lsp 的 de di 那些，需要设置 esc 关闭
+
+bufferline 的排序还是很差 insert after current，使用 insert after 会影响 session 后的顺序
+
+lazyvim 的 telescope 速度要比我快很多，而且 grep 的速度也是
+1. 一个原因是因为 lazyvim 装了 noice.nvim，该插件好像改变了一些行为导致的
+2. 另一个原因是 telescope 本来就存在性能问题，故改用 fzf.lua，希望不会存在太多坑！
+  2.1 whichkey 的 disable 可能要设置下 fzf.lua
+  2.2 common filter 需要加上 fzf.lua，最好全面看下一共有哪些 filetype
+  2.3 关注下 dressing 中的 fzf_lua 的设置
+  2.4 lualine 中的 config 的插件需要添加 fzf_lua
+
+trouble
+  - git 可以使用 lazygit 取代
+  - todo 在大型的地方会存在性能问题，已解决
+
+lazyvim的bufferline是正常的，我的不是A`ssaaaaaaaaS
+
+preview 是黄色，normal 是aqua
+
+fzflua中的history存在问题，需要检查下
+
+还是还原 hjkl 的设置吧
+
+剩下 f t m `

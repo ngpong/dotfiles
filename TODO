@@ -1,25 +1,14 @@
-// apt包管理
-1. dpkg -l: 查询安装的包
-2. dpkg -L <installed_package_name>: 查看已安装包包含的文件
-3. dpkg --contents <.deb file name>: 查看.deb安装包包含的文件
-4. dpkg -r <installed_package_name>: 卸载已安装的包
-5. dpkg -i <.deb file name>: 从.deb文件安装
-
-// update-alternatives管理
-1. update-alternatives --get-selections: 获取所有
-2. update-alternatives --query <name>: 查询name
-
 // 1: 设置代理
 sudo passwd root
 
-export http_proxy="http://192.168.1.2:7890"
-export https_proxy="http://192.168.1.2:7890"
-export HTTP_PROXY="http://192.168.1.2:7890"
-export HTTPS_PROXY="http://192.168.1.2:7890"
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export HTTP_PROXY="http://127.0.0.1:7890"
+export HTTPS_PROXY="http://127.0.0.1:7890"
 
 sudo vi /etc/apt/apt.conf
-Acquire::http::Proxy "http://192.168.1.2:7890";
-Acquire::https::Proxy "http://192.168.1.2:7890";
+Acquire::http::Proxy "http://127.0.0.1:7890";
+Acquire::https::Proxy "http://127.0.0.1:7890";
 
 // 2: git环境
 git config --global user.name "ngpong"
@@ -32,22 +21,64 @@ cat ~/.ssh/id_rsa.pub
 // 3: 终端环境
 sudo apt update
 sudo apt upgrade
-sudo apt install zsh jq
-
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+sudo apt install zsh fish jq ncurses-term
 
 git clone git@github.com:NGPONG/dotfiles.git
 cd ~/dotfiles
 rm -rf ~/.config ~/.zshrc
 ./install.sh
 
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+brew install starship
+
 // 4. 通用环境
 curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 sudo bash nodesource_setup.sh
 
-sudo apt install curl net-tools tree htop ripgrep unzip zip checkinstall nodejs python2 python3 python3-pip python3.10-venv -y
+# python2 python3.10-venv eu-readelf lsb-core
+sudo apt install curl net-tools tree htop unzip zip checkinstall nodejs python3 python3-pip elfutils -y
+
+npm config set https-proxy http://127.0.0.1:7890
+npm config set proxy http://127.0.0.1:7890
+
+yarn config set https-proxy http://127.0.0.1:7890
+
+brew install ripgrep
+# curl https://sh.rustup.rs -sSf | sh
+# cargo install ripgrep
+
+brew install eza
+# sudo apt install -y gpg
+# sudo mkdir -p /etc/apt/keyrings
+# wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+# echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+# sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+# sudo apt update
+# sudo apt install -y eza
+
+brew install snapd
+# sudo apt install snapd
+# sudo snap install radare2 --classic
+
+brew install bat
+# sudo apt install batcat
+# sudo ln -s $(which batcat) /usr/bin/bat
+
+brew install fd
+# sudo apt install fd-find
+# sudo ln -s $(which fdfind) /usr/bin/fd
+
+brew install fzf
+
+git clone https://github.com/AngelJumbo/sssnake.git
+cd ./sssnake
+sudo apt install libncurses-dev
+sudo make install
 
 // 5. redis
 curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -78,40 +109,64 @@ sudo vi /etc/wsl.conf
 appendWindowsPath = false
 
 // 5: c/cpp环境
-sudo apt install build-essential git gdb gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool cmake autoconf software-properties-common zlib1g-dev libssl-dev clang libmysqlclient-dev libbz2-dev libreadline-dev libncurses-dev libboost-all-dev
+sudo apt install build-essential git gdb gcc-9 gcc-10 gcc-11 g++-9 g++-10 g++-11 manpages-dev libtool cmake autoconf software-properties-common zlib1g-dev libssl-dev clang libmysqlclient-dev libbz2-dev libreadline-dev libncurses-dev libboost-all-dev valgrind prelink
 sudo update-alternatives --remove-all cpp
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9  --slave /usr/bin/cpp cpp /usr/bin/cpp-9
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10  --slave /usr/bin/cpp cpp /usr/bin/cpp-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11  --slave /usr/bin/cpp cpp /usr/bin/cpp-11
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13  --slave /usr/bin/cpp cpp /usr/bin/cpp-13
 
-git clone https://github.com/google/benchmark.git
-cd benchmark
-cmake -E make_directory "build"
-cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
-cmake --build "build" --config Release
-sudo checkinstall cmake --build "build" --config Release --target install
+sudo apt install libllvm18 llvm-18 llvm-18-dev llvm-18-runtime clang-18 clang-tools-18 clang-format-18 clang-tidy-18 lldb-18 lld-18 llvm-18-doc llvm-18-examples clang-18-doc
+# sudo sed -i '$ a\\n# llvm+clang\ndeb http://apt.llvm.org/noble/ llvm-toolchain-noble main\ndeb-src http://apt.llvm.org/noble/ llvm-toolchain-noble main\n# 18\ndeb http://apt.llvm.org/noble/ llvm-toolchain-noble-18 main\ndeb-src http://apt.llvm.org/noble/ llvm-toolchain-noble-18 main\n# 19\ndeb http://apt.llvm.org/noble/ llvm-toolchain-noble-19 main\ndeb-src http://apt.llvm.org/noble/ llvm-toolchain-noble-19 main' /etc/apt/sources.list
+# sudo apt update
+# sudo apt install libllvm18 llvm-18 llvm-18-dev llvm-18-runtime clang-18 clang-tools-18 clang-format-18 clang-tidy-18 lldb-18 lld-18 llvm-18-doc llvm-18-examples clang-18-doc
+# sudo ln -s $(which clang-18) /usr/bin/clang
+# sudo ln -s $(which lld-18) /usr/bin/lld
+# sudo ln -s $(which lldb-18) /usr/bin/lldb
+# sudo ln -s $(which clang-format-18) /usr/bin/clang-format
+# sudo ln -s $(which clang-tidy-18) /usr/bin/clang-tidy
 
-git clone https://github.com/rizsotto/Bear.git
-cmake -DENABLE_UNIT_TESTS=OFF -DENABLE_FUNC_TESTS=OFF $BEAR_SOURCE_DIR
-make all -j8
-sudo checkinstall
+sudo apt install libbenchmark-dev
+# git clone https://github.com/google/benchmark.git
+# cd benchmark
+# cmake -E make_directory "build"
+# cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
+# cmake --build "build" --config Release
+# sudo checkinstall cmake --build "build" --config Release --target install
+
+brew install bear
+# git clone https://github.com/rizsotto/Bear.git
+# cmake -DENABLE_UNIT_TESTS=OFF -DENABLE_FUNC_TESTS=OFF $BEAR_SOURCE_DIR
+# make all -j8
+# sudo checkinstall
 
 // 6: lua环境
-sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev
+sudo apt install lua5.1 liblua5.1-dev lua5.4 liblua5.4-dev luajit
 sudo update-alternatives --install /usr/bin/lua lua-interpreter /usr/bin/lua5.4 140 --slave /usr/share/man/man1/lua.1.gz lua-manual /usr/share/man/man1/lua5.4.1.gz
 sudo update-alternatives --install /usr/bin/luac lua-compiler /usr/bin/luac5.4 140 --slave /usr/share/man/man1/luac.1.gz lua-compiler-manual /usr/share/man/man1/luac5.4.1.gz
 
-./configure --with-lua-include=/usr/include/lua5.4 --lua-version=5.4 --with-lua-lib=/usr/lib/
-make
-sudo checkinstall
-sudo cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
-sudo vi /usr/local/etc/luarocks/config-5.1.lua
+sudo apt instal luarocks
+# ./configure --with-lua-include=/usr/include/lua5.4 --lua-version=5.4 --with-lua-lib=/usr/lib/
+# make
+# sudo checkinstall
+# sudo cp /usr/local/etc/luarocks/config-5.4.lua /usr/local/etc/luarocks/config-5.1.lua
+# sudo vi /usr/local/etc/luarocks/config-5.1.lua
+
+sudo luarocks --lua-version=5.4 --global install inspect
+sudo luarocks --lua-version=5.1 --global install inspect
+sudo luarocks --lua-version=5.4 --global install stdlib
+sudo luarocks --lua-version=5.4 --global install penlight
+sudo luarocks --lua-version=5.1 --global install penlight
+sudo luarocks --lua-version=5.4 --global install luaposix
+sudo luarocks --lua-version=5.1 --global install luaposix
+sudo luarocks --lua-version=5.4 --global install luafilesystem
 
 // 7: neovim环境
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install neovim
 
+# sudo apt install lsb-core
 sudo apt install shellcheck sqlite3 libsqlite3-dev cargo
 
 sudo luarocks --lua-version=5.1 --global install luatz sqlite luv sha1

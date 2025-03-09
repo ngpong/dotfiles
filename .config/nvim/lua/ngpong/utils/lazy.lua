@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 local fmt = string.format
 
 local lazy = {}

@@ -1,242 +1,162 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# history
+HISTFILE=~/.zsh_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE
+setopt SHARE_HISTORY # Share history between all sessions.
+setopt HIST_IGNORE_SPACE # Don't record an entry starting with a space.
+setopt INC_APPEND_HISTORY # Write to the history file immediately, not when the shell exits.
+setopt EXTENDED_HISTORY # Expire duplicate entries first when trimming history.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS # Don't record an entry that was just recorded again.
+setopt HIST_REDUCE_BLANKS # Remove superfluous blanks before recording entry.
 
-# Path to your oh-my-zsh installation.
-export ZSH="/home/ngpong/.oh-my-zsh"
+# 部分终端会的光标会 blink，此方法是禁用 blink
+printf '\e[?12l'
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# juanghurtado
-# robbyrussell
-ZSH_THEME="amuse"
+# brew
+if ! [ -d "/home/linuxbrew/.linuxbrew" ] && ! [ -d "$HOME/.linuxbrew" ]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+# starship
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+function set_win_title() {
+  print -Pn "\e]0;%m@%n:%~\a"
+}
+precmd_functions+=(set_win_title)
+# function set_win_title_preexec() {
+#   print -Pn "\e]0;%n:%~:$1\a"
+# }
+# preexec_functions+=(set_win_title_preexec)
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting) 
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-
-### Fix slowness of pastes with zsh-syntax-highlighting.zsh
+# zsh config
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+setopt RM_STAR_SILENT 
+# Fix slowness of pastes with zsh-syntax-highlighting.zsh
 # https://gist.github.com/magicdude4eva/2d4748f8ef3e6bf7b1591964c201c1ab
 # https://github.com/zsh-users/zsh-syntax-highlighting/issues/513
 pasteinit() {
   OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
   zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
 }
-
 pastefinish() {
   zle -N self-insert $OLD_SELF_INSERT
 }
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
-### Fix slowness of pastes
 
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# user_setting() {
-ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-
-setopt RM_STAR_SILENT 
-
+# path
 export PATH=$PATH:\
-/mnt/c/Windows/:\
-/mnt/c/Windows/system32:\
-/mnt/c/WINDOWS/:\
-/mnt/c/WINDOWS/system32:\
 /mnt/c/Users/NGPONG/AppData/Local/Programs/'Microsoft VS Code'/bin:\
-/mnt/c/windows/System32/WindowsPowerShell/v1.0:\
-/mnt/c/'Program Files'/Neovide/
+/mnt/c/Users/NGPONG/scoop/shims:\
+/mnt/c/Windows/System32/WindowsPowerShell/v1.0:\
+
+# common env
 export BASH_ENV=""
-export HOST_IP=$(ipconfig.exe | grep IPv4 | head -1 | rev | awk '{print $1}' | rev | tr -d '\r')
-export WSL2_IP=$(hostname -I | awk '{print $1}')
+export HOST_IP="127.0.0.1" # $(ipconfig.exe | grep IPv4 | head -1 | rev | awk '{print $1}' | rev | tr -d '\r')
+export WSL2_IP="127.0.0.1" # $(hostname -I | awk '{print $1}')
 export SOCKS5_ADDR="socks5://$HOST_IP:7890"
 export HTTP_ADDR="http://$HOST_IP:7890"
-export win_home='/mnt/c/Users/NGPONG/Desktop/'
+export win_home="/mnt/c/Users/NGPONG/"
+export VISUAL=nvim
+export GIT_EDITOR=nvim
+export EDITOR="$VISUAL"
+export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 
+# core file
 ulimit -c unlimited
 
 # custom commands
-alias lss='ls -la --color=always | sort -r'
 alias ipinfo="curl http://ip-api.com/json/ | jq"
 alias explorer="/mnt/c/Windows/explorer.exe"
 alias test_font="echo -e \"\e[1mABCDEFG\e[0m\n\e[3mabcdefgABCDEFG\e[0m\n\e[4munderline\e[0m\n\e[9mstrikethrough\e[0m\""
-alias nvid='neovide.exe --wsl --frame full --maximized --no-vsync --no-idle'
+# https://github.com/neovide/neovide/issues/2689
+alias nvid='neovide.exe --wsl --frame none --maximized --no-vsync --no-idle'
+alias neovide='nvid'
 
 # delete shortcuts
 bindkey "^[p" delete-char
 bindkey "^[s" delete-char
 
 # proxy
-function setproxy() {
-    export all_proxy="$SOCKS5_ADDR"
-    export http_proxy="$HTTP_ADDR"
-    export https_proxy="$HTTP_ADDR"
-    export ALL_PROXY="$SOCKS5_ADDR"
-    export HTTP_PROXY="$HTTP_ADDR"
-    export HTTPS_PROXY="$HTTP_ADDR"
+export all_proxy="$HTTP_ADDR"
+export http_proxy="$HTTP_ADDR"
+export https_proxy="$HTTP_ADDR"
+export ALL_PROXY="$HTTP_ADDR"
+export HTTP_PROXY="$HTTP_ADDR"
+export HTTPS_PROXY="$HTTP_ADDR"
 
-    # git
-    git config --global http.proxy "$HTTP_ADDR"
-    git config --global https.proxy "$HTTP_ADDR"
+# git
+git config --global http.proxy "$HTTP_ADDR"
+git config --global https.proxy "$HTTP_ADDR"
+# function setproxy() {
+#   export all_proxy="$HTTP_ADDR"
+#   export http_proxy="$HTTP_ADDR"
+#   export https_proxy="$HTTP_ADDR"
+#   export ALL_PROXY="$HTTP_ADDR"
+#   export HTTP_PROXY="$HTTP_ADDR"
+#   export HTTPS_PROXY="$HTTP_ADDR"
+#   
+#   # git
+#   git config --global http.proxy "$HTTP_ADDR"
+#   git config --global https.proxy "$HTTP_ADDR"
+#   
+#   # declare
+#   ipinfo
+# }
+# function unsetproxy() {
+#   unset all_proxy
+#   unset http_proxy
+#   unset https_proxy
+#   unset ALL_PROXY
+#   unset HTTP_PROXY
+#   unset HTTPS_PROXY
+#   
+#   # git
+#   git config --global --unset http.proxy
+#   git config --global --unset https.proxy
+#   
+#   # declare
+#   ipinfo
+# }
 
-    # declare
-    ipinfo
-}
-function unsetproxy() {
-    unset all_proxy
-    unset http_proxy
-    unset https_proxy
-    unset ALL_PROXY
-    unset HTTP_PROXY
-    unset HTTPS_PROXY
+# fzf
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+  export ESCDELAY=0
+fi
 
-    # git
-    git config --global --unset http.proxy
-    git config --global --unset https.proxy
+# eza
+if command -v eza >/dev/null 2>&1; then
+  alias ls="eza --icons=auto"
+  alias l="ls"
+  alias lt="ls --tree"
+  alias ll="ls -lh"
+  alias la="ls -a"
+  alias lla="ls -lah"
+fi
 
-    # declare
-    ipinfo
-}
+# sytax highlight
+if [ -f "$(brew --prefix)/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]; then
+    source $(brew --prefix)/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+fi
 
-# some useful env variable
-export VISUAL=nvim
-export GIT_EDITOR=nvim
-export EDITOR="$VISUAL"
+# auto-suggestions
+if [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+    source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# auto-complete
+# if [ -f "$(brew --prefix)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh" ]; then
+#     source $(brew --prefix)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+#     DISABLE_MAGIC_FUNCTIONS=true
+#     ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+#     COMPLETION_WAITING_DOTS=true
+#     DISABLE_UNTRACKED_FILES_DIRTY=true
+# fi
 
 # golang
 # export GO111MODULE=""
@@ -247,4 +167,9 @@ export EDITOR="$VISUAL"
 # x11
 # export DISPLAY=$HOST_IP:0.0
 
-# }
+# DISABLE_AUTO_TITLE="true"
+# 
+# case $TERM in xterm*)
+#     precmd () {print -Pn "\e]0;%~\a"}
+#     ;;
+# esac
