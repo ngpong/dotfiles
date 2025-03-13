@@ -1,3 +1,6 @@
 {
-  "$cdate": { "prefix": "$cdate", "body": "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE" }
+  "$cdate": {
+    "prefix": "$cdate",
+    "body": "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE"
+  }
 }

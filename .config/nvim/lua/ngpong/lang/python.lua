@@ -3,9 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = {
-      ensure_install = {
-        { parse = "python", ft = "python" },
-      }
+      ensure_install = { "python" }
     }
   },
   {

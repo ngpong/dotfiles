@@ -3,10 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = {
-      ensure_install = {
-        { parse = "cpp", ft = "cpp" },
-        { parse = "c", ft = "c" },
-      }
+      ensure_install = { "cpp", "c" }
     }
   },
   {
@@ -37,14 +34,13 @@ return {
             "--background-index",
             "--background-index-priority=normal",
             "--ranking-model=decision_forest",
-            "--completion-style=detailed",
+            "--completion-style=bundled",
             "--header-insertion=never", -- iwyu
             "--header-insertion-decorators=false",
-            "--malloc-trim",
             "--pch-storage=memory",
             "--limit-references=0",
-            "--limit-results=30",
-            "--include-cleaner-stdlib",
+            "--rename-file-limit=0",
+            -- "--limit-results=30",
             -- "--compile-commands-dir=/home/ngpong/code/cpp/CPP-Study-02/TEST/TEST_93/",
             -- "--log=verbose",
           },
@@ -61,8 +57,8 @@ return {
             },
           },
           on_attach = function()
-            -- inlay_hints.setup_autocmd()
-            -- inlay_hints.set_inlay_hints()
+            -- require("clangd_extensions.inlay_hints").setup_autocmd()
+            -- require("clangd_extensions.inlay_hints").set_inlay_hints()
           end
         },
         ccls = {

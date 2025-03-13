@@ -121,49 +121,52 @@ return {
     { "SnacksInputIcon", fg = vim.__color.bright_blue },
   },
   opts = {
-    input = {
+    -- input = {
+    --   enabled = false,
+    --   icon = " ",
+    --   icon_hl = "SnacksInputIcon",
+    --   icon_pos = "left",
+    --   prompt_pos = "title",
+    --   expand = false, -- 如果文本超出宽度自动扩展
+    -- },
+    picker = {
       enabled = true,
-      icon = " ",
-      icon_hl = "SnacksInputIcon",
-      icon_pos = "left",
-      prompt_pos = "title",
-      expand = false, -- 如果文本超出宽度自动扩展
     },
     styles = {
-      input = {
-        backdrop = false,
-        border = vim.__icons.border.yes,
-        title_pos = "center",
-        height = 1,
-        width = 30,
-        noautocmd = true,
-        -- relative = "editor",
-        -- row = 2,
-        relative = "cursor",
-        row = -1,
-        col = 1,
-        wo = {
-          winhighlight = "NormalFloat:SnacksInputNormal,FloatBorder:SnacksInputBorder,FloatTitle:SnacksInputTitle",
-          cursorline = false,
-        },
-        bo = {
-          filetype = "viminput",
-          buftype = "prompt",
-        },
-        b = {
-          completion = true,
-        },
-        keys = {
-          n_esc = false,
-          q = false,
-          i_esc = { "<esc>", { "cancel" }, mode = "i", expr = true },
-          i_cr = { "<cr>", { "confirm" }, mode = "i", expr = true },
-          i_tab = { "<tab>", { "cmp_accept", "<tab>" }, mode = "i", expr = true },
-          i_ctrl_w = { "<c-w>", "<c-s-w>", mode = "i", expr = true },
-          i_up = false,
-          i_down = false,
-        },
-      },
+      -- input = {
+      --   backdrop = false,
+      --   border = vim.__icons.border.yes,
+      --   title_pos = "center",
+      --   height = 1,
+      --   width = 30,
+      --   noautocmd = true,
+      --   -- relative = "editor",
+      --   -- row = 2,
+      --   relative = "cursor",
+      --   row = -1,
+      --   col = 1,
+      --   wo = {
+      --     winhighlight = "NormalFloat:SnacksInputNormal,FloatBorder:SnacksInputBorder,FloatTitle:SnacksInputTitle",
+      --     cursorline = false,
+      --   },
+      --   bo = {
+      --     filetype = "viminput",
+      --     buftype = "prompt",
+      --   },
+      --   b = {
+      --     completion = true,
+      --   },
+      --   keys = {
+      --     n_esc = false,
+      --     q = false,
+      --     i_esc = { "<esc>", { "cancel" }, mode = "i", expr = true },
+      --     i_cr = { "<cr>", { "confirm" }, mode = "i", expr = true },
+      --     i_tab = { "<tab>", { "cmp_accept", "<tab>" }, mode = "i", expr = true },
+      --     i_ctrl_w = { "<c-w>", "<c-s-w>", mode = "i", expr = true },
+      --     i_up = false,
+      --     i_down = false,
+      --   },
+      -- },
     }
   }
 }

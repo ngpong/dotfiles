@@ -3,9 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = {
-      ensure_install = {
-        { parse = "lua", ft = "lua" },
-      }
+      ensure_install = { "lua" }
     }
   },
   {

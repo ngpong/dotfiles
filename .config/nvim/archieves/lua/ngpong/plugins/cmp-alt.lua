@@ -234,14 +234,14 @@ return {
                 fallback()
               end
             end, { kmodes.I }),
-            ["<C-e>"] = Cmp.mapping(function(fallback)
+            ["<C-b>"] = Cmp.mapping(function(fallback)
               if Luasnip.locally_jumpable(-1) then
                 Luasnip.jump(-1)
               else
                 fallback()
               end
             end, { kmodes.I, kmodes.S }),
-            ["<C-y>"] = Cmp.mapping(function(fallback)
+            ["<C-f>"] = Cmp.mapping(function(fallback)
               if Luasnip.locally_jumpable(1) then
                 Luasnip.jump(1)
               else
@@ -270,7 +270,7 @@ return {
                 fallback()
               end
             end, { kmodes.I }),
-            ["<C-x>"] = Cmp.mapping(function()
+            ["<C-c>"] = Cmp.mapping(function()
               if Cmp.visible() then
                 Cmp.close()
               end
@@ -333,7 +333,7 @@ return {
                 end
               end
             end, { kmodes.S }),
-            ["<C-x>"] = Cmp.mapping(function()
+            ["<C-c>"] = Cmp.mapping(function()
               if Cmp.visible() then
                 Cmp.close()
               end

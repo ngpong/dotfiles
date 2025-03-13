@@ -99,10 +99,14 @@ return {
       },
       capabilities = {
         workspace = {
+          fileOperations = {
+            didRename = true,
+            willRename = true,
+          },
           didChangeWatchedFiles = {
             dynamicRegistration = true
           }
-        }
+        },
       },
       on_attach = function(cli, bufnr)
         -- 禁用lsp提供的格式化能力
@@ -181,16 +185,18 @@ return {
             cmp_capabilities = engine.get_lsp_capabilities()
           else
             success, engine = pcall(require, "cmp_nvim_lsp")
-            assert(success)
-
-            cmp_capabilities = engine.default_capabilities()
+            if not success then
+              cmp_capabilities = {}
+            else
+              cmp_capabilities = engine.default_capabilities()
+            end
           end
         end
 
         capabilities = vim.__tbl.rr_extend(
           {},
-          cmp_capabilities,
           lsp_capabilities,
+          cmp_capabilities,
           usr_capabilities
         )
       end
@@ -402,7 +408,7 @@ return {
         },
         window = {
           normal_hl = "FidgetOptsNotifyWindow",
-          winblend = 5,
+          winblend = 20,
           border = "none",
           zindex = 45,
           max_width = 0,

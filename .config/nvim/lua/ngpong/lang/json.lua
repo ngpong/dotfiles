@@ -3,9 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = {
-      ensure_install = {
-        { parse = "json", ft = "json" },
-      }
+      ensure_install = { "json" }
     }
   },
   {

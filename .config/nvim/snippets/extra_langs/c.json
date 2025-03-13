@@ -1,0 +1,7 @@
+{
+    "while": {
+      "prefix": "while",
+      "body": ["while ($1) {$0", "}"],
+      "description": "`while` loop snippet"
+    }
+}

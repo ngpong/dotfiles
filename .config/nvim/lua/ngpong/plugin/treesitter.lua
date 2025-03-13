@@ -49,16 +49,21 @@ return {
       local ensure_parse    = {}
       local ensure_filetype = {}
       for _, v in ipairs(opts.ensure_install) do
-        local parse = v.parse
-        local fts   = v.ft
-        fts = type(fts) == "string" and { fts } or fts
+        local parse
+        local fts
 
-        table.insert(ensure_parse, v.parse)
+        if type(v) == "table" then
+          parse = v.parse
+          fts = type(v.ft) == "string" and { v.ft } or v.ft
+        else
+          parse = v
+          fts = { v }
+        end
 
+        table.insert(ensure_parse, parse)
         for _, ft in ipairs(fts) do
           table.insert(ensure_filetype, ft)
         end
-
         vim.treesitter.language.register(parse, fts)
       end
 

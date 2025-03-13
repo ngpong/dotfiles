@@ -4,7 +4,7 @@ return {
     optional = true,
     opts = {
       ensure_install = {
-        { parse = "cmake", ft = "cmake" },
+        "cmake",
         { parse = "make", ft = { "automake", "make" } },
       }
     },

@@ -100,8 +100,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "[n]w/<ctrl-f> [n]W", "[n] word|WORD forward", mode_n_v_o_i },
         { "[n]e [n]E", "forward to the end of word|WORD [n]", mode_n_v_o },
         { "[n]b/<ctrl-b> [n]B", "[n] word|WORD backward", mode_n_v_o_i },
-        { "gh/<ctrl-B> gl/<ctrl-f>", "goto first(forward)|last(backward) column of the line", mode_n_v_o_i },
-        { "gH/<ctrl-b> gL/<ctrl-F>", "goto first(forward)|last(backward) non-blank character", mode_n_v_o_i },
+        { "<ctrl-B> <ctrl-f>", "goto first(forward)|last(backward) column of the line", mode_n_v_o_i },
+        { "<ctrl-b> <ctrl-F>", "goto first(forward)|last(backward) non-blank character", mode_n_v_o_i },
 
         { "file" },
         { "{n}%", "jump to {n} percentage in the file", mode_n_v_o },

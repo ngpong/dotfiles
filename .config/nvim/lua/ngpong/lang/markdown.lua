@@ -4,7 +4,7 @@ return {
   opts = {
     ensure_install = {
       { parse = "markdown", ft = { "markdown", "pandoc" } },
-      { parse = "markdown_inline", ft = "markdown_inline" },
+      "markdown_inline",
     }
   }
 }

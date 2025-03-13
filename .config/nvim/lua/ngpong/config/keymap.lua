@@ -1,21 +1,22 @@
 local kmode = vim.__key.e_mode
 local etypes = vim.__event.types
 
-local NVSO  = kmode.NVSO
-local N     = kmode.N
-local C     = kmode.S
-local I     = kmode.I
-local VS    = kmode.VS
-local O     = kmode.O
-local T     = kmode.T
-local NVS   = { N, VS }
-local NVSC  = { N, VS, C }
-local NC    = { N, C }
-local NI    = { N, I }
-local NVSOI = { NVSO, I }
-local NVSOC = { NVSO, C }
+local NVSO   = kmode.NVSO
+local N      = kmode.N
+local C      = kmode.C
+local I      = kmode.I
+local VS     = kmode.VS
+local O      = kmode.O
+local T      = kmode.T
+local NVS    = { N, VS }
+local NVSC   = { N, VS, C }
+local NC     = { N, C }
+local NI     = { N, I }
+local NVSOI  = { NVSO, I }
+local NVSOC  = { NVSO, C }
 local NVSOCT = { NVSO, C, T }
-local NVSI  = { N, VS, I }
+local NVSI   = { N, VS, I }
+local IC     = { I, C }
 
 local function del_keymaps()
   -- vim.__key.unrg(NVSO, "0")  -- 跳转至最后一个字符
@@ -213,11 +214,10 @@ local function del_keymaps()
   vim.__key.unrg(NVS, "?")
   vim.__key.unrg(NVS, "<C-a>")
   -- vim.__key.unrg(NVS, "<C-x>")
-  vim.__key.unrg(NVS, "<C-c>")
+  vim.__key.unrg(NVSOI, "<C-c>")
   vim.__key.unrg(NVSOCT, "<C-q>")
   vim.__key.unrg(I, "<C-y>")
   vim.__key.unrg(I, "<C-e>")
-  vim.__key.unrg(I, "<C-u>")
   vim.__key.unrg(I, "<C-d>")
   vim.__key.unrg(VS, "q")
   -- vim.__key.unrg(I, "<C-i>")
@@ -252,7 +252,16 @@ local set_keymaps = function()
     end
   end)
 
-  vim.__key.rg(I, "<C-c>", function() return "<C-c>" end, { expr = true })
+  vim.__key.rg(N, "<C-c>", function()
+    for _, winid in ipairs(vim.__win.all()) do
+      if vim.w[winid].line ~= nil then
+        vim.__win.close(winid)
+      elseif vim.w[winid].gitsigns_preview ~= nil then
+        vim.__win.close(winid)
+      end
+    end
+  end)
+  -- vim.__key.rg(I, "<C-c>", function() return "<C-c>" end, { expr = true })
 
   -- movement
   vim.__key.rg(NVS, "j", function() return vim.v.count > 1 and "m'" .. vim.v.count .. "j" or "j" end, { expr = true })
@@ -261,8 +270,10 @@ local set_keymaps = function()
   vim.__key.rg(I, "<C-j>", "<down>", { remap = true })
   vim.__key.rg(I, "<C-k>", "<up>", { remap = true })
   vim.__key.rg(I, "<C-l>", "<right>", { remap = true })
-  vim.__key.rg(I, "<C-S-H>", "<C-LEFT>")
-  vim.__key.rg(I, "<C-S-L>", "<C-RIGHT>")
+  vim.__key.rg(IC, "<C-b>", "<C-LEFT>")
+  vim.__key.rg(IC, "<C-f>", "<C-RIGHT>")
+  vim.__key.rg(IC, "<C-S-H>", "<C-LEFT>")
+  vim.__key.rg(IC, "<C-S-L>", "<C-RIGHT>")
 
   vim.__key.rg(NVSO, "gp", "%")
   vim.__key.rg(NVSO, "ge", "G")
@@ -272,16 +283,18 @@ local set_keymaps = function()
   vim.__key.rg(NVSO, "gb", "L")
   vim.__key.rg(NVSO, "gv", function() return "m'gv" end, { expr = true })
 
-  vim.__key.rg(NVSO, "gl", "$")
-  vim.__key.rg(NVSO, "gL", "g_")
-  vim.__key.rg(NVSO, "gh", "0")
-  vim.__key.rg(NVSO, "gH", "^")
-  vim.__key.rg(NVSO, "gj", "j")
-  vim.__key.rg(NVSO, "gk", "k")
-  vim.__key.rg(I, "<C-f>", "<C-o>$")
-  vim.__key.rg(I, "<C-b>", "<C-o>^")
-  vim.__key.rg(I, "<C-S-F>", "<C-o>g_<RIGHT>")
-  vim.__key.rg(I, "<C-S-B>", "<C-o>0")
+  -- vim.__key.rg(NVSO, "gj", "j")
+  -- vim.__key.rg(NVSO, "gk", "k")
+  vim.__key.rg(NVSO, "<C-e>", "$")
+  vim.__key.rg(I,    "<C-e>", "<C-o>$")
+  vim.__key.rg(C,    "<C-e>", "<END>")
+  vim.__key.rg(NVSO, "<C-S-E>", "g_")
+  vim.__key.rg(I,    "<C-S-E>", "<C-o>g_<RIGHT>")
+  vim.__key.rg(NVSO, "<C-s>", "0")
+  vim.__key.rg(I,    "<C-s>", "<C-o>^")
+  vim.__key.rg(C,    "<C-s>", "<HOME>")
+  vim.__key.rg(NVSO, "<C-S-S>", "^")
+  vim.__key.rg(I,    "<C-S-S>", "<C-o>0")
 
   do
     local function f(key, msg)

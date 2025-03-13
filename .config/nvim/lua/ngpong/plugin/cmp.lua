@@ -1,92 +1,103 @@
 return {
   {
     "saghen/blink.cmp",
-    enabled = true,
     lazy = true,
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       "echasnovski/mini.snippets",
     },
     build = "cargo build --release",
-    events = {
-      {
-        vim.__event.types.FILE_TYPE,
-        function(state)
-          -- vim.__logger.info(state)
-          if not vim.__filter.contain_fts(state.match) then
-            vim.b[state.buf].completion = true
-          end
-        end
-      }
-    },
     highlights = {
       { "BlinkCmpGhostText", fg = vim.__color.dark3, italic = true },
 
+      { "BlinkCmpMenu", bg = vim.__color.dark1 },
+      { "BlinkCmpMenuBorder", bg = vim.__color.dark1 },
+      { "BlinkCmpMenuSelection", bg = vim.__color.dark2 },
+
       { "BlinkCmpDoc", bg = vim.__color.dark1, fg = vim.__color.light1 },
-      { "BlinkCmpDocBorder", bg = vim.__color.dark0_soft, fg = vim.__color.dark1 },
-      { "BlinkCmpDocSeparator", bg = vim.__color.dark1, fg = vim.__color.light4 },
+      { "BlinkCmpDocBorder", bg = vim.__color.dark1 },
+      { "BlinkCmpDocSeparator", bg = vim.__color.dark1, fg = vim.__color.dark2 },
 
-      { "BlinkCmpSignatureHelp", bg = vim.__color.dark2, fg = vim.__color.light1 },
-      { "BlinkCmpSignatureHelpBorder", bg = vim.__color.dark0_soft, fg = vim.__color.dark2 },
+      { "BlinkCmpSignatureHelp", bg = vim.__color.dark1, fg = vim.__color.light1 },
+      { "BlinkCmpSignatureHelpBorder", bg = vim.__color.dark1 },
+      -- { "BlinkCmpSignatureHelpActiveParameter", fg = vim.__color.bright_blue, bold = true },
 
-      { "BlinkCmpLabelDetail", fg = vim.__color.dark4, italic = true, bold = true }, -- link = "NonText"
-      { "BlinkCmpLabelItemDetail", fg = vim.__color.bright_yellow }, -- link = "NonText"
-      { "BlinkCmpSource", fg = vim.__color.light1 }, -- link = "NonText"
+      { "BlinkCmpLabelDetail", fg = vim.__color.gray, italic = true }, -- link = "NonText"
+      { "BlinkCmpLabel", fg = vim.__color.light1 },
+      { "BlinkCmpLabelMatch", fg = vim.__color.bright_aqua, bold = true },
 
-      -- { "BlinkCmpMenu", bg = vim.__color.dark2, fg = vim.__color.light1 },
-      -- { "BlinkCmpMenuBorder", bg = vim.__color.dark0_soft, fg = vim.__color.dark2 },
+      { "BlinkCmpScrollBarThumb", bg = vim.__color.dark3 },
+      { "BlinkCmpScrollBarGutter", bg = vim.__color.dark0_soft },
     },
     opts_extend = { "sources.default" },
     opts = {
-      -- disabled in comment context: https://cmp.saghen.dev/recipes.html#dynamically-picking-providers-by-treesitter-node-filetype
-      enabled = function()
-        return vim.b.completion
-      end,
       snippets = {
         preset = "mini_snippets"
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
-        per_filetype = {
-          DressingInput = { "path" },
-        },
+        default = { "lsp", "snippets", "buffer", "path" },
         providers = {
           path = {
             opts = {
-              trailing_slash = true,
-              label_trailing_slash = true,
               show_hidden_files_by_default = true,
+              get_cwd = vim.__path.cwd,
             }
           },
+          cmdline = {
+            min_keyword_length = function(ctx)
+              if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
+                return 3
+              end
+              return 0
+            end
+          }
         },
-        min_keyword_length = function(ctx)
-          if ctx.mode == "cmdline" then return 2 end
-          return 0
-        end
       },
       keymap = {
         preset = "none",
-        ["<C-y>"] = { "show_documentation", "hide_documentation" },
-        ["<C-S-Y>"] = { "show_signature", "hide_signature" },
-        ["<C-u>"] = { "scroll_documentation_up" },
-        ["<C-d>"] = { "scroll_documentation_down" },
-        ["<C-S-S>"] = { "snippet_backward" },
-        ["<C-s>"] = { "snippet_forward" },
+        ["<C-g>"] = { "show_documentation", "hide_documentation" },
+        ["<C-S-G>"] = { "show_signature", "hide_signature" },
+        ["<C-PAGEDOWN>"] = { "scroll_documentation_down" },
+        ["<C-PAGEUP>"] = { "scroll_documentation_up" },
+        ["<C-f>"] = { "snippet_forward", "fallback" },
+        ["<C-b>"] = { "snippet_backward", "fallback" },
         ["<TAB>"] = { "select_and_accept", "fallback" },
-        ["<C-e>"] = { "hide", "fallback" },
-        ["<C-p>"] = { "select_prev", "fallback" },
-        ["<C-n>"] = { "select_next", "fallback" },
+        ["<C-a>"] = { "show" },
+        ["<C-c>"] = {
+          "hide",
+          function()
+            if not MiniSnippets.session.get() then
+              return false
+            end
+
+            vim.schedule(function()
+              while MiniSnippets.session.get() do
+                MiniSnippets.session.stop()
+              end
+            end)
+            return true
+          end,
+          "fallback"
+        },
+        ["<C-p>"] = { "select_prev" },
+        ["<C-n>"] = { "select_next" },
+      },
+      fuzzy = {
+        implementation = "rust",
+        -- label | sort_text | kind | score | exact
+        sorts = {
+          "score",
+          "sort_text",
+        },
       },
       completion = {
-        keyword = {
-          range = "prefix", -- "foo_|_bar" will match "foo_" for "prefix" and "foo__bar" for "full"
-        },
         trigger = {
           prefetch_on_insert = true,
           show_in_snippet = true, -- 当在snippet seesion内触发
           show_on_keyword = true, -- 当输入任何字符后触发
           show_on_trigger_character = true, -- 当输入 trigger character 后触发
-          show_on_insert_on_trigger_character = true, -- 当在 trigger character 处进入插入模式时检测
+          show_on_accept_on_trigger_character = true,
+          show_on_insert_on_trigger_character = false, -- 当在 trigger character 处进入插入模式时检测
         },
         list = {
           selection = {
@@ -94,86 +105,107 @@ return {
             auto_insert = false
           }
         },
+        accept = {
+          dot_repeat = false,
+          auto_brackets = {
+            enabled = false
+          }
+        },
         menu = {
-          border = "padded",
-          winhighlight = "Normal:BlinkCmpMenu,FloatBorder:BlinkCmpMenuBorder,CursorLine:BlinkCmpMenuSelection,Search:None",
+          min_width = 25,
+          -- max_height = 10,
+          border = "none",
+          scrolloff = 0,
           -- direction_priority = { "s" },
+          cmdline_position = function()
+            local height = (vim.o.cmdheight == 0) and 1 or vim.o.cmdheight
+            return { vim.o.lines - height, 0 }
+          end,
+          winhighlight = "Normal:BlinkCmpMenu,FloatBorder:BlinkCmpMenuBorder,CursorLine:BlinkCmpMenuSelection,Search:None",
           draw = {
+            align_to = "label", -- none
             columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
-            -- columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
             components = {
               label = {
                 ellipsis = true,
-                width = { fill = true, max = 60 },
+                width = { fill = true, max = 50 },
               },
-              -- label = {
-              --   text = function(ctx)
-              --       return require("colorful-menu").blink_components_text(ctx)
-              --   end,
-              --   highlight = function(ctx)
-              --       return require("colorful-menu").blink_components_highlight(ctx)
-              --   end,
-              -- },
-              label_item_detail = {
-                text = function(ctx) if ctx.source_name == "Snippets" then return "" else return ctx.item.detail or "" end end,
-                width = { fill = true, max = 60 },
-                highlight = "BlinkCmpLabelItemDetail",
-              }
             }
           }
         },
-        ghost_text = { enabled = false },
         documentation = {
           auto_show = true,
-          auto_show_delay_ms = 200,
+          auto_show_delay_ms = 500,
           update_delay_ms = 50,
           treesitter_highlighting = true,
           window = {
             min_width = 10,
             max_width = 80,
             max_height = 20,
-            -- border = vim.__icons.border.no,
-            winblend = 0,
+            border = vim.__icons.border.no,
             winhighlight = "Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,EndOfBuffer:BlinkCmpDoc",
-            scrollbar = true,
-            direction_priority = {
-              menu_north = { "e", "w", "n", "s" },
-              menu_south = { "e", "w", "s", "n" },
-            },
           }
         },
-        accept = {
-          auto_brackets = {
-            enabled = true,
-            semantic_token_resolution = {
-              enabled = true,
-              blocked_filetypes = { "cpp", "java" },
-            },
-          }
-        }
+        ghost_text = {
+          enabled = false
+        },
       },
       signature = {
         enabled = true,
         trigger = {
-          blocked_trigger_characters = {},
-          blocked_retrigger_characters = {},
           show_on_keyword = false, -- 当输入任何字符后检测
-          show_on_insert = true, -- 进入插入模式时检测
+          show_on_insert = false, -- 进入插入模式时检测
           show_on_trigger_character = true, -- 当输入 trigger character 后检测
-          show_on_insert_on_trigger_character = false, -- 当在 trigger character 处进入插入模式时检测
+          show_on_insert_on_trigger_character = true, -- 当在 trigger character 处进入插入模式时检测
         },
         window = {
           min_width = 1,
-          max_width = 100,
-          max_height = 10,
-          -- border = vim.__icons.border,
-          winblend = 0,
+          max_width = 200,
+          max_height = 20,
+          winblend = 20,
+          border = vim.__icons.border.no,
           winhighlight = "Normal:BlinkCmpSignatureHelp,FloatBorder:BlinkCmpSignatureHelpBorder",
           direction_priority = { "n" },
-          treesitter_highlighting = false,
+          treesitter_highlighting = true,
           show_documentation = false,
         },
       },
+      cmdline = {
+        enabled = true,
+        keymap = {
+          preset = "none",
+          ["<TAB>"] = { "accept", "fallback" },
+          ["<C-a>"] = { "show" },
+          ["<C-c>"] = { "hide" },
+          ["<C-p>"] = { "select_prev" },
+          ["<C-n>"] = { "select_next" },
+        },
+        sources = function()
+          local type = vim.fn.getcmdcompltype()
+          if type == "command" then
+            return  { "cmdline" }
+          end
+          if type == "file" or type == "dir" then
+            return { "path" }
+          end
+          return {}
+        end,
+        completion = {
+          list = {
+            selection = {
+              preselect = true,
+              auto_insert = false,
+            },
+          },
+          menu = { auto_show = true },
+          ghost_text = { enabled = false }
+        }
+      },
+    }
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
       appearance = {
         nerd_font_variant = "mono", -- "mono" for "Nerd Font Mono" or "normal" for "Nerd Font"
         kind_icons = {
@@ -204,7 +236,7 @@ return {
           TypeParameter = vim.__icons.lsp_kinds.TypeParameter.val,
         },
       }
-    }
+    },
   },
   {
     "echasnovski/mini.snippets",
@@ -213,10 +245,10 @@ return {
       "rafamadriz/friendly-snippets",
     },
     highlights = {
-      { "MiniSnippetsFinal", fg = vim.__color.dark4 },
+      { "MiniSnippetsFinal", fg = vim.__color.bright_aqua },
       { "MiniSnippetsCurrent", bold = true, bg = vim.__color.dark3 },
-      { "MiniSnippetsVisited", bg = vim.__color.dark2 },
-      { "MiniSnippetsUnvisited", bg = vim.__color.dark2 },
+      { "MiniSnippetsVisited", bg = vim.__color.dark1 },
+      { "MiniSnippetsUnvisited", bg = vim.__color.dark1 },
       { "MiniSnippetsCurrentReplace", bold = true, bg = vim.__color.dark3 },
     },
     opts = {
@@ -224,7 +256,7 @@ return {
         expand = "",
         jump_next = "",
         jump_prev = "",
-        stop = "<C-c>",
+        stop = "",
       },
       variables = {},
       empty_tabstop_final = "•", -- ∎
@@ -235,8 +267,16 @@ return {
       local gen_loader = require("mini.snippets").gen_loader
       require("mini.snippets").setup({
         snippets = {
-          gen_loader.from_file("~/.config/nvim/snippets/global.json"),
+          -- global-snippets
+          gen_loader.from_file(vim.__path.join(vim.__path.standard("config"), "snippets/global.json")),
+          -- friendly-snippets
           gen_loader.from_lang(),
+          gen_loader.from_lang({
+            lang_patterns = {
+              c = { "extra_langs/c.json" },
+              cpp = { "extra_langs/cpp.json" },
+            }
+          }),
         },
         mappings = opts.mappings,
         expand = {
@@ -249,6 +289,7 @@ return {
           end
         }
       })
+
       if MiniSnippets ~= nil then
         local group = vim.__autocmd.augroup("mini.snippets")
         -- stop session immediately after jumping to final tabstop

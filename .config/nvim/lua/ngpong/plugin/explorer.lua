@@ -195,9 +195,9 @@ return {
         { "<C-o><C-v>", function() require("nvim-tree.api").node.open.vertical() end },
         { "<C-o><C-s>", function() require("nvim-tree.api").node.open.horizontal() end },
 
-        { "<C-f>", function() return require("nvim-tree-preview").scroll(4) end },
-        { "<C-b>", function() return require("nvim-tree-preview").scroll(-4) end },
-        { "<TAB>", function()
+        { "<C-PAGEDOWN>", function() return require("nvim-tree-preview").scroll(4) end },
+        { "<C-PAGEUP>", function() return require("nvim-tree-preview").scroll(-4) end },
+        { "<C-g>", function()
           local PreviewManager = require("nvim-tree-preview.manager")
           if PreviewManager.instance and (PreviewManager.instance:is_valid() or PreviewManager.instance.manager.is_watching()) then
             PreviewManager.instance:close({ unwatch = true, focus_tree = true })

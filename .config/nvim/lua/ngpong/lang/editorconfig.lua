@@ -2,8 +2,6 @@ return {
   "nvim-treesitter/nvim-treesitter",
   optional = true,
   opts = {
-    ensure_install = {
-      { parse = "editorconfig", ft = "editorconfig" },
-    }
+    ensure_install = { "editorconfig" }
   }
 }

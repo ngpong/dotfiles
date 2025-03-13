@@ -3,10 +3,10 @@ return {
   optional = true,
   opts = {
     ensure_install = {
-      { parse = "vim", ft = "vim" },
+      "vim",
       { parse = "vimdoc", ft = { "checkhealth", "help" } },
-      { parse = "query", ft = "query" },
-      { parse = "regex", ft = "regex" },
+      "query",
+      "regex"
     }
   }
 }

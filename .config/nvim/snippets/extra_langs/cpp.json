@@ -1,0 +1,15 @@
+{
+  ".log": {
+    "prefix": ".log",
+    "body": "log << \"$TM_SELECTED_TEXT\";"
+  },
+  "bmk": {
+    "prefix": "bmk",
+    "body": "#include <benchmark/benchmark.h>\n\nvoid foo(benchmark::State& state) {\n\tfor (auto _: state) {\n\t\t$0\n\t}\n}\nBENCHMARK(foo);\n\nBENCHMARK_MAIN();"
+  },
+  "while": {
+    "prefix": "while",
+    "body": ["while ($1) {", "\t$0", "}"],
+    "description": "`while` loop snippet"
+  }
+}

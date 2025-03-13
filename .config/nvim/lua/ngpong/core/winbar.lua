@@ -6,7 +6,7 @@ local Options = {
   lsp = {
     retry_ttl = 60,
     retry_interval = 200,
-    update_interval = 300,
+    update_interval = 350,
     eval_interval = 40,
     lsp_kinds = {
       [1]  = vim.__icons.lsp_kinds.File,
@@ -93,7 +93,7 @@ local Item = vim.__class.def(function(this)
 
   local __width
   function this:width()
-    __width = vim.__str.displaywidth(string.format("%s %s", this:pale_icon(), this:name()))
+    __width = vim.__str.displaywidth(string.format("%s %s", this:paleicon(), this:name()))
     function this:width()
       return __width
     end
@@ -122,7 +122,7 @@ local Item = vim.__class.def(function(this)
     return this:icon()
   end
 
-  function this:pale_icon()
+  function this:paleicon()
     return m_icon
   end
 
@@ -161,7 +161,7 @@ local Item = vim.__class.def(function(this)
 
       local ___width
       function t:width()
-        ___width = vim.__str.displaywidth(string.format("%s %s", this:pale_icon(), t:name()))
+        ___width = vim.__str.displaywidth(string.format("%s %s", this:paleicon(), t:name()))
         function t:width()
           return ___width
         end
@@ -175,12 +175,7 @@ local Item = vim.__class.def(function(this)
 end)
 
 local LspSymbol = vim.__class.def(function(this)
-  local strbuffer = require("string.buffer")
-  local bit       = require("bit")
-  local uv        = vim.loop
-
-  local m_attachstat
-  local m_items, m_item_cache = {}, setmetatable({}, {
+  local m_items = setmetatable({}, {
     __index = function(self, k)
       self[k] = {}
       return self[k]
@@ -192,21 +187,23 @@ local LspSymbol = vim.__class.def(function(this)
 
   local m_lsp_options = Options.lsp
 
-  function this:__init(attachstat)
-    m_attachstat = attachstat
+  local get_attachstat
+  function this:__init(__get_attachstat)
+    get_attachstat = __get_attachstat
 
     vim.__autocmd.on("BufWipeout", function(state)
       local bufnr = state.buf
 
-      m_items[bufnr] = nil
       m_updating[bufnr] = nil
       m_symbols[bufnr] = nil
     end)
   end
 
-  local __update, __update_retry, __update_bounce
+  local uv        = vim.loop
+  local strbuffer = require("string.buffer")
+  local __update, __update_retry, __update_bouncer
   local __update_leagcy_worker, __update_leagcy_worker_libs
-  __update_bounce = vim.__bouncer.throttle_trailing(
+  __update_bouncer = vim.__bouncer.throttle_trailing(
     m_lsp_options.update_interval,
     true,
     vim.schedule_wrap(function(...) __update(...) end)
@@ -329,7 +326,7 @@ local LspSymbol = vim.__class.def(function(this)
 
     m_updating[bufnr] = true
 
-    local stat = m_attachstat[bufnr]
+    local stat = get_attachstat(bufnr)
     if not stat then
       __update_retry(bufnr, ttl)
       return
@@ -349,7 +346,7 @@ local LspSymbol = vim.__class.def(function(this)
 
         if
           err or
-          not m_attachstat[bufnr] or
+          not get_attachstat(bufnr) or
           not symbols or
           not symbols[1]
         then
@@ -372,28 +369,24 @@ local LspSymbol = vim.__class.def(function(this)
     )
   end
   function this:update(bufnr)
-    __update_bounce(bufnr)
+    __update_bouncer(bufnr)
   end
 
 
-  local __eval, __eval_bounce
-  __eval_bounce = vim.__bouncer.throttle_trailing(
-    m_lsp_options.eval_interval,
-    true,
-    vim.schedule_wrap(function(...) __eval(...) end)
-  )
+  local bit = require("bit")
+  local __eval
   __eval = function(bufnr, cursor, symbols, items)
     if not symbols then
       symbols = m_symbols[bufnr] or {}
     end
 
     if not items then
-      items = {} m_items[bufnr] = items
+      items = {}
     end
 
     local len = #symbols
     if len == 0 then
-      return
+      return items
     end
 
     local lnum, col = cursor[1], cursor[2]
@@ -423,12 +416,12 @@ local LspSymbol = vim.__class.def(function(this)
         local kind = symbol.kind
         local name = symbol.name
 
-        local item = m_item_cache[kind][name]
+        local item = m_items[kind][name]
         if not item then
           local k = lsp_kinds[kind]
           item = Item:new(name, k.val, k.hl)
 
-          m_item_cache[kind][name] = item
+          m_items[kind][name] = item
         end
 
         table.insert(items, item)
@@ -436,7 +429,7 @@ local LspSymbol = vim.__class.def(function(this)
           __eval(bufnr, cursor, symbol.children, items)
         end
 
-        return
+        return items
       elseif
         (
           lnum < range_start.line or
@@ -462,21 +455,28 @@ local LspSymbol = vim.__class.def(function(this)
       then
         low = mid + 1
       else
-        return
+        return items
       end
     end
   end
-  function this:eval(bufnr, cursor)
+  function this:eval(winid, bufnr)
+    local cursor = vim.__cursor.norm_get(winid)
     cursor = { cursor[1] - 1, cursor[2] }
-    __eval(bufnr, cursor)
-    return m_items[bufnr]
+    return __eval(bufnr, cursor)
   end
 end)
 
 local LspSource = vim.__class.def(function(this)
   local m_attachstat, m_symbol = {}, {}
   function this:__init()
-    local function attach(bufnr, client_id)
+    m_symbol = LspSymbol:new(function(bufnr)
+      return m_attachstat[bufnr]
+    end)
+
+    vim.__autocmd.on("LspAttach", function(state)
+      local bufnr     = state.buf
+      local client_id = state.data.client_id
+
       local cli = vim.lsp.get_client_by_id(client_id)
       if not cli or not cli:supports_method("textDocument/documentSymbol") then
         return
@@ -511,30 +511,22 @@ local LspSource = vim.__class.def(function(this)
         client = cli,
         bufnr = bufnr
       }
-    end
+    end)
 
-    local function detach(bufnr, client_id)
+    vim.__autocmd.on("LspDetach", function(state)
+      local bufnr = state.buf
+
       if not m_attachstat[bufnr] then
         return
       end
 
       m_attachstat[bufnr].augroup:del()
       m_attachstat[bufnr] = nil
-    end
-
-    m_symbol = LspSymbol:new(m_attachstat)
-
-    vim.__autocmd.on("LspAttach", function(state)
-      attach(state.buf, state.data.client_id)
-    end)
-
-    vim.__autocmd.on("LspDetach", function(state)
-      detach(state.buf, state.data.client_id)
     end)
   end
 
   function this:eval(winid, bufnr)
-    return m_symbol:eval(bufnr, vim.__cursor.norm_get())
+    return m_symbol:eval(winid, bufnr)
   end
 end)
 
@@ -586,6 +578,7 @@ end)
 
 local Winbar = vim.__class.def(function(this)
   local m_sources = {}
+  local m_evalcache = {}
   function this:__init()
     local function attach(winid, bufnr)
       if vim.wo[winid].winbar ~= "" then
@@ -612,18 +605,42 @@ local Winbar = vim.__class.def(function(this)
       local bufnr = vim.__buf.number(winid)
       attach(winid, bufnr)
     end
-    vim.__autocmd.on({ "BufWinEnter", "BufWritePost", }, function(state)
+
+    local group = vim.__autocmd.augroup("wb-global")
+    group:on({ "BufWinEnter", "BufWritePost", }, function(state)
       attach(vim.__win.current(), state.buf)
+    end)
+    group:on({ "WinClosed" }, function(state)
+      local winid = tonumber(state.file)
+      if not winid then
+        return
+      end
+
+      local cache = m_evalcache[winid]
+      if not cache then
+        return
+      end
+
+      cache.timer:stop()
+      cache.timer:close()
+      m_evalcache[winid] = nil
     end)
 
     table.insert(m_sources, PathSource:new())
     table.insert(m_sources, LspSource:new())
   end
 
-  local m_timer, m_evalcache = vim.loop.new_timer(), nil
+  local uv = vim.loop
   function this:eval(winid, bufnr)
-    if m_evalcache then
-      return m_evalcache
+    local cache = m_evalcache[winid]
+    if not cache then
+      cache = { str = nil, timer = uv.new_timer() }
+      m_evalcache[winid] = cache
+    end
+
+    local evalstr = cache.str
+    if evalstr then
+      return evalstr
     end
 
     local items, item_size, linewidth = {}, 0, 0
@@ -655,13 +672,17 @@ local Winbar = vim.__class.def(function(this)
       end
     end
 
-    m_evalcache = string.format(" %s ", table.concat(evalstrs, Options.separator))
-    m_timer:start(Options.eval_interval, 0, function()
-      m_timer:stop()
-      m_evalcache = nil
+    evalstr = string.format(" %s ", table.concat(evalstrs, Options.separator))
+
+    cache.str = evalstr
+    cache.timer:start(Options.eval_interval, 0, function()
+      local cache0 = m_evalcache[winid]
+      if not cache0 then return end
+      cache0.str = nil
+      cache0.timer:stop()
     end)
 
-    return m_evalcache
+    return evalstr
   end
 end)
 

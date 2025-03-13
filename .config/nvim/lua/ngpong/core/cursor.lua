@@ -32,12 +32,12 @@ function M.unhide()
   end
 end
 
-function M.get()
-  return vim.__tbl.unpack(vim.api.nvim_win_get_cursor(0))
+function M.get(winid)
+  return vim.__tbl.unpack(vim.api.nvim_win_get_cursor(winid or 0))
 end
 
-function M.norm_get()
-  return vim.api.nvim_win_get_cursor(0)
+function M.norm_get(winid)
+  return vim.api.nvim_win_get_cursor(winid or 0)
 end
 
 function M.set(row, col, winid)
