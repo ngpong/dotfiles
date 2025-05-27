@@ -1,5 +1,5 @@
-
-local function load_global_modules()
+-- 加载全局的模块
+do
   table.pack = table.pack or function(...) return { n = select("#", ...), ... } end
   table.unpack = table.unpack or function(t, i, j) return unpack(t, i or 1, j or t.n or #t) end
 
@@ -37,7 +37,6 @@ local function load_global_modules()
   vim.__icons     = vim.__lazy.require("ngpong.utils.icon")
   vim.__libp      = vim.__lazy.require("ngpong.utils.libp")
   vim.__autocmd   = vim.__lazy.require("ngpong.core.autocmd")
-  vim.__event     = vim.__lazy.require("ngpong.core.events")
   vim.__key       = vim.__lazy.require("ngpong.core.key")
   vim.__filter    = vim.__lazy.require("ngpong.core.filter")
   vim.__ui        = vim.__lazy.require("ngpong.core.ui")
@@ -51,123 +50,83 @@ local function load_global_modules()
   vim.__qfixlst   = vim.__lazy.require("ngpong.core.qfixlst")
   vim.__color     = vim.__lazy.require("ngpong.core.color")
   vim.__plugin    = vim.__lazy.require("ngpong.core.plugin")
-
-  vim.__event.rg(vim.__event.types.COLOR_SCHEME, function()
-    vim.__stl = require("ngpong.core.statusline")
-    vim.__wbr = require("ngpong.core.winbar")
-  end)
+  vim.__echo      = vim.__lazy.require("ngpong.core.echo")
+  vim.__stl       = vim.__lazy.require("ngpong.core.statusline").__get()
+  vim.__session   = vim.__lazy.require("ngpong.core.session").__get()
+  vim.__wbr       = vim.__lazy.require("ngpong.core.winbar").__get()
+  vim.__bookmark  = vim.__lazy.require("ngpong.core.bookmark").__get()
 end
 
-local function load_user_config()
-  vim.__event.rg(vim.__event.types.VIM_ENTER, function()
-    -- clear jump list && search pattern
-    vim.__jumplst.clear()
-    vim.__helper.clear_searchpattern()
-
-    -- preserved position after yank
-    local ylnum, ycol
-    vim.__autocmd.on("ModeChanged", function()
-      if vim.v.operator == "y" then
-        ylnum, ycol = vim.__cursor.get()
-      end
-    end, { pattern = "n:no" })
-    vim.__autocmd.on("TextYankPost", function()
-      if vim.__helper.get_mode() ~= "no" or vim.v.event.operator ~= "y" then
-        return
-      end
-
-      if not vim.b.visual_multi then
-        vim.highlight.on_yank{ higroup = "Visual", timeout = 75 }
-      end
-
-      if ylnum and ycol then
-        vim.__cursor.set(ylnum, ycol)
-      end
-    end)
-  end)
-
+-- 加载用户配置
+do
   require("ngpong.config.opts")
   require("ngpong.config.cmds")
   require("ngpong.config.keymap")
 end
 
-local function lanugh()
-  local kmodes = vim.__key.e_mode
-  local etypes = vim.__event.types
-
-  -- ensure installed lazy.nvim
-  local function ensure_install()
-    local path = vim.__path.join(vim.__path.standard("data"), "lazy", "lazy.nvim")
-    if not vim.__fs.exists(path) then
-      vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
-        path,
-      })
-    end
-    vim.opt.rtp:prepend(path)
+-- 确保 lazy.nvim 的安装
+do
+  local path = vim.__path.join(vim.__path.standard("data"), "lazy", "lazy.nvim")
+  if not vim.__fs.exists(path) then
+    vim.fn.system({
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable", -- latest stable release
+      path,
+    })
   end
-  ensure_install()
+  vim.opt.rtp:prepend(path)
+end
 
-  -- register starter events
-  local function reg_events()
-    local lazy_event = require("lazy.core.handler.event")
+-- 注册 lazy-spec 使用到的懒加载事件
+do
+  local lazy_event = require("lazy.core.handler.event")
 
-    -- Add support for the LazyFile event
-    local Event = require("lazy.core.handler.event")
+  -- Add support for the LazyFile event
+  local Event = require("lazy.core.handler.event")
 
-    lazy_event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
-    lazy_event.mappings["User LazyFile"] = Event.mappings.LazyFile
+  lazy_event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
+  lazy_event.mappings["User LazyFile"] = Event.mappings.LazyFile
 
-    lazy_event.mappings.VeryLazyFile = { id = "VeryLazyFile", event = "User", pattern = "VeryLazyFile" }
-    lazy_event.mappings["User VeryLazyFile"] = Event.mappings.VeryLazyFile
+  lazy_event.mappings.VeryLazyFile = { id = "VeryLazyFile", event = "User", pattern = "VeryLazyFile" }
+  lazy_event.mappings["User VeryLazyFile"] = Event.mappings.VeryLazyFile
 
-    local group = vim.__autocmd.augroup("lazy_event")
-    group:on({ "BufReadPost", "BufNewFile", "BufWritePre" }, vim.__async.void(function(_)
-      group:del()
-      vim.__autocmd.exec("User", { pattern = "LazyFile" })
-      vim.__async.sleep(200)
-      vim.__autocmd.exec("User", { pattern = "VeryLazyFile", modeline = false })
-    end))
-  end
-  reg_events()
+  local group = vim.__autocmd.augroup("lazy_event")
+  group:on({ "BufReadPost", "BufNewFile", "BufWritePre" }, vim.__async.void(function(_)
+    group:del()
+    vim.__autocmd.exec("User", { pattern = "LazyFile" })
+    vim.__async.sleep(200)
+    vim.__autocmd.exec("User", { pattern = "VeryLazyFile", modeline = false })
+  end))
+end
 
-  -- register starter keymaps
-  local function reg_keymaps()
-    vim.__key.rg(kmodes.N, "<leader>p", function()
-      vim.cmd("Lazy")
+-- 注册 lazy.nvim 的按键
+do
+  vim.__key.rg("n", "<leader>p", function() pcall(vim.cmd, "Lazy") end)
 
-      -- 由于 lazy 禁用了 autocmd，所以我们要手动触发一次
-      for _, bufnr in pairs(vim.__buf.all()) do
-        if "lazy" == vim.__buf.filetype(bufnr) then
-          vim.__event.emit(etypes.BUFFER_ENTER, { buf = bufnr })
-          break
-        end
-      end
-    end)
+  -- hijack plugin manager native key setup
+  local Config = require("lazy.view.config")
+  Config.keys.hover = "<nop>"
+  Config.keys.diff = "<nop>"
+  Config.commands.help.key = "M"
+end
 
-    -- hijack plugin manager native key setup
-    require("lazy.view.config").keys.hover = "<nop>"
-    require("lazy.view.config").keys.diff = "<nop>"
-    vim.__tbl.r_extend(require("lazy.view.config").commands.help, { key = "M" })
-  end
-  reg_keymaps()
-
-  local function scanspecs()
+-- lanugh
+do
+  local function getspecs()
     local config_path = vim.__path.standard("config")
 
     local function setup_spec_highlights(oldconfig, highlights)
-      local function __setup_spec_highlights(p, __highlights)
+      local function __setup_spec_highlights(__highlights)
         if type(__highlights) == "function" then
-          return __setup_spec_highlights(p, __highlights())
+          return __setup_spec_highlights(__highlights())
         end
 
         for _, hl in ipairs(__highlights) do
           if type(hl) == "function" then
-            __setup_spec_highlights(p, hl())
+            __setup_spec_highlights(hl())
           else
             vim.api.nvim_set_hl(0, hl[1], {
               fg = hl.fg,
@@ -178,6 +137,7 @@ local function lanugh()
               blend = hl.blend,
               italic = hl.italic,
               reverse = hl.reverse,
+              nocombine = hl.nocombine,
               underline = hl.underline,
               undercurl = hl.undercurl,
               underdouble = hl.underdouble,
@@ -190,29 +150,58 @@ local function lanugh()
       end
 
       return function(p, opts)
-        __setup_spec_highlights(p, highlights)
+        __setup_spec_highlights(highlights)
 
-        if not oldconfig then
-          local LazyLoader = require("lazy.core.loader")
-          local LazyUtil   = require("lazy.core.util")
-
-          local main = LazyLoader.get_main(p)
-          if main then
-            LazyUtil.try(function() require(main).setup(opts) end, "Failed to run `config` for " .. p.name)
-          else
-            LazyUtil.error("Lua module not found for config of " .. p.name .. ". Please use a `config()` function instead")
-          end
-        else
+        if not oldconfig and p.main then
+          local module = require(p.main)
+          module.setup(opts)
+        elseif oldconfig then
           oldconfig(p, opts)
         end
       end
     end
 
-    local function setup_spec_events(oldinit, events)
-      return function(...)
-        for _, e in ipairs(events) do
-          vim.__event.rg(e[1], e[2])
+    local function setup_spec_hackers(oldconfig, hackers)
+      local function __setup_spec_hackers(__hackers, __opts)
+        if not __hackers then return end
+
+        for _, hacker in ipairs(__hackers) do
+          hacker(__opts)
         end
+      end
+
+      return function(p, opts)
+        __setup_spec_hackers(hackers.before, opts)
+
+        if not oldconfig and p.main then
+          local module = require(p.main)
+          if module.setup then
+            module.setup(opts)
+          end
+        elseif oldconfig then
+          oldconfig(p, opts)
+        end
+
+        __setup_spec_hackers(hackers.after, opts)
+      end
+    end
+
+    local function setup_spec_dispatchs(oldinit, dispatchs)
+      return function(...)
+        for _, d in ipairs(dispatchs) do
+          vim[string.format("__%s", d[1])] = vim.__class.def(d[2]):new()
+        end
+
+        if oldinit then oldinit(...) end
+      end
+    end
+
+    local function setup_spec_commands(oldinit, commands)
+      return function(...)
+        for _, c in ipairs(commands) do
+          vim.api.nvim_create_user_command(c[1], c[2], {})
+        end
+
         if oldinit then oldinit(...) end
       end
     end
@@ -228,49 +217,106 @@ local function lanugh()
     end
 
     local function setup_specs(specs)
-      local function find_finalspec()
-        for _, spec in ipairs(specs) do
-          if not spec.optional then
-            return spec
-          end
-        end
+      if not specs.enabled then
+        return
       end
 
-      local finalspec_cache
+      local root = specs.root
+      if not root then
+        root = specs[1]
+      end
+      assert(root, "missing root in specs")
+
+      local combinit = specs.combinit
+      local combconfig = specs.combconfig
+
       for _, spec in ipairs(specs) do
-        local finalspec = spec
-
-        if spec.optional then
-          if not finalspec_cache then finalspec_cache = find_finalspec() end
-          assert(finalspec_cache, "can not find final spec")
-
-          finalspec = finalspec_cache
+        local highlights = spec.highlights spec.highlights = nil
+        if highlights then
+          combconfig = setup_spec_highlights(combconfig, highlights)
         end
 
-        if spec.highlights then
-          finalspec.config = setup_spec_highlights(finalspec.config, spec.highlights)
-          spec.highlights = nil
+        local hackers = spec.hackers spec.hackers = nil
+        if hackers then
+          combconfig = setup_spec_hackers(combconfig, hackers)
         end
 
-        if spec.events then
-          finalspec.init = setup_spec_events(finalspec.init, spec.events)
-          spec.events = nil
+        local dispatchs = spec.dispatchs spec.dispatchs = nil
+        if dispatchs then
+          combinit = setup_spec_dispatchs(combinit, dispatchs)
         end
 
-        if spec.autocmds then
-          finalspec.init = setup_spec_autocmds(finalspec.init, spec.autocmds)
-          spec.autocmds = nil
+        local commands = spec.commands spec.commands = nil
+        if commands then
+          combinit = setup_spec_commands(combinit, commands)
+        end
+
+        local autocmds = spec.autocmds spec.autocmds = nil
+        if autocmds then
+          combinit = setup_spec_autocmds(combinit, autocmds)
         end
       end
+
+      root.init = combinit
+      root.config = combconfig
     end
 
     local specs, specs_m = {}, setmetatable({}, {
       __index = function(t, k)
-        if rawget(t, k) == nil then rawset(t, k, {}) end
+        rawset(t, k, {})
         return rawget(t, k)
       end,
     })
     local function scanmod(suffix)
+      local function append_2_specs_m(specname, spec)
+        local specs0 = specs_m[specname]
+
+        if spec.main then
+          assert(not spec.optional, "optional spec can not set root " .. specname)
+          assert(not specs0.main, "multiple root " .. specname)
+          specs0.root = spec
+          specs0.main = spec.main
+        end
+
+        if spec.enabled ~= nil then
+          specs0.enabled = spec.enabled
+        else
+          specs0.enabled = true
+        end
+
+        table.insert(specs0, spec)
+
+        local config = spec.config
+        if config then
+          spec.config = nil
+
+          local old_combconfig = specs0.combconfig
+          if old_combconfig then
+            specs0.combconfig = function(...)
+              old_combconfig(...)
+              config(...)
+            end
+          else
+            specs0.combconfig = config
+          end
+        end
+
+        local init = spec.init
+        if init then
+          spec.init = nil
+
+          local old_combinit = specs0.combinit
+          if old_combinit then
+            specs0.combinit = function(...)
+              old_combinit(...)
+              init(...)
+            end
+          else
+            specs0.combinit = init
+          end
+        end
+      end
+
       local path = string.format(config_path .. "/lua/ngpong/%s", suffix)
 
       vim.__fs.scandir(path, function(fname, ftype)
@@ -279,15 +325,12 @@ local function lanugh()
 
           local package = require(require_path)
 
-          -- is more than 1 spec
-          if package [2] ~= nil then -- vim.isarray(package)
+          if vim.__tbl.isarray(package) then
             for _, spec in ipairs(package) do
-              local specname = spec[1]
-              table.insert(specs_m[specname], spec)
+              append_2_specs_m(spec[1], spec)
             end
           else
-            local specname = package[1]
-            table.insert(specs_m[specname], package)
+            append_2_specs_m(package[1], package)
           end
 
           table.insert(specs, package)
@@ -304,8 +347,7 @@ local function lanugh()
     return specs
   end
 
-  -- lanugh
-  require("lazy").setup(scanspecs(), {
+  require("lazy").setup(getspecs(), {
     profiling = {
       loader = false,
       require = false,
@@ -375,12 +417,10 @@ local function lanugh()
     },
   })
 
-  -- lazy highlight
-  vim.api.nvim_set_hl(0, "LazyBackdrop", { link = "Normal" })
-
+  -- lazy autocmd
   vim.__autocmd.on("FileType", function(state)
     vim.__autocmd.on("BufModifiedSet", function()
-      vim.__autocmd.exec("User", { pattern = "LazyBufModifiedSet" })
+      vim.__autocmd.exec("User", { pattern = "UserBufModifiedSet" })
       vim.__stl.redraw(true)
     end, { buffer = state.buf, once = true })
 
@@ -394,8 +434,35 @@ local function lanugh()
   end, { pattern = "lazy" })
 end
 
-load_global_modules()
+-- finally
+do
+  -- clear jump list && search pattern
+  vim.__autocmd.on("VimEnter", function()
+    vim.__jumplst.clear()
+    vim.__helper.clear_searchpattern()
 
-load_user_config()
+    -- preserved position after yank
+    local ylnum, ycol
+    vim.__autocmd.on("ModeChanged", function()
+      if vim.v.operator == "y" then
+        ylnum, ycol = vim.__cursor.get()
+      end
+    end, { pattern = "n:no" })
+    vim.__autocmd.on("TextYankPost", function()
+      if vim.__helper.get_mode() ~= "no" or vim.v.event.operator ~= "y" then
+        return
+      end
 
-lanugh()
+      if not vim.b.visual_multi then
+        vim.highlight.on_yank{ higroup = "Visual", timeout = 75 }
+      end
+
+      if ylnum and ycol then
+        vim.__cursor.set(ylnum, ycol)
+      end
+    end)
+  end)
+
+  -- restore session
+  vim.__session.buffer:load()
+end

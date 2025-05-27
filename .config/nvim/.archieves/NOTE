@@ -1,0 +1,170 @@
+----------------------------------------------------------------------------------
+lua版本5.1
+
+需要安装 luatz 库
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+使用终端的时候需要设置终端映射键，参考:
+  1. https://www.reddit.com/r/neovim/comments/12hyi9t/make_scr_cscr_stab_ctab_work_in_neovim_kitty/
+  2. https://www.reddit.com/r/neovim/comments/mbj8m5/how_to_setup_ctrlshiftkey_mappings_in_neovim_and/
+
+以下配置以 windows terimal 为例:
+{
+  "actions": [
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[123;5u"
+      },
+      "keys": "ctrl+shift+{"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[125;5u"
+      },
+      "keys": "ctrl+shift+}"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[83;5u"
+      },
+      "keys": "ctrl+shift+s"
+    },
+    {
+      "command":
+      {
+          "action": "sendInput",
+          "input": "\u001b[85;5u"
+      },
+      "keys": "ctrl+shift+u"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[46;5u"
+      },
+      "keys": "ctrl+period"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[91;3u"
+      },
+      "keys": "alt+["
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[93;3u"
+      },
+      "keys": "alt+]"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[91;5u"
+      },
+      "keys": "ctrl+["
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[44;5u"
+      },
+      "keys": "ctrl+comma"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[76;5u"
+      },
+      "keys": "ctrl+shift+l"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[79;5u"
+      },
+      "keys": "ctrl+shift+o"
+    },
+    {
+      "command": "unbound",
+      "keys": "alt+enter"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+c"
+    },
+    {
+      "command": "unbound",
+      "keys": "ctrl+v"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[13;5u"
+      },
+      "keys": "ctrl+enter"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[13;2u"
+      },
+      "keys": "shift+enter"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[8;5u"
+      },
+      "id": "User.sendInput.8882FD6D",
+      "keys": "shift+backspace"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[39;5u"
+      },
+      "keys": "ctrl+'"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[88;5u"
+      },
+      "keys": "ctrl+shift+x"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[59;5u"
+      },
+      "keys": "ctrl+;"
+    },
+    {
+      "command": {
+        "action": "sendInput",
+        "input": "\u001b[90;5u"
+      },
+      "keys": "ctrl+shift+z"
+    },
+  ]
+}
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+我自己fork出来的插件，需要定期同步上游修改
+
+NGPONG/multicursors.nvim
+NGPONG/hydra.nvim
+NGPONG/telescope-live-grep-args.nvim
+NGPONG/trouble.nvim
+NGPONG/which-key.nvim
+NGPONG/barbecue.nvim
+NGPONG/marks.nvim
+NGPONG/autoclose.nvim
+----------------------------------------------------------------------------------

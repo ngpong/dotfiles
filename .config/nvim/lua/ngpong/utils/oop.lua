@@ -52,7 +52,7 @@ function object:extend(f)
 end
 
 return {
-  def = function(...)
-    return object:extend(...)
-  end
+  def = function(f)
+    return object:extend(f)
+  end,
 }

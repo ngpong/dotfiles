@@ -10,7 +10,7 @@ function M.set(mark)
         if data.pos[2] == row then
           return
         else
-          vim.__notifier.warn("Replace mark [" .. mark .. "] from `" .. data.file .. ":" .. data.pos[2] .. "`")
+          vim.__echo.warn("Replace mark [" .. mark .. "] from `" .. data.file .. ":" .. data.pos[2] .. "`")
           break
         end
       end
@@ -21,7 +21,7 @@ function M.set(mark)
         if data.pos[2] == row then
           return
         else
-          vim.__notifier.warn("Replace mark [" .. mark .. "] from `" .. data.pos[2] .. "`")
+          vim.__echo.warn("Replace mark [" .. mark .. "] from `" .. data.pos[2] .. "`")
           break
         end
       end
@@ -50,7 +50,7 @@ function M.del(mark, force_write)
     vim.cmd("wshada!")
   end
 
-  vim.__notifier.info("Delete mark [" .. mark .. "]")
+  vim.__echo.info("Delete mark [" .. mark .. "]")
 end
 
 function M.jump(mark)

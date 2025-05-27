@@ -9,6 +9,11 @@ return {
     },
   },
   {
+    "williamboman/mason.nvim",
+    optional = true,
+    opts = { ensure_installed = { "asm-lsp" } }
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     opts = {

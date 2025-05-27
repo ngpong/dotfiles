@@ -10,7 +10,6 @@ local F = require("ngpong.utils.async.functional")
 ---@field env? table<string, string>|string[] Environment looking like: { ['VAR'] = 'VALUE' } or { 'VAR=VALUE' }
 ---@field interactive? boolean
 ---@field detached? boolean Spawn the child in a detached state making it a process group leader
----@field skip_validation? boolean Skip validating the arguments
 ---@field enable_handlers? boolean If set to false, disables all callbacks associated with output (default: true)
 ---@field enabled_recording? boolean
 ---@field on_start? fun()
@@ -100,11 +99,6 @@ function Job:new(o)
     if #o > 1 then
       args = { select(2, unpack(o)) }
     end
-  end
-
-  local ok, is_exe = pcall(vim.fn.executable, command)
-  if not o.skip_validation and ok and 1 ~= is_exe then
-    error(debug.traceback(command .. ": Executable not found"))
   end
 
   local obj = {}

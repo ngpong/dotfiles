@@ -5,9 +5,9 @@ M.dclock = setmetatable({
   wrap = function(self, f, key)
     return function(...)
       self(key)
-      local ret = f(...)
+      local ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8 = f(...)
       self(key)
-      return ret
+      return ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8
     end
   end,
 }, {
@@ -47,29 +47,11 @@ function M.reload_cfg()
   dofile(vim.env.MYVIMRC)
 end
 
-function M.reload_file_if_shown(path)
-  local tabpage = vim.__tab.pages()
-
-  local cur_winid = vim.__win.current()
-  for _, _winid in pairs(vim.__win.all(tabpage)) do
-    local bufnr = vim.__buf.number(_winid)
-    local bufname = vim.__buf.name(bufnr)
-    if bufname == path then
-      vim.__win.jump(_winid)
-      vim.cmd("edit!")
-      vim.__win.jump(cur_winid)
-      return true
-    end
-  end
-
-  return false
-end
-
 function M.get_mode()
   return vim.api.nvim_get_mode().mode
 end
 
-function M.get_selected()
+function M.get_selection()
   local _, ls, cs = unpack(vim.fn.getpos("v"))
   local _, le, ce = unpack(vim.fn.getpos("."))
 

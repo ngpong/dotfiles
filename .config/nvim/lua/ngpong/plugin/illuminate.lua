@@ -55,6 +55,7 @@ end
 
 return {
   "echasnovski/mini.cursorword",
+  main = "mini.cursorword",
   lazy = true,
   event = "VeryLazy",
   highlights = {

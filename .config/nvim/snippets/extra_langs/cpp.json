@@ -11,5 +11,17 @@
     "prefix": "while",
     "body": ["while ($1) {", "\t$0", "}"],
     "description": "`while` loop snippet"
-  }
+  },
+  "st": {
+    "prefix": "st",
+    "body": [
+      "#include <iostream>",
+      "",
+      "int main (int argc, char *argv[]) {",
+      "\t$0",
+      "",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Standard starter template for a tiny C++ program"  }
 }

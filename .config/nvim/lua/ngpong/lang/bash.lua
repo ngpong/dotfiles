@@ -9,6 +9,11 @@ return {
     }
   },
   {
+    "williamboman/mason.nvim",
+    optional = true,
+    opts = { ensure_installed = { "bash-language-server" } }
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     opts = {

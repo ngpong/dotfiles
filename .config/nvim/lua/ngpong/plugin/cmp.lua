@@ -1,6 +1,7 @@
 return {
   {
     "saghen/blink.cmp",
+    main = "blink-cmp",
     lazy = true,
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
@@ -10,16 +11,16 @@ return {
     highlights = {
       { "BlinkCmpGhostText", fg = vim.__color.dark3, italic = true },
 
-      { "BlinkCmpMenu", bg = vim.__color.dark1 },
-      { "BlinkCmpMenuBorder", bg = vim.__color.dark1 },
+      { "BlinkCmpMenu", bg = vim.__color.dark0_soft },
+      { "BlinkCmpMenuBorder", bg = vim.__color.dark0_soft },
       { "BlinkCmpMenuSelection", bg = vim.__color.dark2 },
 
-      { "BlinkCmpDoc", bg = vim.__color.dark1, fg = vim.__color.light1 },
-      { "BlinkCmpDocBorder", bg = vim.__color.dark1 },
-      { "BlinkCmpDocSeparator", bg = vim.__color.dark1, fg = vim.__color.dark2 },
+      { "BlinkCmpDoc", bg = vim.__color.dark0_soft, fg = vim.__color.light1 },
+      { "BlinkCmpDocBorder", fg = vim.__color.dark0_soft },
+      { "BlinkCmpDocSeparator", bg = vim.__color.dark0_soft, fg = vim.__color.dark2 },
 
-      { "BlinkCmpSignatureHelp", bg = vim.__color.dark1, fg = vim.__color.light1 },
-      { "BlinkCmpSignatureHelpBorder", bg = vim.__color.dark1 },
+      { "BlinkCmpSignatureHelp", bg = vim.__color.dark0_soft, fg = vim.__color.light1 },
+      { "BlinkCmpSignatureHelpBorder", bg = vim.__color.dark0_soft, fg = vim.__color.dark0_soft },
       -- { "BlinkCmpSignatureHelpActiveParameter", fg = vim.__color.bright_blue, bold = true },
 
       { "BlinkCmpLabelDetail", fg = vim.__color.gray, italic = true }, -- link = "NonText"
@@ -46,7 +47,7 @@ return {
           cmdline = {
             min_keyword_length = function(ctx)
               if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
-                return 3
+                return 2
               end
               return 0
             end
@@ -57,14 +58,12 @@ return {
         preset = "none",
         ["<C-g>"] = { "show_documentation", "hide_documentation" },
         ["<C-S-G>"] = { "show_signature", "hide_signature" },
-        ["<C-PAGEDOWN>"] = { "scroll_documentation_down" },
-        ["<C-PAGEUP>"] = { "scroll_documentation_up" },
-        ["<C-f>"] = { "snippet_forward", "fallback" },
-        ["<C-b>"] = { "snippet_backward", "fallback" },
-        ["<TAB>"] = { "select_and_accept", "fallback" },
-        ["<C-a>"] = { "show" },
+        ["<C-f>"] = { "scroll_documentation_down" },
+        ["<C-s>"] = { "scroll_documentation_up" },
+        ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
+        ["<S-TAB>"] = { "snippet_backward", "fallback" },
+        ["<A-SPACE>"] = { "show", "hide" },
         ["<C-c>"] = {
-          "hide",
           function()
             if not MiniSnippets.session.get() then
               return false
@@ -85,10 +84,10 @@ return {
       fuzzy = {
         implementation = "rust",
         -- label | sort_text | kind | score | exact
-        sorts = {
-          "score",
-          "sort_text",
-        },
+        -- sorts = {
+        --   "score",
+        --   "sort_text",
+        -- },
       },
       completion = {
         trigger = {
@@ -101,12 +100,12 @@ return {
         },
         list = {
           selection = {
-            preselect = true,
+            preselect = function(_) return not MiniSnippets.session.get() end,
             auto_insert = false
           }
         },
         accept = {
-          dot_repeat = false,
+          dot_repeat = true,
           auto_brackets = {
             enabled = false
           }
@@ -114,7 +113,7 @@ return {
         menu = {
           min_width = 25,
           -- max_height = 10,
-          border = "none",
+          border = vim.__icons.border.raw_no,
           scrolloff = 0,
           -- direction_priority = { "s" },
           cmdline_position = function()
@@ -139,6 +138,9 @@ return {
           update_delay_ms = 50,
           treesitter_highlighting = true,
           window = {
+            -- show documentation scrollbar may case nvim crash
+            --  see: https://github.com/Saghen/blink.cmp/issues/1673
+            scrollbar = false,
             min_width = 10,
             max_width = 80,
             max_height = 20,
@@ -162,7 +164,6 @@ return {
           min_width = 1,
           max_width = 200,
           max_height = 20,
-          winblend = 20,
           border = vim.__icons.border.no,
           winhighlight = "Normal:BlinkCmpSignatureHelp,FloatBorder:BlinkCmpSignatureHelpBorder",
           direction_priority = { "n" },
@@ -175,8 +176,7 @@ return {
         keymap = {
           preset = "none",
           ["<TAB>"] = { "accept", "fallback" },
-          ["<C-a>"] = { "show" },
-          ["<C-c>"] = { "hide" },
+          ["<A-SPACE>"] = { "show", "hide" },
           ["<C-p>"] = { "select_prev" },
           ["<C-n>"] = { "select_next" },
         },
@@ -201,7 +201,7 @@ return {
           ghost_text = { enabled = false }
         }
       },
-    }
+    },
   },
   {
     "saghen/blink.cmp",
@@ -240,16 +240,17 @@ return {
   },
   {
     "echasnovski/mini.snippets",
+    main = "mini.snippets",
     lazy = true,
     dependencies = {
       "rafamadriz/friendly-snippets",
     },
     highlights = {
       { "MiniSnippetsFinal", fg = vim.__color.bright_aqua },
-      { "MiniSnippetsCurrent", bold = true, bg = vim.__color.dark3 },
-      { "MiniSnippetsVisited", bg = vim.__color.dark1 },
-      { "MiniSnippetsUnvisited", bg = vim.__color.dark1 },
-      { "MiniSnippetsCurrentReplace", bold = true, bg = vim.__color.dark3 },
+      { "MiniSnippetsCurrent", bg = vim.__color.dark3 },
+      { "MiniSnippetsVisited", bg = vim.__color.dark2 },
+      { "MiniSnippetsUnvisited", bg = vim.__color.dark2 },
+      { "MiniSnippetsCurrentReplace", bg = vim.__color.dark3 },
     },
     opts = {
       mappings = {
@@ -289,23 +290,27 @@ return {
           end
         }
       })
+    end,
+    hackers = {
+      after = {
+        function(opts)
+          local group = vim.__autocmd.augroup("mini.snippets")
+          -- stop session immediately after jumping to final tabstop
+          group:on("User", function(state)
+            if state.data.tabstop_to == "0" then MiniSnippets.session.stop() end
+          end, { pattern = "MiniSnippetsSessionJump" })
+          -- stop all sessions on Normal mode exit
+          group:on("User", function(_)
+            group:on("ModeChanged", function(_)
+              while MiniSnippets.session.get() do
+                MiniSnippets.session.stop()
+              end
+            end, { pattern = "*:n", once = true })
+          end, { pattern = "MiniSnippetsSessionStart" })
+        end,
+        function(opts)
+          if opts.wrap_jump then return end
 
-      if MiniSnippets ~= nil then
-        local group = vim.__autocmd.augroup("mini.snippets")
-        -- stop session immediately after jumping to final tabstop
-        group:on("User", function(state)
-          if state.data.tabstop_to == "0" then MiniSnippets.session.stop() end
-        end, { pattern = "MiniSnippetsSessionJump" })
-        -- stop all sessions on Normal mode exit
-        group:on("User", function(_)
-          group:on("ModeChanged", function(_)
-            while MiniSnippets.session.get() do
-              MiniSnippets.session.stop()
-            end
-          end, { pattern = "*:n", once = true })
-        end, { pattern = "MiniSnippetsSessionStart" })
-
-        if not opts.wrap_jump then
           local jump = MiniSnippets.session.jump
           MiniSnippets.session.jump = function(direction)
             local session = MiniSnippets.session.get()
@@ -335,8 +340,8 @@ return {
             end
           end
         end
-      end
-    end
+      }
+    }
   },
   {
     "ellisonleao/gruvbox.nvim",
@@ -380,6 +385,7 @@ return {
         BlinkCmpKindStaticMethod = { fg = vim.__color.bright_yellow },
         BlinkCmpKindNull = { fg = vim.__color.gray },
         BlinkCmpKindBoolean = { fg = vim.__color.bright_purple },
+        BlinkCmpKindUnknown = { fg = vim.__color.dark2 },
       }
     },
   }

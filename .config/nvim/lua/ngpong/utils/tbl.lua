@@ -70,27 +70,8 @@ function M.keys(t, f)
   return ret
 end
 
-function M.r_extend(org, ...)
-  local function can_merge(v)
-    return type(v) == "table" and (vim.tbl_isempty(v) or not vim.isarray(v))
-  end
-
-  if select("#", ...) <= 0 then
-    return
-  end
-
-  for i = 1, select("#", ...) do
-    local tbl = select(i, ...)
-    if tbl then
-      for k, v in pairs(tbl) do
-        if can_merge(v) and can_merge(org[k]) then
-          M.tbl_r_extend(org[k], v)
-        else
-          org[k] = v
-        end
-      end
-    end
-  end
+function M.isarray(t)
+  return #t > 0 and next(t, #t) == nil
 end
 
 function M.pack(...)

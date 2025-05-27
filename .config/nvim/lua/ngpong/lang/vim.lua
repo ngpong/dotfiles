@@ -6,7 +6,6 @@ return {
       "vim",
       { parse = "vimdoc", ft = { "checkhealth", "help" } },
       "query",
-      "regex"
     }
   }
 }

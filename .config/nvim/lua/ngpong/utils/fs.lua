@@ -4,6 +4,16 @@ local ffi = require("ffi")
 
 local C = ffi.C
 
+ffi.cdef[[
+  typedef struct FILE FILE;
+  FILE *fopen(const char *filename, const char *mode);
+  int fclose(FILE *stream);
+  ssize_t getline(char **lineptr, size_t *n, FILE *stream);
+  void free(void *ptr);
+]]
+
+local uv = vim.loop
+
 function M.human_size(size, options)
   local si = {
     bits = {"b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"},
@@ -139,7 +149,7 @@ ffi.cdef[[
   typedef long off_t;
 
   typedef struct DIR DIR;
-  
+
   struct dirent {
     ino_t d_ino;
     off_t d_off;
@@ -170,81 +180,145 @@ function M.scandir(path, cb)
   end
 end
 
-function M.getline(buffer, row, nil_result)
-  if row <= 0 then
-    return nil_result
+local function __getline_trim(line_ptr, len)
+  if len == 0 then return 0 end
+
+  if len >= 2 then
+    local last = line_ptr[0][len - 1]
+    local prev = line_ptr[0][len - 2]
+    if last == 0x0A and prev == 0x0D then
+      return len - 2
+    end
   end
 
-  local getline_by_file = function(path)
-    local lines = M.readlines(path)
-    if not lines or not next(lines) then
-      return nil_result
-    end
-
-    local line = lines[row]
-
-    return line
+  local last_char = line_ptr[0][len - 1]
+  if last_char == 0x0A or last_char == 0x0D then
+    return len - 1
   end
 
-  local getline_by_cache = function(bufnr)
-    local lines = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)
-    if not lines or not next(lines) then
-      return nil_result
-    end
+  return len
+end
+function M.getline(path, lnum)
+  if not lnum or lnum <= 0 then return nil end
 
-    return lines[1]
+  local line_str
+
+  local bufnr = vim.__buf.number(path)
+  if bufnr > 0 then
+    line_str = vim.__buf.getline(bufnr, lnum)
+    if line_str then return line_str end
   end
 
-  if type(buffer) == "number" then
-    if vim.fn.bufexists(buffer) < 0 then
-      return nil_result
+  local fp = ffi.C.fopen(path, "r")
+  if fp == nil then return nil end
+
+  local p_line = ffi.new("char*[1]")
+  local p_len = ffi.new("size_t[1]", 0)
+
+  local idx = 1
+  while true do
+    local read = C.getline(p_line, p_len, fp)
+    if read == -1 then break end
+
+    if idx == lnum then
+      local len = __getline_trim(p_line, read)
+      line_str = ffi.string(p_line[0], len)
+      break
     end
 
-    if vim.__buf.is_loaded(buffer) then
-      return getline_by_cache(buffer)
-    else
-      return getline_by_file(vim.__buf.name(buffer))
-    end
-  elseif type(buffer) == "string" then
-    local bufnr = vim.__buf.number(buffer)
-
-    if vim.fn.bufexists(bufnr) > 0 and vim.__buf.is_loaded(bufnr) then
-      return getline_by_cache(bufnr)
-    else
-      return getline_by_file(buffer)
-    end
-  else
-    assert(false)
+    idx = idx + 1
   end
+
+  C.fclose(fp)
+  if p_line[0] ~= nil then
+    C.free(p_line[0])
+  end
+
+  return line_str
+end
+
+function M.readlines(path)
+  local fp = ffi.C.fopen(path, "r")
+  if fp == nil then return nil end
+
+  local ret = {}
+
+  local p_line = ffi.new("char*[1]")
+  local p_len = ffi.new("size_t[1]", 0)
+
+  while true do
+    local read = C.getline(p_line, p_len, fp)
+    if read == -1 then break end
+
+    local len = __getline_trim(p_line, read)
+    local line_str = ffi.string(p_line[0], len)
+
+    table.insert(ret, line_str)
+  end
+
+  C.fclose(fp)
+  if p_line[0] ~= nil then
+    C.free(p_line[0])
+  end
+
+  return ret
 end
 
 function M.maxline(path)
-  return tonumber(vim.fn.system({ "wc", "-l", path }):match("%d+"))
+  local fp = ffi.C.fopen(path, "r")
+  if fp == nil then return nil end
+
+  local p_line = ffi.new("char*[1]")
+  local p_len = ffi.new("size_t[1]", 0)
+
+  local counter = 1
+  while true do
+    local read = C.getline(p_line, p_len, fp)
+    if read == -1 then
+      break
+    end
+    counter = counter + 1
+  end
+
+  C.fclose(fp)
+  if p_line[0] ~= nil then
+    C.free(p_line[0])
+  end
+
+  return counter
 end
 
 function M.state(path)
-  local success, stats = pcall(vim.loop.fs_stat, path)
-  if success and stats then
-    return stats
-  else
-    return nil
+  return uv.fs_stat(path)
+end
+
+function M.executable(path)
+  local stat, err = M.state(path)
+  if not stat then
+    return false, err
   end
+
+  return (stat.type == "file") and
+         (bit.band(stat.mode, tonumber('111', 8)) ~= 0)
 end
 
 function M.valid(path)
-  local stat = M.state(path)
+  local stat, err = M.state(path)
   if not stat or stat.type ~= "file" then
-    return false
+    return false, err
   else
     return true
   end
+end
+
+function M.readable(path)
+  return uv.fs_access(path, "r")
 end
 
 local pl_utils = require("pl.utils")
 local pl_file = require("pl.file")
 local pl_dir = require("pl.dir")
 local pl_path = require("pl.path")
-M.readlines = pl_utils.readlines
 M.read = pl_file.read
 M.write = pl_file.write
 M.makepath = pl_dir.makepath

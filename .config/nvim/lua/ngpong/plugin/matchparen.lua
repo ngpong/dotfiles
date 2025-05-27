@@ -1,5 +1,6 @@
 return {
   "NGPONG/matchparen.nvim",
+  main = "matchparen",
   lazy = true,
   event = "VeryLazy",
   -- init = function()

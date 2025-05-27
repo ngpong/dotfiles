@@ -1,33 +1,75 @@
-local Gitsigns = vim.__lazy.require("gitsigns")
-
-local Module = vim.__class.def(function(this)
-  function this:is_attach(bufnr)
-    return require("gitsigns.cache").cache[bufnr] ~= nil
-  end
-
-  function this:is_diffthis(cb)
-    for _, _winid in pairs(vim.__win.all()) do
-      local bufnr   = vim.__buf.number(_winid)
-
-      if vim.__buf.name(bufnr):match("^gitsigns:") then
-        if cb then cb(bufnr, _winid) end
-        return true
-      end
-    end
-
-    return false
-  end
-end)
-
 return {
   "lewis6991/gitsigns.nvim",
+  main = "gitsigns",
   lazy = true,
   event = "LazyFile",
+  dispatchs = {
+    {
+      "gitsigns",
+      function(this)
+        function this:is_attach(bufnr)
+          return require("gitsigns.cache").cache[bufnr] ~= nil
+        end
+
+        function this:is_diffthis(cb)
+          for _, _winid in pairs(vim.__win.all()) do
+            local bufnr = vim.__buf.number(_winid)
+
+            if vim.__buf.name(bufnr):match("^gitsigns:") then
+              if cb then cb(bufnr, _winid) end
+              return true
+            end
+          end
+
+          return false
+        end
+      end,
+    }
+  },
   highlights = {
     { "GitSignsUntrackedNr", fg = vim.__color.bright_blue },
     { "GitSignsUntracked", fg = vim.__color.bright_blue },
     { "GitSignsChange", fg = vim.__color.bright_yellow },
     { "GitSignsChangeNr", fg = vim.__color.bright_yellow },
+  },
+  autocmds = {
+    {
+      "User",
+      function(args)
+        for _, wininfo in ipairs(args.data.wininfos) do
+          if wininfo.variables.gitsigns_preview ~= nil then
+            vim.__win.close(wininfo.winid)
+          end
+        end
+      end,
+      pattern = "UserPress_CTRLC"
+    },
+    {
+      "User",
+      function(args)
+        for _, wininfo in ipairs(args.data.wininfos) do
+          if wininfo.variables.gitsigns_preview ~= nil then
+            return vim.api.nvim_win_call(wininfo.winid, function()
+              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-u>")))
+            end)
+          end
+        end
+      end,
+      pattern = "UserPress_CTRLS"
+    },
+    {
+      "User",
+      function(args)
+        for _, wininfo in ipairs(args.data.wininfos) do
+          if wininfo.variables.gitsigns_preview ~= nil then
+            return vim.api.nvim_win_call(wininfo.winid, function()
+              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-d>")))
+            end)
+          end
+        end
+      end,
+      pattern = "UserPress_CTRLF"
+    }
   },
   keys = {
     { "<leader>hd", function()
@@ -36,28 +78,50 @@ return {
       end
 
       local path = vim.__buf.name(vim.__buf.current())
-      vim.__git.if_has_diff_or_untracked(path, function() Gitsigns.diffthis() end)
+      vim.__git.if_has_diff_or_untracked(path, function() require("gitsigns").diffthis() end)
     end },
-    { "[h"        , function() Gitsigns.prev_hunk({ wrap = false, navigation_message = true }) end, mode = vim.__key.e_mode.NVSO },
-    { "]h"        , function() Gitsigns.next_hunk({ wrap = false, navigation_message = true }) end, mode = vim.__key.e_mode.NVSO },
-    { "ih"        , function() Gitsigns.select_hunk() end, mode = { vim.__key.e_mode.O, vim.__key.e_mode.VS } },
-    { "<leader>hr", function() Gitsigns.reset_hunk() end },
+    { "[h"        , function() require("gitsigns").prev_hunk({ wrap = false, navigation_message = true }) end, mode = { "n", "v" } },
+    { "]h"        , function() require("gitsigns").next_hunk({ wrap = false, navigation_message = true }) end, mode = { "n", "v" } },
+    { "ih"        , function() require("gitsigns").select_hunk() end, mode = { "o", "v" } },
+    { "<leader>hr", function() require("gitsigns").reset_hunk() end },
     { "<leader>hR", function()
       local bufnr = vim.__buf.current()
       if not vim.__gitsigns:is_attach(bufnr) then
         return
       end
 
-      vim.__ui.input({ prompt = "This operation will restore the entire file, yes(y) or no(n,...)?", relative = "editor" }, function(res)
-        if res ~= "y" then
+      vim.ui.input({ prompt = "restore entire file, y/N: ", }, function(ip)
+        if string.lower(ip) ~= "y" then
           return
         end
-        Gitsigns.reset_buffer()
+        require("gitsigns").reset_buffer()
       end)
     end },
-    { "<leader>hb", function() Gitsigns.blame_line() end },
-    { "<leader>hP", function() Gitsigns.preview_hunk_inline() end },
-    { "<leader>hp", function() Gitsigns.preview_hunk() end },
+    {
+      "<leader>hb",
+      function()
+        for _, winid in ipairs(vim.__win.all()) do
+          if vim.w[winid].gitsigns_preview == "blame" then
+            return vim.__win.close(winid)
+          end
+        end
+
+        require("gitsigns").blame_line()
+      end
+    },
+    { "<leader>hi", function() require("gitsigns").preview_hunk_inline() end },
+    {
+      "<leader>hp",
+      function()
+        for _, winid in ipairs(vim.__win.all()) do
+          if vim.w[winid].gitsigns_preview == "hunk" then
+            return vim.__win.close(winid)
+          end
+        end
+
+        require("gitsigns").preview_hunk()
+      end
+    },
   },
   opts = {
     signs = {
@@ -110,9 +174,5 @@ return {
         vim.__stl.redraw(true)
       end, { pattern = "GitSignsUpdate", once = true })
     end
-  },
-  config = function(p, opts)
-    vim.__gitsigns = Module:new()
-    require("gitsigns").setup(opts)
-  end
+  }
 }

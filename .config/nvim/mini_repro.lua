@@ -18,100 +18,7 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 local plugins = {
-  "ellisonleao/gruvbox.nvim",
   "williamboman/mason-lspconfig.nvim",
-  {
-    "nvim-treesitter/nvim-treesitter",
-    branch = "main",
-    build = ":TSUpdate",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-    },
-    opts = {
-      ensure_install = {
-        { parse = "cpp", ft = "cpp" },
-        { parse = "c", ft = "c" },
-        { parse = "lua", ft = "lua" }
-      },
-      ignore_install = {},
-    },
-    config = function(_, opts)
-      local ensure_parse    = {}
-      local ensure_filetype = {}
-      for _, v in ipairs(opts.ensure_install) do
-        local parse
-        local fts
-
-        if type(v) == "table" then
-          parse = v.parse
-          fts = type(v.ft) == "string" and { v.ft } or v.ft
-        else
-          parse = v
-          fts = { v }
-        end
-
-        table.insert(ensure_parse, parse)
-        for _, ft in ipairs(fts) do
-          table.insert(ensure_filetype, ft)
-        end
-        vim.treesitter.language.register(parse, fts)
-      end
-
-      opts.ensure_install = ensure_parse
-      require("nvim-treesitter").setup(opts)
-      -- enhance tinyd performance?
-      -- https://www.reddit.com/r/neovim/comments/1144spy/will_treesitter_ever_be_stable_on_big_files/
-
-      -- treesitter highlight
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function(args)
-          local bufnr = args.buf
-          local ft    = args.match
-  
-          vim.treesitter.start(bufnr, vim.treesitter.language.get_lang(ft))
-        end,
-        pattern = ensure_filetype
-      })
-    end,
-  },
-  {
-    "folke/snacks.nvim",
-    opts = {
-      indent = {
-        enabled = true,
-        indent = {
-          enabled = true,
-          only_scope = false,
-          only_current = false,
-          hl = "IndentGuide",
-        },
-        animate = {
-          enabled = false,
-        },
-        scope = {
-          enabled = false,
-        },
-        chunk = {
-          enabled = false,
-        },
-      },
-    }
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    branch = "main",
-    opts = {
-      select = {
-        lookahead = true,
-        selection_modes = {
-          ['@parameter.outer'] = 'v', -- charwise
-          ['@function.outer'] = 'V', -- linewise
-          ['@class.outer'] = '<c-v>', -- blockwise
-        },
-        include_surrounding_whitespace = false,
-      }
-    }
-  },
   {
     "williamboman/mason.nvim",
     opts = {
@@ -145,7 +52,6 @@ local plugins = {
         capabilities = vim.tbl_deep_extend(
           "force",
           vim.lsp.protocol.make_client_capabilities(),
-          require("blink.cmp").get_lsp_capabilities(),
           {
             textDocument = {
               completion = {
@@ -161,16 +67,91 @@ local plugins = {
   },
   {
     "saghen/blink.cmp",
+    main = "blink-cmp",
+    dependencies = {
+      "echasnovski/mini.snippets",
+    },
     build = "cargo build --release",
     opts = {
-    }
+      snippets = {
+        preset = "mini_snippets"
+      },
+      keymap = {
+        preset = "none",
+        ["<C-g>"] = { "show_documentation", "hide_documentation" },
+        ["<C-S-G>"] = { "show_signature", "hide_signature" },
+        ["<C-f>"] = { "scroll_documentation_down" },
+        ["<C-s>"] = { "scroll_documentation_up" },
+        ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
+        ["<S-TAB>"] = { "snippet_backward", "fallback" },
+        ["<A-SPACE>"] = { "show", "hide" },
+        ["<C-c>"] = {
+          function()
+            if not MiniSnippets.session.get() then
+              return false
+            end
+
+            vim.schedule(function()
+              while MiniSnippets.session.get() do
+                MiniSnippets.session.stop()
+              end
+            end)
+            return true
+          end,
+          "fallback"
+        },
+        ["<C-p>"] = { "select_prev" },
+        ["<C-n>"] = { "select_next" },
+      },
+      completion = {
+        accept = {
+          dot_repeat = true,
+          auto_brackets = {
+            enabled = false
+          }
+        },
+      },
+    },
+  },
+  {
+    "echasnovski/mini.snippets",
+    main = "mini.snippets",
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+    },
+    opts = {
+      mappings = {
+        expand = "",
+        jump_next = "",
+        jump_prev = "",
+        stop = "",
+      },
+      variables = {},
+      empty_tabstop_final = "•", -- ∎
+      empty_tabstop = "", -- •
+      wrap_jump = false,
+    },
+    config = function(_, opts)
+      local gen_loader = require("mini.snippets").gen_loader
+      require("mini.snippets").setup({
+        snippets = {
+          -- friendly-snippets
+          gen_loader.from_lang(),
+        },
+        mappings = opts.mappings,
+        expand = {
+          insert = function(snippet)
+            return MiniSnippets.default_insert(snippet, {
+              lookup = opts.variables,
+              empty_tabstop = opts.empty_tabstop,
+              empty_tabstop_final = opts.empty_tabstop_final,
+            })
+          end
+        }
+      })
+    end,
   },
 }
 require("lazy").setup(plugins, {
   root = root .. "/plugins",
 })
-
--- add anything else here
-vim.opt.termguicolors = true
--- do not remove the colorscheme!
-vim.cmd([[colorscheme gruvbox]])

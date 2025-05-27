@@ -10,6 +10,11 @@ return {
     },
   },
   {
+    "williamboman/mason.nvim",
+    optional = true,
+    opts = { ensure_installed = { "cmake-language-server", "autotools-language-server" } }
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     opts = {

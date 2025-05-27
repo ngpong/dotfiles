@@ -1,39 +1,71 @@
-local root = nil
-
-local function valid()
-  return root ~= nil
+local root_cache = {}
+local function is_root(dir)
+  if root_cache[dir] == nil then
+    root_cache[dir] = vim.__fs.exists(dir .. "/.git")
+  end
+  return root_cache[dir]
 end
+local function get_root(path)
+  path = path or vim.__path.cwd()
 
-local function parse_line_2_path(line)
-  if type(line) ~= "string" then
-    return
+  local home = vim.__path.home()
+
+  local todo = { path }
+  local p = path
+  while p do
+    local d = vim.__path.dirname(p)
+    if p == d or d == home then break end
+
+    table.insert(todo, d)
+
+    p = d
   end
 
-  local line_parts = vim.split(line, "\t")
-  if #line_parts < 2 then
-    return
-  end
-  local status = line_parts[1]
-  local relative_path = line_parts[2]
-
-  -- rename output is `R000 from/filename to/filename`
-  if status:match("^R") then
-    relative_path = line_parts[3]
+  -- check cache first
+  for _, dir in ipairs(todo) do
+    if root_cache[dir] then
+      return dir
+    end
   end
 
-  -- remove any " due to whitespace or utf-8 in the path
-  relative_path = relative_path:gsub('^"', ''):gsub('"$', "")
+  for _, dir in ipairs(todo) do
+    if is_root(dir) then
+      return dir
+    end
+  end
 
-  -- convert windows path to unix
-  relative_path = vim.__path.normalize(relative_path)
-
-  -- convert octal encoded lines to utf-8
-  relative_path = vim.__str.octal_2utf8(relative_path)
-
-  return vim.__path.join(root, relative_path)
+  return os.getenv("GIT_WORK_TREE")
 end
 
 local function status_diff()
+  local root = get_root()
+
+  local function parse_line_2_path(line)
+    if type(line) ~= "string" then
+      return
+    end
+
+    local line_parts = vim.split(line, "\t")
+    if #line_parts < 2 then
+      return
+    end
+    local status = line_parts[1]
+    local relative_path = line_parts[2]
+
+    -- rename output is `R000 from/filename to/filename`
+    if status:match("^R") then
+      relative_path = line_parts[3]
+    end
+
+    -- remove any " due to whitespace or utf-8 in the path
+    relative_path = relative_path:gsub('^"', ''):gsub('"$', "")
+
+    -- convert octal encoded lines to utf-8
+    relative_path = vim.__str.octal_2utf8(relative_path)
+
+    return vim.__path.join(root, relative_path)
+  end
+
   local ret = {}
 
   local args = { "-C", root, "diff", "--name-status", "HEAD", "--" }
@@ -51,6 +83,8 @@ local function status_diff()
 end
 
 local function if_has_diff(cb_ok, cb_err, path)
+  local root = get_root(path)
+
   local result
 
   local await_has_diff = vim.__async.wrap(function(callback)
@@ -75,6 +109,8 @@ local function if_has_diff(cb_ok, cb_err, path)
 end
 
 local function if_has_diff_sync(path)
+  local root = get_root(path)
+
   local ret = false
 
   vim.__job.new({
@@ -92,6 +128,8 @@ local function if_has_diff_sync(path)
 end
 
 local if_has_log = vim.__async.void(function(path, cb)
+  local root = get_root(path)
+
   local result
 
   local await_has_log = vim.__async.wrap(function(callback)
@@ -114,6 +152,8 @@ local if_has_log = vim.__async.void(function(path, cb)
 end)
 
 local if_has_diff_or_untracked = vim.__async.void(function(path, cb_ok, cb_err)
+  local root = get_root(path)
+
   local result
 
   local await_is_untracked = vim.__async.wrap(function(callback)
@@ -159,39 +199,8 @@ local if_has_diff_or_untracked = vim.__async.void(function(path, cb_ok, cb_err)
   end
 end)
 
-local function get_workspace(cb)
-  if not valid() then
-    local job = vim.__job.new({
-      command = "git",
-      args = { "-C", ".", "rev-parse", "--show-toplevel" },
-      on_exit = function(j, _, _)
-        local res = j:result()[1]
-        if res then
-          root = res
-          if cb then cb(root) end
-        end
-      end
-    })
-
-    if cb then
-      job:start()
-      return nil
-    else
-      job:sync()
-      return root
-    end
-  else
-    if cb then
-      cb(root)
-    else
-      return root
-    end
-  end
-end
-get_workspace()
-
 return {
-  valid = valid,
+  get_root = get_root,
   status_diff = status_diff,
   if_has_diff = if_has_diff,
   if_has_diff_sync = if_has_diff_sync,

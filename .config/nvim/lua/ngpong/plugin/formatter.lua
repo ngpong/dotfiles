@@ -1,5 +1,6 @@
 return {
   "stevearc/conform.nvim",
+  main = "conform",
   lazy = true,
   cmd = "ConformInfo",
   init = function()
@@ -17,8 +18,8 @@ return {
           quiet = false,
           callback = nil, -- function
         }
-        vim.__ui.input({ prompt = "This operation will format the entire file, yes(y) or no(n,...)?", relative = "editor" }, function(res)
-          if res ~= "y" then
+        vim.ui.input({ prompt = "format entire file, y/N: ", }, function(ip)
+          if not ip or string.lower(ip) ~= "y" then
             return
           end
           require("conform").format(opts)

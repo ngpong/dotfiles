@@ -1,37 +1,32 @@
-
-local Hop     = vim.__lazy.require("hop")
-local HopHint = vim.__lazy.require("hop.hint")
-
-local kmodes = vim.__key.e_mode
-
 return {
   "smoka7/hop.nvim",
-  dependencies = {
-    "tpope/vim-repeat"
-  },
+  main = "hop",
+  -- dependencies = {
+  --   "tpope/vim-repeat"
+  -- },
   lazy = true,
-  init = function()
-    local function donot_prompt(cb)
-      return function()
-        local nvim_echo = vim.api.nvim_echo
-        vim.api.nvim_echo = function(...) end
-        cb()
-        vim.api.nvim_echo = nvim_echo
-      end
-    end
-
-    local function short_prompt(cb)
-      return function()
-        local get_input_pattern = Hop.get_input_pattern
-        Hop.get_input_pattern = function(...)
-          local args = { ... } args[1] = ":"
-          return get_input_pattern(table.unpack(args))
-        end
-        cb()
-        Hop.get_input_pattern = get_input_pattern
-      end
-    end
-  end,
+  -- init = function()
+  --   local function donot_prompt(cb)
+  --     return function()
+  --       local nvim_echo = vim.api.nvim_echo
+  --       vim.api.nvim_echo = function(...) end
+  --       cb()
+  --       vim.api.nvim_echo = nvim_echo
+  --     end
+  --   end
+  --
+  --   local function short_prompt(cb)
+  --     return function()
+  --       local get_input_pattern = Hop.get_input_pattern
+  --       Hop.get_input_pattern = function(...)
+  --         local args = { ... } args[1] = ":"
+  --         return get_input_pattern(table.unpack(args))
+  --       end
+  --       cb()
+  --       Hop.get_input_pattern = get_input_pattern
+  --     end
+  --   end
+  -- end,
   highlights = {
     { "Question", fg = vim.__color.light1 },
     { "HopNextKey", bg = vim.__color.bright_red, fg = vim.__color.dark0, bold = true, italic = true, },
@@ -42,12 +37,12 @@ return {
     { "HopPreview", link = "Search" },
   },
   keys = {
-    { "s", function() Hop.hint_char2() end, mode = kmodes.NVSO },
-    { "S", function() Hop.hint_words() end, mode = kmodes.NVSO },
-    { "f", function() Hop.hint_char1({ direction = HopHint.HintDirection.AFTER_CURSOR, current_line_only = true }) end, mode = { kmodes.O, kmodes.VS } },
-    { "F", function() Hop.hint_char1({ direction = HopHint.HintDirection.BEFORE_CURSOR, current_line_only = true }) end, mode = { kmodes.O, kmodes.VS } },
-    { "t", function() Hop.hint_char1({ direction = HopHint.HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, mode = { kmodes.O, kmodes.VS } },
-    { "T", function() Hop.hint_char1({ direction = HopHint.HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, mode = { kmodes.O, kmodes.VS } },
+    { "s", function() require("hop").hint_char2() end, mode = "" },
+    { "S", function() require("hop").hint_words() end, mode = "" },
+    { "f", function() require("hop").hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true }) end, mode = { "o", "v" } },
+    { "F", function() require("hop").hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true }) end, mode = { "o", "v" } },
+    { "t", function() require("hop").hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, mode = { "o", "v" } },
+    { "T", function() require("hop").hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, mode = { "o", "v" } },
   },
   opts = {
     teasing = false,

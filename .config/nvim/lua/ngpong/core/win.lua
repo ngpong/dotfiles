@@ -32,7 +32,7 @@ function M.close_diff()
   local function get_closing_winids()
     local closing_winids = {}
     for _, _winid in pairs(M.all()) do
-      if vim.wo[_winid].diff then
+      if vim.wo[_winid].diff and vim.wo[_winid].foldmethod == "diff" then
         if _winid ~= winid then
           table.insert(closing_winids, _winid)
         elseif vim.__buf.name(vim.__buf.number(_winid)):match("^gitsigns:") then
@@ -51,18 +51,24 @@ function M.close_diff()
       vim.wo[_winid].diff = false
       vim.wo[_winid].scrollbind = false
       vim.wo[_winid].foldcolumn = "0"
-      vim.wo[_winid].foldmethod = "expr"
+      vim.wo[_winid].foldlevel = 99
+      vim.wo[_winid].foldmethod = "manual"
       vim.wo[_winid].foldenable = false
     end
   end
 
   if M.is_diff(winid) then
-    for _, _winid in ipairs(get_closing_winids()) do
-      vim.api.nvim_win_call(_winid, function() vim.cmd("diffoff") end)
-      M.close(_winid)
-    end
+    local closing_winids = get_closing_winids()
 
-    reset_opts()
+    -- avoid textlock error
+    vim.schedule(function()
+      for _, _winid in ipairs(closing_winids) do
+        vim.api.nvim_win_call(_winid, function() vim.cmd("diffoff") end)
+        M.close(_winid)
+      end
+      reset_opts()
+    end)
+
     return true
   end
 
@@ -122,41 +128,12 @@ function M.bufnr(winid)
   end
 end
 
-function M.ids(bufnr_or_path)
-  if not bufnr_or_path then
-    return { M.current() }
-  end
-
-  if type(bufnr_or_path) == "number" then
-    local bufnr = bufnr_or_path
-    return vim.fn.win_findbuf(bufnr)
-  elseif type(bufnr_or_path) == "string" then
-    local bufnr = vim.__buf.number(bufnr_or_path)
-    return vim.fn.win_findbuf(bufnr)
-  else
-    assert(false)
-  end
-end
-
-function M.all(...)
-  local args = { ... }
-  local tabpage = next(args) and args[1] or vim.__tab.page()
-
-  local success, winids = pcall(vim.api.nvim_tabpage_list_wins, tabpage)
-  if success then
-    return winids
-  else
-    return {}
-  end
+function M.all()
+  return vim.api.nvim_list_wins()
 end
 
 function M.info(winid)
-  local success, wininfo = pcall(vim.fn.getwininfo, winid)
-  if not success then
-    return {}
-  end
-
-  return wininfo
+  return vim.fn.getwininfo(winid)
 end
 
 function M.infos(...)

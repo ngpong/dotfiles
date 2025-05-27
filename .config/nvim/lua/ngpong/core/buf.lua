@@ -1,5 +1,17 @@
 local M = {}
 
+local ffi = require("ffi")
+
+local C = ffi.C
+
+ffi.cdef([[
+  typedef struct {} Error;
+  typedef struct file_buffer buf_T;
+  typedef int32_t linenr_T;
+  buf_T *find_buffer_by_handle(int buffer, Error *err);
+  char *ml_get_buf(buf_T *buf, linenr_T lnum); // fn.getbufline
+]])
+
 function M.is_listed(bufnr)
   if not M.is_valid(bufnr) then
     return false
@@ -17,9 +29,10 @@ function M.is_unnamed(bufnr)
 end
 
 function M.is_scratch(bufnr)
-  return vim.bo[bufnr].buftype == "nofile" and
-         vim.bo[bufnr].bufhidden == "hide" and
-         vim.bo[bufnr].swapfile == false
+  local bo = vim.bo[bufnr]
+  return bo.buftype == "nofile" and
+         bo.bufhidden == "hide" and
+         bo.swapfile == false
 end
 
 function M.is_loaded(bufnr)
@@ -35,20 +48,11 @@ function M.switch(bufnr)
 end
 
 function M.add(arg)
-  local type = type(arg)
+  return vim.fn.bufadd(arg)
+end
 
-  if type == "string" then
-    vim.cmd.badd(arg)
-  elseif type == "number" then
-    local bufnr = arg
-
-    for _, _bufnr in pairs(vim.api.nvim_list_bufs()) do
-      if _bufnr == bufnr then
-        vim.cmd.badd(M.name(bufnr))
-        vim.api.nvim_buf_call(bufnr, vim.cmd.edit)
-      end
-    end
-  end
+function M.findwin(bufnr)
+  return vim.fn.win_findbuf(bufnr)
 end
 
 function M.del(bufnr, force, cond)
@@ -69,7 +73,7 @@ function M.del(bufnr, force, cond)
     end
   end
 
-  for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+  for _, win in ipairs(M.findwin(bufnr)) do
     vim.api.nvim_win_call(win, function()
       if not vim.__win.is_valid(win) or vim.__win.bufnr(win) ~= bufnr then
         return
@@ -177,6 +181,30 @@ function M.info(bufnr)
   return vim.fn.getbufinfo(bufnr)
 end
 
+function M.maxline(bufnr)
+  return vim.api.nvim_buf_line_count(bufnr)
+end
+
+function M.getline(bufnr, lnum)
+  bufnr = bufnr or M.current()
+
+  local p_buf = ffi.C.find_buffer_by_handle(bufnr, ffi.new("Error"))
+  if p_buf == nil then
+    return nil
+  end
+
+  if lnum <= 0 or lnum > M.maxline(bufnr) then
+    return nil
+  end
+
+  return ffi.string(C.ml_get_buf(p_buf, lnum))
+end
+
+function M.mark(bufnr, m)
+  bufnr = bufnr or M.current()
+  return vim.api.nvim_buf_get_mark(bufnr, m)
+end
+
 function M.all()
   return vim.api.nvim_list_bufs()
 end
@@ -184,11 +212,11 @@ end
 function M.size(bufnr)
   local path = vim.api.nvim_buf_get_name(bufnr or M.current())
 
-  local state = vim.__fs.state(path)
+  local state, err = vim.__fs.state(path)
   if state then
     return state.size
   else
-    return -1
+    return -1, err
   end
 end
 
@@ -222,9 +250,13 @@ local function has_altbuf(bufnr)
   local non_special         = M.buftype(bufnr) == ""
   local morethan_one_buffer = #(vim.fn.getbufinfo { buflisted = 1 }) > 1
   local curbuf_not_alt      = M.current() ~= bufnr -- fixes weird rare vim bug
-  local altfile_exists      = vim.loop.fs_stat(M.name(bufnr)) ~= nil
+  local altfile_exists      = vim.__fs.exists(M.name(bufnr))
 
-  return valid and non_special and morethan_one_buffer and curbuf_not_alt and altfile_exists
+  return valid and
+         non_special and
+         morethan_one_buffer and
+         curbuf_not_alt and
+         altfile_exists
 end
 function M.goto_altbuf()
   if vim.__filter.contain_fts() then
@@ -236,16 +268,14 @@ function M.goto_altbuf()
   if has_altbuf(bufnr) then
     vim.cmd.buffer("#")
   else
-    vim.__notifier.warn("Alternative buffer not found or closed")
+    vim.__echo.warn("Alternative buffer not found or closed")
   end
 end
 
 local last_modifiedbuf = nil
 vim.__autocmd.on({ "TextChanged", "TextChangedI" }, function(state)
   local bufnr = state.buf
-  if bufnr == last_modifiedbuf then
-    return
-  end
+  if bufnr == last_modifiedbuf then return end
 
   local ft      = vim.__buf.filetype(bufnr)
   local bt      = vim.__buf.buftype(bufnr)
@@ -271,7 +301,7 @@ function M.goto_modifiedbuf()
   if not last_modifiedbuf or
      not M.is_listed(last_modifiedbuf) or
      not M.is_loaded(last_modifiedbuf) then
-    vim.__notifier.warn("Last-modified buffer not found or closed")
+    vim.__echo.warn("Last-modified buffer not found or closed")
     return
   end
 

@@ -13,7 +13,7 @@ local icons = {
 
   cursor_1 = "󰆿",
   cursor_2 = "󰳽",
-  bookmarks = "󰬔",
+  bookmark = "󰃁",
   ok = "",
   close = "󰅖",
   big_dot = "",
@@ -30,7 +30,7 @@ local icons = {
   record = "",
   play = "",
 
-  diagnostic_err = "󰅙",
+  diagnostic_error = "󰅙",
   diagnostic_hint = "󰌵",
   diagnostic_info = "󰰄",
   diagnostic_warn = "󰀦",
@@ -74,7 +74,12 @@ local icons = {
   -- border = { " ", " ", " ", " ", " ", " ", " ", " " },
   border = {
     yes = "rounded",
-    no = { "", "", "", " ", "", "", "", " " }
+    no = { "", "", "", "▌", "", "", "", "▐" },
+    left = { " ", " ", " ", " ", " ", " ", " ", "│" },
+    top = { " ", "-", " ", " ", " ", " ", " ", " " },
+    raw_no = "none",
+    no_but_title = { " ", " ", " ", " ", " ", " ", " ", " " },
+    no_but_title_slim = { " ", " ", " ", "▌", "", "", "", "▐" },
   },
 
   braces = "󰅩",
@@ -162,9 +167,9 @@ icons.lsp_kinds = {
   Constructor = { val = "󰒓", hl = "BlinkCmpKindConstructor" }, -- 󰒓  
   Field = { val = "", hl = "BlinkCmpKindField" }, --  󰜢
   Variable = { val = "", hl = "BlinkCmpKindVariable" }, -- 󰀫 󰆦
-  Class = { val = "󱡠", hl = "BlinkCmpKindClass" }, -- 󱡠 
+  Class = { val = "󰆼", hl = "BlinkCmpKindClass" }, -- 󱡠 
   Struct = { val = "󱡠", hl = "BlinkCmpKindStruct" }, --   󱡠
-  Object = { val = "", hl = "BlinkCmpKindObject" },
+  Object = { val = "", hl = "BlinkCmpKindObject" },
   Interface = { val = "", hl = "BlinkCmpKindInterface" },
   Module = { val = "󰏗", hl = "BlinkCmpKindModule" }, -- 󰅩
   Namespace = { val = "󰅴", hl = "BlinkCmpKindNamespace" }, -- 󰅩
@@ -192,7 +197,8 @@ icons.lsp_kinds = {
   Package = { val = "󰏖", hl = "BlinkCmpKindPackage" }, -- 󰆦
   StaticMethod = { val = "󰠄", hl = "BlinkCmpKindStaticMethod" },
   Null = { val = "󰢤", hl = "BlinkCmpKindNull" },
-  Boolean = { val = "◩", hl = "BlinkCmpKindBoolean" },
+  Boolean = { val = "◩", hl = "BlinkCmpKindBoolean" }, -- 󰨙
+  Unknown = { val = "", hl = "BlinkCmpKindUnknown" },
 }
 icons.lsp_menus = {
   nvim_lsp = "[LSP]",
@@ -217,18 +223,41 @@ function icons.get_all_lsp_hllink()
   return ret
 end
 
+function icons.get_icon_color(name, ext)
+  local webicons = vim.__webicons.get_icons()
 
-local icon_color_cache = {}
-local default_opts = { default = true }
-function icons.get_icon_color_by_ft(ft)
-  local cache = icon_color_cache[ft]
-  if not cache then
-    local icon, hl = vim.__webicons.get_icon_color_by_filetype(ft, default_opts)
-    cache = { icon, { fg = hl } }
-    icon_color_cache[ft] = cache
+  local icondata -- get icon by name
+  if name then
+    icondata = webicons[name:lower()]
+  end
+  if not icondata then -- get icon by ext
+    ext = ext or vim.__path.ext(name)
+    if ext then
+      icondata = webicons[ext]
+    end
+  end
+  if not icondata then -- default icon
+    icondata = webicons[1]
   end
 
-  return cache[1], cache[2]
+  local icon_name = icondata.name
+  return icondata.icon, (icon_name and "DevIcon" .. icon_name or "DevIconDefault")
+end
+
+function icons.get_icon_color_by_ft(ft)
+  local webicons = vim.__webicons.get_icons()
+
+  local name = vim.__webicons.get_icon_name_by_filetype(ft)
+  local icondata -- get icon by name
+  if name then
+    icondata = webicons[name:lower()]
+  end
+  if not icondata then -- default icon
+    icondata = webicons[1]
+  end
+
+  local icon_name = icondata.name
+  return icondata.icon, (icon_name and "DevIcon" .. icon_name or "DevIconDefault")
 end
 
 return icons

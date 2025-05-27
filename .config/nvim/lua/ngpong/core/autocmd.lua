@@ -45,8 +45,6 @@ local Augroup = vim.__class.def(function(this)
   end
 
   function this:on(event, cb, args)
-    assert(groupid)
-
     args = args or {}
     args.group = groupid
     args.callback = cb
@@ -79,7 +77,7 @@ function M.del_augroup(arg, api_selector)
 
     local fc = vim.api[api_selector]
     if not fc or type(fc) ~= "function" then
-      vim.__notifier.err("delete augroup error, invalid selector not found: " .. api_selector)
+      vim.__echo.err("delete augroup error, invalid selector not found: " .. api_selector)
       return
     end
 
@@ -95,9 +93,10 @@ function M.exec(event, opts)
   vim.api.nvim_exec_autocmds(event, opts)
 end
 
-local default_augroup = M.augroup("deafult")
-function M.on(...)
-  return default_augroup:on(...)
+function M.on(event, cb, args)
+  args = args or {}
+  args.callback = cb
+  return Autocmd:new(event, args)
 end
 
 return M

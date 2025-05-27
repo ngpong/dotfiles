@@ -2,8 +2,8 @@
 vim.g.mapleader = " "
 
 -- 全局编码
-vim.go.encoding = "utf-8"
-vim.opt.fileencoding = "utf-8"
+-- vim.go.encoding = "utf-8"
+-- vim.opt.fileencoding = "utf-8"
 
 -- 剪切板设置
 --
@@ -46,18 +46,16 @@ vim.go.mouse = "" -- "a"
 -- -- 侧边显示行号；该选项与 statuscolumn 关联
 vim.wo.number = true
 vim.wo.relativenumber = true
--- vim.opt.nu = false
--- vim.opt.rnu = false
 
 -- 控制状态线中数组得长度
 vim.wo.numberwidth = 5
 
 -- 目前一个符号必定会占用两列，可能是一个修复项：https://github.com/neovim/neovim/issues/13098
 -- 显示左侧图标指示列
-vim.wo.signcolumn = "yes:1" -- auto:1-2
+vim.wo.signcolumn = "auto:1-2" -- auto:1-2
 
 -- 组织状态线
-vim.wo.statuscolumn = "  %=%{v:relnum?v:relnum:v:lnum}%=%s" -- https://www.reddit.com/r/neovim/comments/10j0vyf/finally_figured_out_a_statuscolumn_i_am_happy/
+vim.wo.statuscolumn = "  %=%{v:virtnum?'':(v:relnum?v:relnum:v:lnum)}%=%s"-- https://www.reddit.com/r/neovim/comments/10j0vyf/finally_figured_out_a_statuscolumn_i_am_happy/
 
 -- 使用空格替代 <Tab>
 vim.opt.expandtab = true
@@ -125,7 +123,9 @@ vim.opt.formatoptions = vim.opt.formatoptions + "o"
 
 -- 禁用 foldcolumn
 vim.wo.foldcolumn = "0"
-vim.wo.foldmethod = "expr"
+vim.wo.foldlevel = 99
+vim.wo.foldmethod = "manual"
+vim.wo.foldenable = true
 
 -- 当文件被外部修改时则自动加载
 vim.go.autoread = true
@@ -143,6 +143,9 @@ vim.go.shada = "h,'100,<50,f0,s10"
 vim.go.timeout = false -- 开启 timeout 后，当时间结束后任会触发被设置的按键
 vim.go.timeoutlen = 500
 
+-- 不使用分割线
+vim.go.fillchars = "horiz: ,horizup: ,horizdown: ,vert: ,vertleft: ,vertright: ,vertright: "
+
 -- 是否显示不可见字符，对于查看文件中是否有多余字符(tab 或 space)有帮助
 vim.wo.list = false
 
@@ -151,9 +154,6 @@ vim.wo.list = false
 
 -- 禁用内置语法高亮
 -- vim.cmd("syntax off")
-
--- 禁用折叠
-vim.wo.foldenable = false
 
 -- 控制 tabline 显示行为
 -- 0  never
@@ -171,10 +171,13 @@ vim.g.no_plugin_maps = 1
 
 -- 设置 shell，某些插件使用 fish 的话可能会存在性能问题
 -- https://github.com/nvim-tree/nvim-tree.lua/wiki/Troubleshooting#performance-tips
-vim.go.shell = "/usr/bin/bash"
+vim.o.shell = "/bin/bash"
 
 -- diff options
 vim.go.diffopt = vim.go.diffopt .. ",followwrap"
+
+-- persist undo tree
+vim.opt.undofile = true
 
 -- 禁用原生的插件
 -- REF: https://github.com/neovim/neovim/blob/master/runtime/pack/dist/opt/matchit/plugin/matchit.vim
@@ -200,6 +203,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
+vim.g.qf_disable_statusline = 1
 
 -- 禁用一些无用的 providers
 vim.g.loaded_ruby_provider = 0

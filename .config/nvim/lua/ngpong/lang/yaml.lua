@@ -7,6 +7,11 @@ return {
     }
   },
   {
+    "williamboman/mason.nvim",
+    optional = true,
+    opts = { ensure_installed = { "yaml-language-server" } }
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     opts = {

@@ -3,6 +3,6 @@ return {
     vim.cmd("clearjumps")
   end,
   add = function()
-    vim.__key.press("m\"")
+    vim.cmd[[normal! m']]
   end
 }

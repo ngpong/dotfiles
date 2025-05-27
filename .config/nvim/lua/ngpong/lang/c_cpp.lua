@@ -9,7 +9,7 @@ return {
   {
     "williamboman/mason.nvim",
     optional = true,
-    opts = { ensure_installed = { "clang-format" } }
+    opts = { ensure_installed = { "clang-format" } } -- "clangd"
   },
   {
     "neovim/nvim-lspconfig",
@@ -17,14 +17,23 @@ return {
     dependencies = {
       "p00f/clangd_extensions.nvim",
     },
+    autocmds = {
+      {
+        "FileType",
+        function(args)
+          vim.__key.rg("n", "q", function()
+            vim.__win.close(0)
+            vim.__buf.wipeout(args.buf)
+          end, { buffer = args.buf, silent = true })
+        end,
+        pattern = { "ClangdTypeHierarchy", "ClangdAST" }
+      }
+    },
     opts = {
       servers = {
         clangd = {
-          enabled = true,
           keys = {
-            { "<leader>lh", "<CMD>ClangdTypeHierarchy<CR>", silent = true },
-            { "<leader>lm", "<CMD>ClangdMemoryUsage<CR>", silent = true },
-            { "<leader>la", "<CMD>ClangdAST<CR>", silent = true },
+            { "ft", "<CMD>ClangdTypeHierarchy<CR>", silent = true },
             { "gs", "<CMD>ClangdSwitchSourceHeader<CR>", silent = true },
           },
           cmd = {
@@ -34,9 +43,10 @@ return {
             "--background-index",
             "--background-index-priority=normal",
             "--ranking-model=decision_forest",
-            "--completion-style=bundled",
+            "--completion-style=bundled", -- detailed, bundled
             "--header-insertion=never", -- iwyu
             "--header-insertion-decorators=false",
+            "--function-arg-placeholders=false",
             "--pch-storage=memory",
             "--limit-references=0",
             "--rename-file-limit=0",
@@ -51,19 +61,20 @@ return {
             textDocument = {
               completion = {
                 completionItem = {
-                  snippetSupport = false
+                  snippetSupport = true
                 }
               }
             },
           },
-          on_attach = function()
+          on_attach = function(cli, bufnr)
+            -- cli.server_capabilities.signatureHelpProvider.triggerCharacters = { "(", ")", "<", ">", "," }
+
             -- require("clangd_extensions.inlay_hints").setup_autocmd()
             -- require("clangd_extensions.inlay_hints").set_inlay_hints()
-          end
+          end,
         },
         ccls = {
           enabled = false,
-          mason_install = false,
           init_options = {
             cache = {
               directory = ".ccls-cache";

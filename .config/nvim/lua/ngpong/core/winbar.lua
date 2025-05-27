@@ -1,3 +1,6 @@
+local uv = vim.loop
+local bit = require("bit")
+
 local Options = {
   extend = "…",
   separator = " ",
@@ -35,13 +38,15 @@ local Options = {
       [24] = vim.__icons.lsp_kinds.Event,
       [25] = vim.__icons.lsp_kinds.Operator,
       [26] = vim.__icons.lsp_kinds.TypeParameter,
+
+      Unknown = vim.__icons.lsp_kinds.Unknown,
     },
   }
 }
 
 local Highlighter = vim.__class.def(function(this)
   local m_cache = {}
-  function this:text(txt, hl)
+  function this:draw(txt, hl)
     local _hl = hl
     if not _hl then
       return txt
@@ -115,7 +120,7 @@ local Item = vim.__class.def(function(this)
 
   local __icon
   function this:icon()
-    __icon = Highlighter:text(m_icon, m_iconhl)
+    __icon = Highlighter:draw(m_icon, m_iconhl)
     function this:icon()
       return __icon
     end
@@ -175,31 +180,34 @@ local Item = vim.__class.def(function(this)
 end)
 
 local LspSymbol = vim.__class.def(function(this)
+  local m_lsp_options = Options.lsp
+
   local m_items = setmetatable({}, {
-    __index = function(self, k)
-      self[k] = {}
-      return self[k]
+    __index = function(t, k)
+      rawset(t, k, {})
+      return rawget(t, k)
     end,
   })
 
-  local m_updating = {}
-  local m_symbols = {}
-
-  local m_lsp_options = Options.lsp
+  local m_symstat = setmetatable({}, {
+    __index = function(t, k)
+      rawset(t, k, {
+        symbols = {},
+        updating = nil
+      })
+      return rawget(t, k)
+    end,
+  })
 
   local get_attachstat
   function this:__init(__get_attachstat)
     get_attachstat = __get_attachstat
 
     vim.__autocmd.on("BufWipeout", function(state)
-      local bufnr = state.buf
-
-      m_updating[bufnr] = nil
-      m_symbols[bufnr] = nil
+      m_symstat[state.buf] = nil
     end)
   end
 
-  local uv        = vim.loop
   local strbuffer = require("string.buffer")
   local __update, __update_retry, __update_bouncer
   local __update_leagcy_worker, __update_leagcy_worker_libs
@@ -249,9 +257,9 @@ local LspSymbol = vim.__class.def(function(this)
       table.sort(symbols, compare_f)
 
       local search, childs = setmetatable({}, {
-        __index = function(self, k)
-          self[k] = {}
-          return self[k]
+        __index = function(t, k)
+          rawset(t, k, {})
+          return rawget(t, k)
         end,
       }), {}
       tbl.remove_iter(symbols, function(t, i)
@@ -302,12 +310,15 @@ local LspSymbol = vim.__class.def(function(this)
         child.containerName = nil
       end
 
+      ---@diagnostic disable-next-line
       return bufnr, strbuffer.encode(symbols)
     end,
     function(bufnr, symbols_bc)
       local symbols = strbuffer.decode(symbols_bc)
-      m_symbols[bufnr] = symbols
-      m_updating[bufnr] = nil
+
+      local state = m_symstat[bufnr]
+      state.symbols = symbols
+      state.updating = nil
     end
   )
   __update = function(bufnr, ttl)
@@ -315,24 +326,25 @@ local LspSymbol = vim.__class.def(function(this)
       return
     end
 
-    if not ttl and m_updating[bufnr] then
+    local state = m_symstat[bufnr]
+
+    if not ttl and state.updating then
       return
     end
 
     if ttl and ttl <= 0 then
-      m_updating[bufnr] = nil
+      state.updating = nil
       return
     end
 
-    m_updating[bufnr] = true
+    state.updating = true
 
-    local stat = get_attachstat(bufnr)
-    if not stat then
+    if not get_attachstat(bufnr) then
       __update_retry(bufnr, ttl)
       return
     end
 
-    stat.client:request(
+    get_attachstat(bufnr).client:request(
       "textDocument/documentSymbol",
       {
         textDocument = {
@@ -355,8 +367,8 @@ local LspSymbol = vim.__class.def(function(this)
         end
 
         if (symbols[1] and symbols[1].range) or not symbols[1] then
-          m_symbols[bufnr] = symbols
-          m_updating[bufnr] = nil
+          state.symbols = symbols
+          state.updating = nil
         else
           __update_leagcy_worker:queue(
             bufnr,
@@ -373,11 +385,9 @@ local LspSymbol = vim.__class.def(function(this)
   end
 
 
-  local bit = require("bit")
-  local __eval
-  __eval = function(bufnr, cursor, symbols, items)
+  local function __eval(bufnr, cursor, symbols, items)
     if not symbols then
-      symbols = m_symbols[bufnr] or {}
+      symbols = m_symstat[bufnr].symbols
     end
 
     if not items then
@@ -389,8 +399,9 @@ local LspSymbol = vim.__class.def(function(this)
       return items
     end
 
-    local lnum, col = cursor[1], cursor[2]
     local lsp_kinds = m_lsp_options.lsp_kinds
+
+    local lnum, col = cursor[1], cursor[2]
 
     local low, high = 1, len
     while low <= high do
@@ -418,7 +429,7 @@ local LspSymbol = vim.__class.def(function(this)
 
         local item = m_items[kind][name]
         if not item then
-          local k = lsp_kinds[kind]
+          local k = lsp_kinds[kind] or lsp_kinds.Unknown
           item = Item:new(name, k.val, k.hl)
 
           m_items[kind][name] = item
@@ -467,12 +478,13 @@ local LspSymbol = vim.__class.def(function(this)
 end)
 
 local LspSource = vim.__class.def(function(this)
-  local m_attachstat, m_symbol = {}, {}
-  function this:__init()
-    m_symbol = LspSymbol:new(function(bufnr)
-      return m_attachstat[bufnr]
-    end)
+  local m_attachstat = {}
 
+  local m_symhandler = LspSymbol:new(function(bufnr)
+    return m_attachstat[bufnr]
+  end)
+
+  function this:__init()
     vim.__autocmd.on("LspAttach", function(state)
       local bufnr     = state.buf
       local client_id = state.data.client_id
@@ -486,21 +498,21 @@ local LspSource = vim.__class.def(function(this)
         return
       end
 
-      m_symbol:update(bufnr)
+      m_symhandler:update(bufnr)
 
       local group = vim.__autocmd.augroup("wb-lspsource-" .. tostring(bufnr))
       group:on(
         { "BufWritePost", "TextChanged" },
-        function(state)
-          m_symbol:update(state.buf)
+        function()
+          m_symhandler:update(bufnr)
         end,
         { buffer = bufnr }
       )
       group:on(
         { "ModeChanged" },
-        function(state)
+        function()
           if state.match == "i:n" then
-            m_symbol:update(state.buf)
+            m_symhandler:update(bufnr)
           end
         end,
         { buffer = bufnr }
@@ -509,7 +521,6 @@ local LspSource = vim.__class.def(function(this)
       m_attachstat[bufnr] = {
         augroup = group,
         client = cli,
-        bufnr = bufnr
       }
     end)
 
@@ -526,7 +537,7 @@ local LspSource = vim.__class.def(function(this)
   end
 
   function this:eval(winid, bufnr)
-    return m_symbol:eval(winid, bufnr)
+    return m_symhandler:eval(winid, bufnr)
   end
 end)
 
@@ -542,36 +553,33 @@ local PathSource = vim.__class.def(function(this)
     local root  = vim.__path.cwd()
 
     local items = m_items[fpath]
-    if not items then
+    if items then
+      return items
+    else
       items = {}
-
-      local ft = vim.__buf.filetype(bufnr)
-
-      local p = fpath
-      while
-        p and
-        p ~= root
-      do
-        local d = vim.__path.dirname(p)
-        if p == d then break end -- "/" "."
-
-        local basename = vim.__path.basename(p)
-        local icon, icon_hl
-        if vim.__fs.isdir(p) then
-          icon, icon_hl = vim.__icons.directory, "DirectoryIcon"
-        else
-          icon, icon_hl = vim.__icons.get_icon_color_by_ft(ft)
-        end
-
-        table.insert(items, Item:new(basename, icon, icon_hl))
-
-        p = d
-      end
-
-      vim.__tbl.reverse(items)
       m_items[fpath] = items
     end
 
+    local p = fpath
+    while p and p ~= root do
+      local d = vim.__path.dirname(p)
+      if p == d then break end -- "/" "."
+
+      local basename = vim.__path.basename(p)
+
+      local icon, icon_hl
+      if vim.__fs.isdir(p) then
+        icon, icon_hl = vim.__icons.directory, "DirectoryIcon"
+      else
+        icon, icon_hl = vim.__icons.get_icon_color(basename)
+      end
+
+      table.insert(items, Item:new(basename, icon, icon_hl))
+
+      p = d
+    end
+
+    vim.__tbl.reverse(items)
     return items
   end
 end)
@@ -579,6 +587,7 @@ end)
 local Winbar = vim.__class.def(function(this)
   local m_sources = {}
   local m_evalcache = {}
+
   function this:__init()
     local function attach(winid, bufnr)
       if vim.wo[winid].winbar ~= "" then
@@ -588,9 +597,9 @@ local Winbar = vim.__class.def(function(this)
       local ft = vim.__buf.filetype(bufnr)
       local bt = vim.__buf.buftype(bufnr)
       if
-        ft == "" or
         vim.__filter.contain_fts(ft) or
         vim.__filter.contain_bts(bt) or
+        vim.__buf.is_unnamed(bufnr) or
         vim.__win.is_float(winid) or
         not vim.__buf.is_valid(bufnr) or
         not vim.__win.is_valid(winid)
@@ -607,11 +616,11 @@ local Winbar = vim.__class.def(function(this)
     end
 
     local group = vim.__autocmd.augroup("wb-global")
-    group:on({ "BufWinEnter", "BufWritePost", }, function(state)
-      attach(vim.__win.current(), state.buf)
+    group:on({ "BufWinEnter", "BufWritePost" }, function(args)
+      attach(vim.__win.current(), args.buf)
     end)
-    group:on({ "WinClosed" }, function(state)
-      local winid = tonumber(state.file)
+    group:on({ "WinClosed" }, function(args)
+      local winid = tonumber(args.file)
       if not winid then
         return
       end
@@ -630,7 +639,6 @@ local Winbar = vim.__class.def(function(this)
     table.insert(m_sources, LspSource:new())
   end
 
-  local uv = vim.loop
   function this:eval(winid, bufnr)
     local cache = m_evalcache[winid]
     if not cache then

@@ -1,4 +1,5 @@
 ---@diagnostic disable: need-check-nil
+
 local fmt = string.format
 
 local lazy = {}
@@ -6,31 +7,37 @@ local lazy = {}
 function lazy.wrap(t, handler)
   local export
 
-  local ret = {
-    __get = function()
-      if export == nil then
-        export = handler(t)
-      end
+  local function __loaded()
+    return export ~= nil
+  end
 
-      return export
-    end,
-    __loaded = function()
-      return export ~= nil
-    end,
+  local function __get()
+    if not __loaded() then
+      export = handler(t)
+    end
+
+    return export
+  end
+
+  local function __load()
+    if not __loaded() then __get() end
+  end
+
+  local proxy = {
+    __get = __get,
+    __load = __load,
+    __loaded = __loaded,
   }
 
-  return setmetatable(ret, {
+  return setmetatable(proxy, {
     __index = function(_, key)
-      if export == nil then ret.__get() end
-      return export[key]
+      return __get()[key]
     end,
     __newindex = function(_, key, value)
-      if export == nil then ret.__get() end
-      export[key] = value
+      __get()[key] = value
     end,
     __call = function(_, ...)
-      if export == nil then ret.__get() end
-      return export(...)
+      return __get()(...)
     end,
   })
 end

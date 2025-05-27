@@ -1,20 +1,7 @@
 local M = {}
 
-local ffi = require "ffi"
-
-local C = ffi.C
-
-ffi.cdef [[
-  typedef unsigned char char_u;
-  int linetabsize_col(int startcol, char_u *s);
-]]
-
-local CHAR_ARRAY = ffi.typeof("char[?]")
-function M.displaywidth(str, col)
-  local startcol = col or 0
-  local s = CHAR_ARRAY(#str + 1)
-  ffi.copy(s, str)
-  return C.linetabsize_col(startcol, s) - startcol
+function M.displaywidth(str)
+  return vim.api.nvim_strwidth(str)
 end
 
 function M.octal_2utf8(text)
@@ -35,14 +22,22 @@ function M.trim(str)
   return vim.trim(str)
 end
 
-function M.fill_tail(str, char, count)
-  local ret = str
-
-  for i = 1, count, 1 do
-    ret = ("%s%s"):format(ret, char)
+function M.align(text, width, opts)
+  text = text or ""
+  opts = opts or {}
+  opts.align = opts.align or "left"
+  local tw = vim.api.nvim_strwidth(text)
+  if tw > width then
+    return opts.truncate and (vim.fn.strcharpart(text, 0, width - 1) .. "…") or text
   end
-
-  return ret
+  local left = math.floor((width - tw) / 2)
+  local right = width - tw - left
+  if opts.align == "left" then
+    left, right = 0, width - tw
+  elseif opts.align == "right" then
+    left, right = width - tw, 0
+  end
+  return (" "):rep(left) .. text .. (" "):rep(right)
 end
 
 function M.encode(o)

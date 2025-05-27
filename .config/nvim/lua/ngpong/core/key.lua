@@ -68,12 +68,24 @@ local Cheatsheet = vim.__class.def(function(this)
     "",
     "6. all <C-W> suffixes can be appended with the ctrl key, e.g. <C-w>h == <C-w><C-h>.",
     "",
+    "7. picker usage",
+    "│",
+    "├╴ the picker for grep is divided into `live` and `non-live` modes, which can be switched by pressing the specified key.",
+    "│",
+    "├╴ in live-mode, we specify the query parameters by adding the `--` suffix.",
+    "│    * hello -- --fixed-strings",
+    "│    * hello -- --type=lua --glob=!*.lua --iglob=src/hello/world/*",
+    "│    * hello -- --exclude=src/hello/world",
+    "│",
+    "╰╴ non-live mode not support `--` suffix but it does support some new syntax. check out: https://junegunn.github.io/fzf/search-syntax/",
+    "",
   }
 
   local mode_n = { key_modes.n }
   local mode_v = { key_modes.v }
   local mode_i = { key_modes.i }
   local mode_c = { key_modes.c }
+  local mode_n_i = { key_modes.n, key_modes.i }
   local mode_n_c = { key_modes.n, key_modes.c }
   local mode_i_c = { key_modes.i, key_modes.c }
   local mode_n_v = { key_modes.n, key_modes.v }
@@ -86,273 +98,415 @@ local Cheatsheet = vim.__class.def(function(this)
 
   local builtin_keymaps = {
     {
-      head = "cursor",
-      maps = {
-        { "[n]<C-UP> [n]<C-DOWN>", "add cursor upwards|downwards", mode_m },
-        { "[n]<S-LEFT> [n]<S-RIGHT>", "select left|right", mode_m },
-      }
-    },
-    {
       head = "movement",
       maps = {
-        { "character" },
-        { "[n]h/<ctrl-h> [n]j/<ctrl-j> [n]k/<ctrl-k> [n]l/<ctrl-l>", "← ↓ ↑ →", mode_n_v_o_i },
-        { "[n]w/<ctrl-f> [n]W", "[n] word|WORD forward", mode_n_v_o_i },
-        { "[n]e [n]E", "forward to the end of word|WORD [n]", mode_n_v_o },
-        { "[n]b/<ctrl-b> [n]B", "[n] word|WORD backward", mode_n_v_o_i },
-        { "<ctrl-B> <ctrl-f>", "goto first(forward)|last(backward) column of the line", mode_n_v_o_i },
-        { "<ctrl-b> <ctrl-F>", "goto first(forward)|last(backward) non-blank character", mode_n_v_o_i },
+        { "character && line" },
+        { "[N]h", "←", mode_n_v_o },
+        { "[N]j", "↓", mode_n_v_o },
+        { "[N]k", "↑", mode_n_v_o },
+        { "[N]l", "→", mode_n_v_o },
+        { "<ctrl-h>", "←", mode_i },
+        { "<ctrl-j>", "↓", mode_i },
+        { "<ctrl-k>", "↑", mode_i },
+        { "<ctrl-l>", "→", mode_i },
+        { "[N]w", "[N] word forward", mode_n_v_o },
+        { "[N]W", "[N] WORD forward", mode_n_v_o },
+        { "[N]e", "forward to the end of word [N]", mode_n_v_o },
+        { "[N]E", "forward to the end of WORD [N]", mode_n_v_o },
+        { "[N]b", "[N] word backward", mode_n_v_o },
+        { "[N]B", "[N] WORD backward", mode_n_v_o },
+        { "<ctrl-shift-h>", "word backward", mode_i },
+        { "<ctrl-shift-l>", "word forward", mode_i },
+        { "<ctrl-y|Y>", "goto first non-blank-character|column of the line", mode_n_v_o_i },
+        { "<ctrl-e|E>", "goto last non-blank-character|column of the line", mode_n_v_o_i },
+        { "<ctrl-d>", "scroll downwards", mode_n_v },
+        { "<ctrl-u>", "scroll upwards", mode_n_v },
+        { "<pageup>", "scroll pageup", mode_n_v },
+        { "<pagedown>", "scroll pagedown", mode_n_v },
+        { "{N}%", "jump {N} percentage in the file", mode_n_v_o },
+        { "[N](", "[N] sentences backward", mode_n_v_o },
+        { "[N])", "[N] sentences forward", mode_n_v_o },
+        { "[N]{", "[N] paragraph backward", mode_n_v_o },
+        { "[N]}", "[N] paragraph forward", mode_n_v_o },
+        { "[N]H", "move screen ←", mode_n_v },
+        { "[N]J", "move screen ↓", mode_n_v },
+        { "[N]K", "move screen ↑", mode_n_v },
+        { "[N]L", "move screen →", mode_n_v },
+        { "zz", "move screen line at center", mode_n_v },
+        { "zj", "move at top of screen line", mode_n_v },
+        { "zk", "move at bottom of screen line", mode_n_v },
+        { "[N]zh", "scroll screen half screen to the left", mode_n_v },
+        { "[N]zl", "scroll screen half screen to the right", mode_n_v },
+        { "ze", "scroll text horizontally to move cursor to the end", mode_n_v },
+        { "zs", "scroll text horizontally to move cursor to the start", mode_n_v },
 
-        { "file" },
-        { "{n}%", "jump to {n} percentage in the file", mode_n_v_o },
-        { "gg ge/G", "goto first|last line in file", mode_n_v_o },
-        { "gt gc gb", "goto top|centre|bottom of the window", mode_n_v_o },
-        { "ga", "goto last access file", mode_n },
-        { "gm", "goto last modified file", mode_n },
-        { "[n][d [n]d", "goto [n] previous|next diagnostics", mode_n_v_o },
+        { "pair" },
+        { "[N][(", "goto [N] previous unclosed ()", mode_n_v_o },
+        { "[N]])", "goto [N] next unclosed ()", mode_n_v_o },
+        { "[N][{", "goto [N] previous unclosed {}", mode_n_v_o },
+        { "[N]]}", "goto [N] next unclosed {}", mode_n_v_o },
+        { "gp", "goto unclosed <>|()|{}|[]|/**/", mode_n_v_o },
 
-        { "sentence-paragraph" },
-        { "[n]( [n])", "[n] sentences backward|forward", mode_n_v_o },
-        { "[n]{ [n]}", "[n] paragraph backward|forward", mode_n_v_o },
-
-        { "symbol-pair" },
-        { "[n][( [n]])", "goto [n] previous|next unclosed ()", mode_n_v_o },
-        { "[n][{ [n]]}", "goto [n] previous|next unclosed {}", mode_n_v_o },
-        { "gp", "find and jump next <>|()|{}|[]|/**/ pair", mode_n_v_o },
+        { "object" },
+        { "[f", "goto previous function", mode_n_v_o },
+        { "]f", "goto next function", mode_n_v_o },
+        { "[c", "goto previous class", mode_n_v_o },
+        { "]c", "goto next class", mode_n_v_o },
+        { "[o", "goto previous condition", mode_n_v_o },
+        { "]o", "goto next condition", mode_n_v_o },
+        { "[O", "goto previous loop", mode_n_v_o },
+        { "]O", "goto next loop", mode_n_v_o },
+        { "[[", "goto previous illuminate", mode_n_v_o },
+        { "]]", "goto next illuminate", mode_n_v_o },
 
         { "jumplist" },
-        { "<ctrl-o>", "goto prev jump position", mode_n_v },
-        { "<ctrl-i>", "goto next jump position", mode_n_v },
+        { "<ctrl-o>", "goto prev jump position", mode_n },
+        { "<ctrl-i>", "goto next jump position", mode_n },
 
         { "changelist" },
         { "g.", "goto last change position", mode_n_v_o },
-        { "g;", "goto prev change position", mode_n },
-        { "g,", "goto next change position", mode_n },
+        { "[.", "goto prev change position", mode_n },
+        { "].", "goto next change position", mode_n },
       }
     },
     {
-      head = "scroll",
+      head = "selection",
       maps = {
-        { "buffer-file" },
-        { "<ctrl-d> <ctrl-u>", "scroll upwards|downwards", mode_n_v },
-        { "<ctrl-b>/<pageup> <ctrl-f>/<pagedown>", "scroll pageup|pagedown", mode_n_v },
-
-        { "screen-window" },
-        { "[n]H [n]J [n]K [n]L", "move screen [n] lines upwards|downwards", mode_n_v },
-        { "zz", "move screen line at center", mode_n_v },
-        { "zj zk", "move screen line at bottom|top of screen", mode_n_v },
-        { "[n]zh [n]zl", "scroll screen half screen to the left|right", mode_n_v },
-        { "ze zs", "scroll text horizontally to move cursor to the start|end", mode_n_v },
+        { "v", "enter visual charwise mode", mode_n },
+        { "V", "enter visual linewise mode", mode_n },
+        { "<ctrl-v>", "enter visual blockwise mode", mode_n },
+        { "gv", "reselect to the previous visual area", mode_n_v },
+        { "o", "move cursor to opposite corner of selection area", mode_v },
+        { "O", "horizontally move cursor to opposite corner of selection area", mode_v },
       }
     },
     {
       head = "edit",
       maps = {
-        { "append-insert" },
-        { "a i", "insert before|after the cursor", mode_n },
-        { "A I", "edit in first|last non-blank-character of the line|selection", mode_n_v },
-        { "gA gI", "edit in the last|first column of the line", mode_n },
-        { "o O", "begin a new line below|above the cursor", mode_n },
+        { "insert" },
+        { "i", "insert text", mode_n },
+        { "a", "append text", mode_n },
+        { "I", "edit in last non-blank-character", mode_n_v },
+        { "A", "edit in first non-blank-character", mode_n_v },
+        { "gI", "edit in the last column", mode_n },
+        { "gA", "edit in the first column", mode_n },
+        { "o", "edit in below line", mode_n },
+        { "O", "edit in above line", mode_n },
+        { "<ctrl-o>{command}", "execute {command} and return to insert mode", mode_i },
+        { "<ctrl-r>{register}", "insert the contents of a {register}", mode_i },
 
-        { "yank-paste" },
-        { "[\"r]y{motion} [\"r]Y", "yank by {motion}|character|selection", mode_n_v },
-        { "[\"r]p [\"r]P", "paste in after-cursor|before-cursor|selection", mode_n_v },
+        { "replace" },
+        { "r{char}", "replace with {char}", mode_n_v },
+        { "R", "enter replace mode", mode_n },
+        { ":[range]s@{search}@{replace}@[flags] [N]", "substitute", mode_c },
 
-        { "delete-change" },
-        { "[\"r]d{motion} [\"r]D", "delete by {motion}|character|selection and save in clipboard", mode_n_v },
-        { "[\"r]x{motion} [\"r]X", "delete by {motion}|character|selection", mode_n_v },
-        { "[\"r]c{motion} [\"r]C", "change by {motion}|character|selection and save in clipboard", mode_n_v },
-        { "<backspace>", "delete one character before the cursor", mode_i },
-        { "r{char}", "replace one-character|selection with {char}", mode_n_v },
-        { "R{chars}", "enter replace mode", mode_n },
+        { "macro" },
+        { "q{0-9a-zA-Z\"}", "record typed characters into register {}", mode_n },
+        { "[N:1]Q", "replay [N] times last recorded register", mode_n },
+        { "[N:1]@{0-9a-zA-Z\"}", "replay [N] times record in register {0-9a-zA-Z\"}", mode_n },
 
-        { "format-indent" },
-        { "<{motion} >{motion}", "shift {motion}|selection one `shiftwidth` leftwards|rightwards", mode_n_v },
-        { "fq{motion}", "format {motion}|selection", mode_n_v },
+        { "clipboard" },
+        { "[\"r]y{motion}", "yank by {motion}", mode_n_v },
+        { "[\"r]Y", "yank character", mode_n_v },
+        { "[\"r]p", "paste after", mode_n_v },
+        { "[\"r]P", "paste before", mode_n_v },
+        { "[\"r]d{motion}", "delete by {motion} and save in clipboard", mode_n_v },
+        { "[\"r]D", "delete character and save in clipboard", mode_n_v },
+        { "[\"r]x{motion}", "delete by {motion}", mode_n_v },
+        { "[\"r]X", "delete character", mode_n_v },
+        { "[\"r]c{motion}", "change by {motion} and save in clipboard", mode_n_v },
+        { "[\"r]C", "change character and save in clipboard", mode_n_v },
+
+        { "format && indent" },
+        { "<{motion}", "shift {motion} one `shiftwidth` leftwards", mode_n_v },
+        { ">{motion}", "shift {motion} one `shiftwidth` rightwards", mode_n_v },
+        { "fq{motion}", "format by {motion}", mode_n_v },
         { "fQ", "format current buffer", mode_n },
-        { "[n:2]fj [n:2]fJ", "join current-line|selection with [n], without space", mode_n_v },
+        { "[n:2]fj", "join trim-line with [N]", mode_n_v },
+        { "[n:2]fJ", "join current-line with [N]", mode_n_v },
 
         { "comment" },
         { "fc{motion}", "linewise comment {motion}|selection", mode_n_v },
-        { "c", "linewise comment current line; only work for {fc} prefix", mode_o },
-        { "o", "linewise comment below line; only work for {fc} prefix", mode_o },
-        { "O", "linewise comment above line; only work for {fc} prefix", mode_o },
-        { "A", "linewise comment end line; only work for {fc} prefix", mode_o },
-        { "fb{motion}", "blockwise comment {motion}|selection", mode_n_v },
-        { "b", "blockwise comment current line; only work for {fb} prefix", mode_o },
+        { "{fc}c", "linewise comment current line", mode_o },
+        { "{fc}o", "linewise comment below line", mode_o },
+        { "{fc}O", "linewise comment above line", mode_o },
+        { "{fc}A", "linewise comment end line", mode_o },
+        { "fb{motion}", "blockwise comment {motion}", mode_n_v },
+        { "{fb}b", "blockwise comment current line", mode_o },
 
         { "change" },
-        { "u U", "undo|redo change", mode_n },
-        { "[n]f<ctrl-a> [n]f<ctrl-x>", "find number in current-line|selection and increment|decrement by [n]", mode_n_v },
-        { "<ctrl-o>{command}", "execute {command} and return to insert mode", mode_i },
-        { "<ctrl-r>{register}", "insert the contents of a {register}", mode_i },
-        { "<ctrl-t>", "insert previous insert text", mode_i },
-        { "fu{motion} fU{motion}", "convert {motion}|selection to lowercase|uppercase", mode_n_v },
         { ".", "repeat last change", mode_n },
-
-        { "record-macro" },
-        { "t{0-9a-zA-Z\"}", "record typed characters into register {}", mode_n },
-        { "[n]T", "replay [n:1] times last recorded register", mode_n },
-        { "[n]@{0-9a-zA-Z\"}", "replay [n:1] times record in register {0-9a-zA-Z\"}", mode_n },
+        { "u", "undo change", mode_n },
+        { "U", "redo change", mode_n },
+        { "fu{motion}", "convert {motion} to lowercase", mode_n_v },
+        { "fU{motion}", "convert {motion} to uppercase", mode_n_v },
+        { "[N:1]f<ctrl-a>", "add [N] to number", mode_n_v },
+        { "[N:1]f<ctrl-x>", "dec [N] to number", mode_n_v },
+        { "<ctrl-w>", "delete word backward", mode_i },
 
         { "completion" },
-        { "<ctrl-n> <ctrl-p>", "insert next|prev match of identifier before the cursor", mode_i },
-        -- { "<ctrl-e> <ctrl-y>", "insert the character from below|above the cursor", mode_i }, -- AA
+        { "<ctrl-n>", "select next", mode_i },
+        { "<ctrl-p>", "select previout", mode_i },
+        { "<tab>", "accept selected|snippet forward", mode_i },
+        { "<shift-tab>", "snippet backward", mode_i },
+        { "<alt-space>", "show|hide completion menu", mode_i },
+        { "<ctrl-c>", "stop snippet sessions", mode_i },
+        { "<ctrl-g>", "show|hide selected document", mode_i },
+        { "<ctrl-shift-g>", "show|hide lsp-signature", mode_i },
+        { "<ctrl-f>", "scroll forward lsp-signature window", mode_n_i },
+        { "<ctrl-s>", "scroll backward lsp-signature window", mode_n_i },
+
+        { "lsp" },
+        { "[d", "goto previous diagnostics", mode_n },
+        { "]d", "goto next diagnostics", mode_n },
+        { "fd", "preview diagnostics", mode_n },
+        { "fr", "textDocument/rename", mode_n },
+        { "fa", "textDocument/codeAction", mode_n },
+        { "fi", "textDocument/signatureHelp", mode_n },
+        { "fk", "textDocument/hover", mode_n },
+        { "ft", "textDocument/typeHierarchy", mode_n },
+        { "gr", "textDocument/references", mode_n },
+        { "gd", "textDocument/definition", mode_n },
+        { "gD", "textDocument/declaration", mode_n },
+        { "gi", "textDocument/implementation", mode_n },
+        { "gs", "textDocument/switchSourceHeader", mode_n },
+        { "<ctrl-f>", "scroll forward lsp window", mode_n_i },
+        { "<ctrl-s>", "scroll backward lsp window", mode_n_i },
+        { "<ctrl-c>", "close lsp window", mode_n },
+        { ":ClangdAST", "open clangd ast tree", mode_c },
+
+        { "fold" },
+        { "tf{motion}", "define a fold manually", mode_n_v },
+        { "td ffD", "delete fold under the cursor, recursively", mode_n_v },
+        { "tE", "eliminate all folds in the window", mode_n_v },
+        { "to ffO", "open fold under the cursor, recursively", mode_n_v },
+        { "tc ffC", "close fold under the cursor, recursively", mode_n_v },
+        { "ta ffA", "toggle the fold under the cursor, recursively", mode_n_v },
+        { "tv", "open just enough folds", mode_n_v },
+        { "tM ffR", "close, open all folds and set `foldlevel` to 0, highest level", mode_n_v },
+        { "tj ffk", "goto down, up fold", mode_n_v },
+        { "tn ffN", "reset, set `foldenable`", mode_n_v },
+        { "ti", "invert `foldenable`", mode_n_v },
       }
     },
     {
       head = "search",
       maps = {
         { "search" },
-        { "s", "search and jump by char2", mode_n_v },
-        { "S", "search and jump by word", mode_n_v },
-        { "[n]f{char} [n]F{char}", "find next|previous occurrence of {char}", mode_v_o },
-        { "[n]t{char} [n]T{char}", "till next|previous occurrence of {char}", mode_v_o },
-        -- { "[n]; [n],", "repeat [n] last fFtT in the same, opposite direction", mode_n_v }, -- 使用了 hop.nvim 替换了 ft，故不支持该功能
-        { "/[\\<]{pattern}[\\>]<CR>", "search by pattern", mode_n },
-        { "'", "clear search pattern", mode_n_v },
-        { "?", "search by <cword>|selection", mode_n_v },
+        { "s", "search and jump char2", mode_n_v },
+        { "S", "search and jump word", mode_n_v },
+        { "[N]f{char}", "find next occurrence of {char}", mode_v_o },
+        { "[N]F{char}", "find previous occurrence of {char}", mode_v_o },
+        { "[N]t{char}", "till next occurrence of {char}", mode_v_o },
+        { "[N]T{char}", "till previous occurrence of {char}", mode_v_o },
+        -- { "[N]; [N],", "repeat [N] last fFtT in the same, opposite direction", mode_n_v }, -- 使用了 hop.nvim 替换了 ft，故不支持该功能
+        { "/{pattern}<CR>", "search by {pattern}", mode_n },
+        { "<C-/>", "search by cWORD|selection", mode_n_v },
+        { "?", "clear search pattern", mode_n_v },
         { "n", "jump to the next matching search", mode_n_v },
         { "N", "jump to the prev matching search", mode_n_v },
-
-        { "replace" },
-        { ":[range]s@{search}@{replace}@[flags] [n]", "substitute", mode_c },
+      }
+    },
+    {
+      head = "surround(mini.surround)",
+      maps = {
+        { "fsa{char}", "add {char} surround", mode_v },
+        { "fsa{motion}{char}", "add {char} surround by {motion}", mode_n },
+        { "fsd{motion}{char}", "del {char} surround by {motion}", mode_n },
+        { "fsr{find}{replace}", "replace {find} surround to {replace}", mode_n },
+      }
+    },
+    {
+      head = "buffer(barbar.nvim)",
+      maps = {
+        { "<ctrl-,>", "goto previous buffer", mode_n },
+        { "<ctrl-.>", "goto next buffer", mode_n },
+        { "<ctrl-<>", "buffer move previous", mode_n },
+        { "<ctrl->>", "buffer move next", mode_n },
+        { "<ctrl-b>p", "pin buffer", mode_n },
+        { "<ctrl-b>g", "select buffer", mode_n },
+        { "<ctrl-b>r", "restore last deleted buffer", mode_n },
+        { "<ctrl-b>d", "delete buffer", mode_n },
+        { "<ctrl-b>o", "delete all buffer except current", mode_n },
+        { "ga", "goto last access buffer", mode_n },
+        { "gf", "goto last modified buffer", mode_n },
       }
     },
     {
       head = "window",
       maps = {
-        { "jump" },
-        { "<ctrl-h> <ctrl-j> <ctrl-k> <ctrl-l>", "goto window ← ↓ ↑ →", mode_n },
-        { "<ctrl-w>p{id}", "goto specify {id} window", mode_n },
-
-        { "close" },
+        { "<ctrl-h>", "goto window ←", mode_n },
+        { "<ctrl-j>", "goto window ↓", mode_n },
+        { "<ctrl-k>", "goto window ↑", mode_n },
+        { "<ctrl-l>", "goto window →", mode_n },
         { "<ctrl-w>c", "close current window", mode_n },
         { "<ctrl-w>o", "close all windows except current", mode_n },
-
-        { "split" },
         { "<ctrl-w>s", "split window horizontally", mode_n },
         { "<ctrl-w>v", "split window vertically", mode_n },
-
-        { "adjust" },
-        { "[n]+ [n]_", "increase, decrease window height [n:1] lines", mode_n },
-        { "[n]= [n]-", "increase, decrease window width [n:1] columns", mode_n },
-        { "<ctrl-w><LEFT> <ctrl-w><RIGHT> <ctrl-w><UP> <ctrl-w><DOWN>", "move window to the left, right, top, bottom, ", mode_n },
-        { "<ctrl-w>g", "set all windows the same height, width", mode_n },
+        { "[N:1]+", "increase window height [N] lines", mode_n },
+        { "[N:1]_", "decrease window height [N] lines", mode_n },
+        { "[N:1]=", "increase window width [N] columns", mode_n },
+        { "[N:1]-", "decrease window width [N] columns", mode_n },
+        { "<ctrl-w>z", "set all windows the same height, width", mode_n },
         { "<ctrl-w>f", "fold all windows except current", mode_n },
+        { "<ctrl-w><left>", "move window to the left", mode_n },
+        { "<ctrl-w><right>", "move window to the right", mode_n },
+        { "<ctrl-w><up>", "move window to the top", mode_n },
+        { "<ctrl-w><down>", "move window to the bottom", mode_n },
       }
     },
     {
       head = "tabpage",
       maps = {
-        { "[t ]t", "switch to prev, next tabpage", mode_n },
-        { "<ctrl-t>t/n", "new tabpage", mode_n },
-        { "<ctrl-t>c", "close current tabpage", mode_n },
-        { "<ctrl-t>o", "close tabpages except current", mode_n },
+        { "[t", "switch to prev tabpage", mode_n },
+        { "]t", "switch to next tabpage", mode_n },
+        { ":tabnew", "new tabpage", mode_c },
+        { ":tabclose", "close current tabpage", mode_c },
       }
     },
     {
-      head = "fold",
+      head = "textobject(mini.ai)",
       maps = {
-        { "set" },
-        { "zf{motion}", "define a fold manually", mode_n_v },
+        { "scope" },
+        { "[N:1]i", "inside", mode_o },
+        { "[N:1]a", "around", mode_o },
+        { "[N:1]in", "inside next", mode_o },
+        { "[N:1]il", "inside last", mode_o },
+        { "[N:1]an", "around next", mode_o },
+        { "[N:1]al", "around last", mode_o },
 
-        { "open-close" },
-        { "zo zO", "open fold under the cursor, recursively", mode_n_v },
-        { "zc zC", "close fold under the cursor, recursively", mode_n_v },
-        { "za zA", "toggle the fold under the cursor, recursively", mode_n_v },
-        { "zv", "open just enough folds", mode_n_v },
-        { "zM zR", "close, open all folds and set `foldlevel` to 0, highest level", mode_n_v },
+        { "target" },
+        { "w", "word", mode_o },
+        { "W", "cWORD", mode_o },
+        { "s", "sentence", mode_o },
+        { "p", "paragraph", mode_o },
+        { "o", "condiftion", mode_o },
+        { "O", "loop", mode_o },
+        { "c", "class", mode_o },
+        { "f", "function", mode_o },
+        { "a", "function argument", mode_o },
+        { "F", "function call", mode_o },
+        { "c", "class", mode_o },
+        { "t", "html-tag", mode_o },
+        { "?", "custom left...right block", mode_o },
+        { "[]", "[...] block", mode_o },
+        { "<>", "<...> block", mode_o },
+        { "()", "(...) block", mode_o },
+        { "{}", "{...} block", mode_o },
+        { "b", "[...] or (...) or {...} block", mode_o },
+        { "B", "{...} block", mode_o },
+        { "\"", "\"...\" block", mode_o },
+        { "'", "'...' block", mode_o },
+        { "`", "`...` block", mode_o },
+        { "q", "\"...\" '...' `...` block", mode_o },
+        { "_", "_..._ block", mode_o },
+      }
+    },
+    {
+      head = "bookmark",
+      maps = {
+        { "[m", "goto previous bookmark", mode_n },
+        { "]m", "goto next bookmark", mode_n },
+        { "mn{bmid}{alias}", "set new {bmid} bookmark with {alias}", mode_n },
+        { "mm{bmid}", "set new {bmid} bookmark", mode_n },
+        { "ma{alias}", "set bookmark {alias}", mode_n },
+        { "md", "delete current bookmark", mode_n },
+        { "mo", "delete all bookmark except current", mode_n },
+        { "M", "delete all bookmarks", mode_n },
+        { "gm{bmid}", "goto bookmark with {bmid}", mode_n },
+        { "m<f1>", "bookmark debug", mode_n },
+      }
+    },
+    {
+      head = "picker(snacks.nvim)",
+      maps = {
+        { "<leader>ff", "open file picker", mode_n },
+        { "<leader>fg", "open grep picker", mode_n },
+        { "<leader>fG{search}", "open grep picker with {search}", mode_n },
+        { "<leader>fd", "open document diagnostic picker", mode_n },
+        { "<leader>fD", "open workspace diagnostic picker", mode_n },
+        { "<leader>fm", "open bookmark picker", mode_n },
+        { "<leader>fs", "open lsp-symbols picker", mode_n },
+        { "<leader>fS", "open treesitter picker", mode_n },
+        { "<leader>fb", "open buffer picker", mode_n },
+        { "<leader>fr", "restore last close picker", mode_n },
+        { "<leader>f/", "open lines picker", mode_n },
+        { "<leader>f<leader>", "open picker selector", mode_n },
 
-        { "delete" },
-        { "zd zD", "delete fold under the cursor, recursively", mode_n_v },
-        { "zE", "eliminate all folds in the window", mode_n_v },
-
-        { "goto" },
-        { "[Z ]Z", "goto next, previous fold", mode_n_v }, -- 
-        { "[z ]z", "goto the start, end of the current open fold", mode_n_v }, -- 
-
-        { "enable-disable" },
-        { "zn zN", "reset, set `foldenable`", mode_n_v },
-        { "zi", "invert `foldenable`", mode_n_v },
-      },
-    },
-    {
-      head = "selection",
-      maps = {
-        { "v{motion}", "enter visual charwise mode", mode_n },
-        { "V{motion}", "enter visual linewise mode", mode_n },
-        { "<ctrl-v>{motion}", "enter visual blockwise mode", mode_n },
-        { "gv", "reselect|switch to the previous visual area", mode_n_v },
-        { "o O", "horizontally, move cursor to opposite corner of selection area", mode_v },
+        { "" },
+        { "q", "close picker", mode_n },
+        { "<alt-q>", "close picker", mode_n_i },
+        { "<ctrl-a>", "select all", mode_n_i },
+        { "<ctrl-q>", "send all|selected to quickfix", mode_n_i },
+        { "<alt-m>", "toggle maximize", mode_n_i },
+        { "<ctrl-r>w", "insert word", mode_i },
+        { "<ctrl-r>W", "insert cWORD", mode_i },
+        { "<ctrl-r>p", "insert file path", mode_i },
+        { "<ctrl-r>l", "insert line", mode_i },
+        { "<alt-w>", "cycle window", mode_n_i },
+        { "<ctrl-o>v", "open in vertical split", mode_n_i },
+        { "<ctrl-o>s", "open in horizontal split", mode_n_i },
+        { "<ctrl-k>", "history backward", mode_i },
+        { "<ctrl-j>", "history forward", mode_i },
+        { "<cr>", "open", mode_n_i },
+        { "<ctrl-t>", "open selection in trouble list", mode_n_i },
+        { "<alt-space>", "toggle live-search mode", mode_n_i },
+        { "<ctrl-d>", "scroll list downwards", mode_n_i },
+        { "<ctrl-u>", "scroll list upwards", mode_n_i },
+        { "<ctrl-p>", "previous item", mode_n_i },
+        { "<ctrl-n>", "next item", mode_n_i },
+        { "k", "previous item", mode_n },
+        { "j", "next item", mode_n },
+        { "<ctrl-g>", "toggle preview", mode_n_i },
+        { "<ctrl-f>", "scroll forward preview window", mode_n_i },
+        { "<ctrl-s>", "scroll backward preview window", mode_n_i },
+        { "<tab>", "toggle selection and move next", mode_n_i },
+        { "<shift-tab>", "toggle selection and move previous", mode_n_i },
+        { "G", "goto bottom of list", mode_n },
+        { "gg", "goto top of list", mode_n },
+        { "a", "focus input", mode_n },
+        { "i", "focus input", mode_n },
+        { "gb", "goto list scroll bottom", mode_n },
+        { "gt", "goto list scroll top", mode_n },
+        { "gc", "goto list scroll center", mode_n },
       }
     },
     {
-      head = "textobject",
-      maps = {
-        { "[n]iw [n]aw", "inner|a word", mode_o },
-        { "[n]iW [n]aW", "inner|a WORD", mode_o },
-        { "[n]is [n]as", "inner|a sentence", mode_o },
-        { "[n]ip [n]ap", "inner|a paragraph", mode_o },
-        { "[n]i[ [n]a[", "inner|a [...] block; paired as synonyms `]`", mode_o },
-        { "[n]i< [n]a<", "inner|a <...> block; paired as synonyms `>`", mode_o },
-        { "[n]ib [n]ab", "inner|a (...) block; paired as synonyms `(`, `)`", mode_o },
-        { "[n]iB [n]aB", "inner|a {...} block; paired as synonyms `{`, `}`", mode_o },
-        { "i\" a\""    , "inner|a \"...\" block", mode_o },
-        { "i' a'"      , "inner|a '...' block", mode_o },
-        { "i` a`"      , "inner|a `...` block", mode_o },
-        { "if af"      , "inner|a function", mode_o },
-      }
-    },
-    {
-      head = "utils",
-      maps = {
-        { "<leader>f", "show file info", mode_n },
-        { "<alt>q", "quit", mode_n },
-      }
-    },
-    {
-      head = "commands",
-      maps = {
-        { ":jumps", "open jump list", mode_c },
-        { ":cle[arjumps]", "clear jump list", mode_c },
-        { ":reg", "open register list", mode_c },
-        { ":changes", "open change list", mode_c },
-        { ":w[rite] [path:current] [++p]", "write file into [path:current] with [++opt]", mode_c },
-        { ":ene", "create new [No Name] buffer", mode_c },
-      }
-    },
-    {
-      head = "git(hunk)",
+      head = "githunk(gitsigns.nvim)",
       maps = {
         { "<leader>hd", "toggle current buffer gitdiff", mode_n },
         { "<leader>hr", "reset current hunk", mode_n },
         { "<leader>hR", "reset current buffer", mode_n },
         { "<leader>hb", "show current line blame", mode_n },
         { "<leader>hp", "show current line preview", mode_n },
-        { "[h ]h", "goto previous|next hunk", mode_n_v_o },
+        { "<ctrl-f>", "scroll forward hunk window", mode_n_i },
+        { "<ctrl-s>", "scroll backward hunk window", mode_n_i },
+        { "<ctrl-c>", "close hunk window", mode_n },
+        { "[h ]h", "goto previous|next hunk", mode_n_v },
+        { "ih", "inner hunk", mode_o },
       }
     },
     {
-      head = "explorer",
+      head = "explorer(nvim-tree.nvim)",
       maps = {
+        { "<leader>e", "open explorer", mode_n },
+        { "q", "close explorer", mode_n },
         { "<ctrl-r>", "reload", mode_n },
-        { "f", "start live-filter", mode_n },
-        { "F", "clear live-filter", mode_n },
+        { "=", "resize+", mode_n },
+        { "-", "resize-", mode_n },
+
+        { "" },
+        { "o", "open", mode_n },
+        { "O", "close directory", mode_n },
         { "E", "expand all", mode_n },
         { "W", "collapse all", mode_n },
-        { "i", "file info", mode_n },
-        { ".", "run command", mode_n },
-        { "{", "firsh sibling", mode_n },
-        { "}", "last sibling", mode_n },
-        { "<", "next sibling", mode_n },
-        { ">", "previous sibling", mode_n },
-        { "M", "clear all bookmark", mode_n },
-        { "<TAB>", "toggle bookmark", mode_n },
-        { "md", "delete bookmark", mode_n },
-        { "mv", "move bookmark", mode_n },
-        { "[h ]h", "next/prev git", mode_n },
-        { "[d ]d", "next/prev diagnostic", mode_n },
+        { "<CR>", "open", mode_n },
+        { "<backspace>", "close directory", mode_n },
+        { "<ctrl-o>v", "open in vertical split", mode_n },
+        { "<ctrl-o>s", "open in horizontal split", mode_n },
+        { "<ctrl-g>", "toggle preview", mode_n },
+        { "<ctrl-f>", "scroll forward preview window", mode_n },
+        { "<ctrl-s>", "scroll backward preview window", mode_n },
         { "r", "rename", mode_n },
         { "R", "rename full path", mode_n },
         { "a", "create file or directory", mode_n },
@@ -363,33 +517,71 @@ local Cheatsheet = vim.__class.def(function(this)
         { "y", "yank file name", mode_n },
         { "Y", "yank absolute path", mode_n },
         { "p", "paste", mode_n },
-        { "tg", "toggle gitignore filter", mode_n },
-        { "th", "toggle hidden filter", mode_n },
-        { "tb", "toggle nobuffer filter", mode_n },
-        { "tm", "toggle nobook filter", mode_n },
-        { "T", "clear toggled filter", mode_n },
-        { "<BACKSPACE>", "close directory", mode_n },
-        { "<CR>", "open", mode_n },
+        { "F", "clear all selection", mode_n },
+        { "ff", "toggle selection", mode_n },
+        { "fd", "delete selection", mode_n },
+        { "fm", "move selection", mode_n },
+        { "fp", "paste selection", mode_n },
+        { "i", "file info", mode_n },
+        { ".", "run command", mode_n },
+        { "{", "firsh sibling", mode_n },
+        { "}", "last sibling", mode_n },
+        { "<", "next sibling", mode_n },
+        { ">", "previous sibling", mode_n },
+        { "[h ]h", "next/prev git", mode_n },
+        { "[d ]d", "next/prev diagnostic", mode_n },
+      }
+    },
+    {
+      head = "trouble(trouble.nvim)",
+      maps = {
+        { "<leader>t<leader>", "open troublelist selector", mode_n },
+        { "<leader>tm", "open bookmark list", mode_n },
+        { "<leader>tf", "open picker list", mode_n },
+        { "<leader>tb", "open buffer list", mode_n },
+        { "<leader>td", "open document diagnostic list", mode_n },
+        { "<leader>tD", "open workspace diagnostic list", mode_n },
+        { "<leader>ts", "open lsp-symbols list", mode_n },
+
+        { "" },
+        { "E", "expand all", mode_n },
+        { "W", "collapse all", mode_n },
+        { "<cr>", "open", mode_n },
         { "o", "open", mode_n },
-        { "O", "close directory", mode_n },
-        { "<ctrl-o>t", "open to new tabpage", mode_n },
-        { "<ctrl-o>v", "open to new vertical split window", mode_n },
-        { "<ctrl-o>s", "open to new horizontal split window", mode_n },
+        { "O", "collapse", mode_n },
+        { "r", "refresh", mode_n },
+        { "q", "close trouble list", mode_n },
+        { "<ctrl-o>v", "open in vertical split", mode_n },
+        { "<ctrl-o>s", "open in horizontal split", mode_n },
+        { "<ctrl-g>", "toggle preview", mode_n },
         { "<ctrl-f>", "scroll forward preview window", mode_n },
-        { "<ctrl-b>", "scroll backward preview window", mode_n },
-        { "`", "toggle focus preview window", mode_n },
-        { "<ctrl-s>", "preview file", mode_n },
-        { "<ctrl-shift-s>", "watch file", mode_n },
+        { "<ctrl-s>", "scroll backward preview window", mode_n },
+      },
+    },
+    {
+      head = "misc",
+      maps = {
+        { "<leader>i", "show file info", mode_n },
+        { "<leader>p", "show lazy plugin manager", mode_n },
+        { "<leader>P", "show mason package manager", mode_n },
+        { "<leader>?", "show cheatsheet", mode_n },
+
+        { ":cdo {command}", "quickfix do {command}", mode_c },
+        { ":cdof {command}", "quickfix do file {command}", mode_c },
+        { ":jumps", "open jump list", mode_c },
+        { ":cle[arjumps]", "clear jump list", mode_c },
+        { ":reg", "open register list", mode_c },
+        { ":changes", "open change list", mode_c },
+        { ":w[rite] [path:current] [++opt]", "write file into [path] with [++opt]", mode_c },
+        { ":ene", "create new [No Name] buffer", mode_c },
       }
     },
   }
 
-  local win_hl_ns
-
   function this:__init()
     vim.api.nvim_set_hl(0, "CheatsheetCard", { bg = vim.__color.dark1 })
-    vim.api.nvim_set_hl(0, "CheatsheetCardSeparator", { bg = vim.__color.dark1, italic = true, bold = true, fg = vim.__color.gray})
-    vim.api.nvim_set_hl(0, "CheatsheetCardTitle", { bg = vim.__color.light2, fg = vim.__color.dark0, })
+    vim.api.nvim_set_hl(0, "CheatsheetCardSeparator", { bg = vim.__color.dark1, italic = true, bold = true, fg = vim.__color.dark0_hard })
+    vim.api.nvim_set_hl(0, "CheatsheetCardTitle", { link = "FloatTitle" })
     vim.api.nvim_set_hl(0, "CheatsheetAscii", { fg = vim.__color.bright_yellow })
     vim.api.nvim_set_hl(0, "CheatsheetTips", { italic = true, bold = true, fg = vim.__color.gray })
     vim.api.nvim_set_hl(0, "CheatsheetGreen", { fg = vim.__color.bright_green })
@@ -405,24 +597,14 @@ local Cheatsheet = vim.__class.def(function(this)
     vim.api.nvim_set_hl(0, "CheatsheetNeutralBlue", { fg = vim.__color.neutral_blue })
     vim.api.nvim_set_hl(0, "CheatsheetNeutralPurple", { fg = vim.__color.neutral_purple })
     vim.api.nvim_set_hl(0, "CheatsheetNeutralAqua", { fg = vim.__color.neutral_aqua })
-
-    win_hl_ns = vim.api.nvim_create_namespace("cheatsheet_win")
-    vim.api.nvim_set_hl(win_hl_ns, "CursorLine", { bg = vim.__color.dark0_soft })
-
-    vim.__autocmd.augroup("cheatsheet"):on("WinResized", function(_)
-      if vim.bo.ft ~= "cheatsheet" then
-        return
-      end
-
-      this:show(true)
-    end)
+    vim.api.nvim_set_hl(0, "CheatsheetCursorLine", { bg = vim.__color.dark0 })
   end
 
-  local active_buf = -1
+  local showing_buf = -1
   function this:show(refresh)
-    if active_buf > 0 then
-      local buf = active_buf
-      active_buf = -1
+    if showing_buf > 0 then
+      local buf = showing_buf
+      showing_buf = -1
 
       vim.schedule(function ()
         vim.cmd("bwipeout! " .. buf)
@@ -436,9 +618,8 @@ local Cheatsheet = vim.__class.def(function(this)
     local nsid = vim.api.nvim_create_namespace("cheatsheet")
     local mappings_tb = builtin_keymaps
 
-    active_buf = vim.api.nvim_create_buf(false, true)
-
-    local buf = active_buf
+    showing_buf = vim.api.nvim_create_buf(false, true)
+    local buf = showing_buf
 
     local tbline_height = #vim.o.tabline == 0 and -1 or 0
     vim.api.nvim_open_win(buf, true, {
@@ -450,10 +631,12 @@ local Cheatsheet = vim.__class.def(function(this)
     })
 
     local win = vim.api.nvim_get_current_win()
-    vim.wo[win].winhl = "NormalFloat:Normal"
+    vim.wo[win].winhl = table.concat({
+      "NormalFloat:Normal",
+      "CursorLine:CheatsheetCursorLine"
+    }, ",")
 
     vim.api.nvim_set_current_win(win)
-    vim.api.nvim_win_set_hl_ns(win, win_hl_ns)
 
     local winwidth = vim.api.nvim_win_get_width(win)
 
@@ -683,35 +866,41 @@ local Cheatsheet = vim.__class.def(function(this)
           if cards[text] ~= nil then
             local lines = vim.api.nvim_buf_get_lines(buf, i + lnum - 1, i + lnum + 1, false)
             -- highlight area around card heading
-            vim.api.nvim_buf_add_highlight(
+            vim.api.nvim_buf_set_extmark(
               buf,
               nsid,
-              "CheatsheetCard",
               i + lnum - 1,
               vim.fn.byteidx(lines[1], col_start),
-              vim.fn.byteidx(lines[1], col_start)
-                + column_width
-                + vim.fn.strlen(text)
-                - vim.__str.displaywidth(text)
+              {
+                hl_group = "CheatsheetCard",
+                end_col = vim.fn.byteidx(lines[1], col_start)
+                  + column_width
+                  + vim.fn.strlen(text)
+                  - vim.__str.displaywidth(text)
+              }
             )
             -- highlight card heading & randomize hl groups for colorful vim.__color
-            vim.api.nvim_buf_add_highlight(
+            vim.api.nvim_buf_set_extmark(
               buf,
               nsid,
-              "CheatsheetCardTitle",
               i + lnum - 1,
               vim.fn.stridx(lines[1], vim.trim(text), col_start) - 1,
-              vim.fn.stridx(lines[1], vim.trim(text), col_start)
-                + vim.fn.strlen(vim.trim(text))
-                + 1
+              {
+                hl_group = "CheatsheetCardTitle",
+                end_col = vim.fn.stridx(lines[1], vim.trim(text), col_start)
+                  + vim.fn.strlen(vim.trim(text))
+                  + 1
+              }
             )
-            vim.api.nvim_buf_add_highlight(
+            vim.api.nvim_buf_set_extmark(
               buf,
               nsid,
-              "CheatsheetCard",
               i + lnum,
               vim.fn.byteidx(lines[2], col_start),
-              vim.fn.byteidx(lines[2], col_start) + column_width
+              {
+                hl_group = "CheatsheetCard",
+                end_col = vim.fn.byteidx(lines[2], col_start) + column_width
+              }
             )
 
           -- highlight mappings & one line after it
@@ -725,34 +914,40 @@ local Cheatsheet = vim.__class.def(function(this)
 
             local text_idx = vim.fn.stridx(lines[1], text, col_start)
 
-            vim.api.nvim_buf_add_highlight(
+            vim.api.nvim_buf_set_extmark(
               buf,
               nsid,
-              hl,
               i + lnum - 1,
-             text_idx,
-             text_idx + vim.fn.strlen(text)
+              text_idx,
+              {
+                hl_group = hl,
+                end_col = text_idx + vim.fn.strlen(text)
+              }
             )
-            vim.api.nvim_buf_add_highlight(
+            vim.api.nvim_buf_set_extmark(
               buf,
               nsid,
-              hl,
               i + lnum,
               vim.fn.byteidx(lines[2], col_start),
-              vim.fn.byteidx(lines[2], col_start) + column_width
+              {
+                hl_group = hl,
+                end_col = vim.fn.byteidx(lines[2], col_start) + column_width
+              }
             )
 
             if mode_lines[text] then
               local mode_start = mode_lines[text].start
               local mode_end = mode_start + mode_lines[text].modes[1].text_len - 1
               for _, mode in ipairs(mode_lines[text].modes or {}) do
-                vim.api.nvim_buf_add_highlight(
+                vim.api.nvim_buf_set_extmark(
                   buf,
                   nsid,
-                  mode.hl,
                   i + lnum - 1,
                   text_idx + mode_start,
-                  text_idx + mode_end
+                  {
+                    hl_group = mode.hl,
+                    end_col = text_idx + mode_end
+                  }
                 )
 
                 mode_start = mode_start + mode.text_len
@@ -785,12 +980,27 @@ local Cheatsheet = vim.__class.def(function(this)
     vim.opt_local.cursorline = true
     vim.opt_local.colorcolumn = "0"
     vim.opt_local.foldcolumn = "0"
-    vim.opt_local.filetype = "cheatsheet"
+    -- vim.opt_local.filetype = "cheatsheet"
 
-    vim.__key.rg(vim.__key.e_mode.N, "q", function()
-      active_buf = -1
+    vim.__autocmd.on({ "WinResized", "VimResized" }, function(_)
+      vim.__logger.info("asdads")
+      this:show(true)
+    end, { buffer = buf })
+
+    vim.__autocmd.on("WinLeave", function()
+      showing_buf = -1
+      vim.cmd("bwipeout! " .. buf)
+    end, { buffer = buf, once = true })
+
+    vim.__key.rg("n", "q", function()
+      showing_buf = -1
       vim.cmd("bwipeout! " .. buf)
     end, { buffer = buf })
+
+    vim.__key.unrg("n", "<C-j>", { buffer = buf })
+    vim.__key.unrg("n", "<C-h>", { buffer = buf })
+    vim.__key.unrg("n", "<C-k>", { buffer = buf })
+    vim.__key.unrg("n", "<C-l>", { buffer = buf })
   end
 end)
 
@@ -811,17 +1021,6 @@ local M = {}
 -- | t[nore]map     |  -   |  -  |  -  |  -  |  -  |  -  | yes  |  -   |
 -- | l[nore]map     |  -   | yes | yes |  -  |  -  |  -  |  -   | yes  |
 -- +-------------------------------------------------------------------+
-M.e_mode = {
-  NVSO = "",
-  N    = "n",
-  VS   = "v",
-  I    = "i",
-  S    = "s",
-  C    = "c",
-  V    = "x",
-  T    = "t",
-  O    = "o",
-}
 
 function M.list(mode, bufnr)
   if bufnr then
@@ -870,7 +1069,22 @@ function M.rg(mode, lhs, rhs, opts)
     end
   end
 
+  if opts and opts.motion then
+    opts.motion = nil
+    M.rg(mode, string.format("%sÞ", lhs), rhs, opts)
+  end
+
   vim.keymap.set(mode, lhs, rhs, opts or {})
+end
+
+local kcode_cache = {}
+function M.kcode(key)
+  local ret = kcode_cache[key]
+  if not ret then
+    ret = vim.api.nvim_replace_termcodes(key, true, false, true)
+    kcode_cache[key] = ret
+  end
+  return ret
 end
 
 function M.feed(key, mode)
@@ -878,7 +1092,7 @@ function M.feed(key, mode)
   mode = mode or "n"
 
   -- maybe involve some async logic
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), mode, false)
+  vim.api.nvim_feedkeys(M.kcode(key), mode, false)
 end
 
 function M.press(key)
@@ -892,8 +1106,16 @@ function M.resolve(spec)
   module.resolve(spec)
 end
 
-vim.__event.rg(vim.__event.types.COLOR_SCHEME, function()
-  M.cheatsheet = Cheatsheet:new()
-end)
+local __cheatsheet
+vim.api.nvim_create_user_command(
+  "Cheatsheet",
+  function(_)
+    if not __cheatsheet then
+      __cheatsheet = Cheatsheet:new()
+    end
+    __cheatsheet:show()
+  end,
+  {}
+)
 
 return M

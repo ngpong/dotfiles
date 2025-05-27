@@ -52,9 +52,9 @@ function M.home()
 end
 
 function M.normalize(p) -- vim.fs.normalize
-  -- windows路径统一转换
-  local fnl, _ = p:gsub("\\", "/")
-  return fnl
+  -- local fnl, _ = p:gsub("\\", "/")
+  -- return fnl
+  return vim.fs.normalize(p)
 end
 
 __cache.standardpath = {}
@@ -68,12 +68,21 @@ function M.standard(what)
   return path
 end
 
+-- ffi.cdef[[ const char *strrchr(const char *s, int c); ]]
+-- local ext_c = string.byte(".")
+function M.ext(n)
+  -- local ldot = ffi.C.strrchr(n, ext_c)
+  -- return ldot and ffi.string(ldot + 1) or nil
+  return n:match("%.(%w+)$") or ""
+end
+
 local libgen = require("posix.libgen")
 M.basename = libgen.basename
 M.dirname = libgen.dirname
 
 local pl_path = require("pl.path")
 M.relpath = pl_path.relpath
+M.abspath = pl_path.abspath
 M.join = pl_path.join
 M.expanduser = pl_path.expanduser
 

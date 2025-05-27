@@ -1,5 +1,6 @@
 return {
   "ellisonleao/gruvbox.nvim",
+  main = "gruvbox",
   priority = 10000,
   opts = {
     undercurl = true,
@@ -22,15 +23,24 @@ return {
     dim_inactive = false,
     transparent_mode = false,
     overrides = {
-      WinSeparator = { fg = vim.__color.dark0_hard },
+      LazyButton = { bg = vim.__color.dark4, fg = vim.__color.dark0 },
+      LazyButtonActive = { bg = vim.__color.bright_blue, fg = vim.__color.dark0, bold = true },
+      LazyH1 = { bg = vim.__color.bright_blue, fg = vim.__color.dark0, bold = true },
+      LazySpecial = { fg = vim.__color.bright_orange },
+      LazyBackdrop = { link = "Normal" },
+
+      WinSeparator = { fg = "#222222" },
       VertSplit = { fg = vim.__color.dark0_hard },
 
-      NormalFloat = { bg = vim.__color.dark1, fg = vim.__color.light1 },
-      FloatBorder = { bg = vim.__color.dark1 },
-      FloatTitle = { fg = vim.__color.dark0_hard, bg = vim.__color.bright_aqua, italic = true, bold = true },
+      NormalFloat = { bg = vim.__color.dark0_soft, fg = vim.__color.light1 },
+      FloatBorder = { fg = vim.__color.dark0_soft, bg = vim.__color.dark0_soft },
+      FloatTitle = { bg = vim.__color.bright_blue, fg = vim.__color.dark0_hard, bold = true },
+      FloatEndOfBuffer = { bg = vim.__color.dark0_soft, fg = vim.__color.dark0_soft },
 
       CursorLineNr = { fg = vim.__color.bright_yellow, bg = vim.__color.dark0 },
       CursorLine = { bg = "#302e2e" },
+      CursorLineDark = { bg = "#242424" },
+      Visual = { bg = "#384539" },
 
       SignColumn = { bg = vim.__color.dark0 },
 
@@ -44,6 +54,10 @@ return {
 
       -- CurSearch = { link = "Search" },
       -- IncSearch = { link = "Search" },
+
+      StatusLine = { bg = vim.__color.dark0_soft },
+      StatusLineNC = { bg = vim.__color.dark0_soft },
+      StatusLineTermNC = { bg = vim.__color.dark0_soft },
 
       cStatement = { fg = vim.__color.bright_red, italic = true },
       cppStatement = { fg = vim.__color.bright_red, italic = true },

@@ -32,9 +32,19 @@
 
   "diagnostics": {
     "enable": true,
-    "globals": [ "vim",
-            "MiniSnippets",
-            "m_cache_subwidth" ],
+    "globals": [
+      "vim",
+      "MiniSnippets",
+      "m_cache_subwidth"
+    ],
+    "disable": [
+      "unused-function",
+      "missing-parameter",
+      "redundant-value",
+      "duplicate-set-field",
+      "unused-function",
+      "empty-block"
+    ],
     "ignoredFiles": "Opened",
     "libraryFiles": "Opened",
     "workspaceDelay": 3000,
@@ -57,12 +67,5 @@
 
   "misc": {
     "parameters": [ "--loglevel=error" ]
-  },
-    "diagnostics.disable": [
-        "missing-parameter",
-        "redundant-value",
-        "duplicate-set-field",
-        "unused-function",
-        "empty-block"
-    ]
+  }
 }

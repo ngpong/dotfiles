@@ -1,5 +1,3 @@
--- local etypes = vim.__event.types
-
 -- return {
 --   {
 --     -- 由于该插件仅渲染需要的部分(scope)，故它为性能问题的最佳解决方案
@@ -9,13 +7,11 @@
 --     event = "VeryLazy",
 --     opts = function()
 --       vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { link = "IndentGuide" })
-
---       vim.__event.rg(etypes.FILE_TYPE, function(state)
---         if vim.__filter.contain_fts(vim.__buf.filetype(state.buf)) then
+--
+--       vim.__autocmd.on("FileType", function(state)
 --           vim.b.miniindentscope_disable = true
---         end
---       end)
-
+--       end, { pattern = vim.__filter.filetypes[1] })
+--
 --       return {
 --         draw = {
 --           delay = 65,
@@ -89,6 +85,7 @@
 
 return {
   "shellRaining/hlchunk.nvim",
+  main = "hlchunk",
   lazy = true,
   event = "VeryLazy",
   opts = {

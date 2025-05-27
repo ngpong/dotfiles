@@ -1,11 +1,12 @@
 return {
   "numToStr/Comment.nvim",
+  main = "Comment",
   lazy = true,
   keys = {
     { "fc", "<Plug>(comment_toggle_linewise)" },
-    { "fc", "<Plug>(comment_toggle_linewise_visual)", mode = vim.__key.e_mode.VS },
+    { "fc", "<Plug>(comment_toggle_linewise_visual)", mode = "v" },
     { "fb", "<Plug>(comment_toggle_blockwise)" },
-    { "fb", "<Plug>(comment_toggle_blockwise_visual)", mode = vim.__key.e_mode.VS },
+    { "fb", "<Plug>(comment_toggle_blockwise_visual)", mode = "v" },
     { "fcc", function() return vim.api.nvim_get_vvar('count') == 0 and '<Plug>(comment_toggle_linewise_current)' or '<Plug>(comment_toggle_linewise_count)' end, expr = true },
     { "fbb", function() return vim.api.nvim_get_vvar('count') == 0 and '<Plug>(comment_toggle_blockwise_current)' or '<Plug>(comment_toggle_blockwise_count)' end, expr = true },
   },

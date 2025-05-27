@@ -7,6 +7,11 @@ return {
     }
   },
   {
+    "williamboman/mason.nvim",
+    optional = true,
+    opts = { ensure_installed = { "json-lsp" } }
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     opts = {
