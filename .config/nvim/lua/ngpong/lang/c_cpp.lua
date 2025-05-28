@@ -61,7 +61,9 @@ return {
             textDocument = {
               completion = {
                 completionItem = {
-                  snippetSupport = true
+                  -- 该配置能够在接受完成函数类型的项目后，自动添加 ()，但是这么做的话会使 . 出现
+                  -- 一些奇怪的行为，这也导致在多光标模式下无法很好适配
+                  snippetSupport = false
                 }
               }
             },

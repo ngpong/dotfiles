@@ -12,7 +12,7 @@ local icons = {
   arrow_right_3 = "󰁕",
 
   cursor_1 = "󰆿",
-  cursor_2 = "󰳽",
+  cursor_2 = "󰆾",
   bookmark = "󰃁",
   ok = "",
   close = "󰅖",

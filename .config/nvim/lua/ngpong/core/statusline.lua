@@ -363,18 +363,56 @@ local Components = {
       return { iinfo.icon .. " ", { fg = iinfo.color } }, { os_name }
     end,
   }),
+  multicursor = Component:new({
+    id = "multicursor",
+    ready = function(this, _)
+      local cfg = this.cfg
+
+      if not cfg.is_loaded then
+        if vim.__plugin.loaded("multicursor.nvim") then
+          cfg.is_loaded = true
+          cfg.package_mc_manager = require("multicursor-nvim.cursor-manager")
+        else
+          return false
+        end
+      end
+
+      return cfg.package_mc_manager:hasCursors()
+    end,
+    cfg = {
+      locked = Highlighter:draw(vim.__icons.cursor_2 .. " ", { fg = vim.__color.bright_yellow }),
+      unlocked = Highlighter:draw(vim.__icons.cursor_2 .. " ", { fg = vim.__color.bright_red }),
+    },
+    rounded = { right = "  " },
+    function(this, _)
+      local cfg = this.cfg
+
+      local mc_manager = cfg.package_mc_manager
+
+      local icon
+      if mc_manager:cursorsEnabled() then
+        icon = cfg.locked
+      else
+        icon = cfg.unlocked
+      end
+
+      local num_cursor = mc_manager:numCursors() or 0
+
+      return icon .. num_cursor
+    end,
+  }),
   bookmark = Component:new({
     id = "bookmark",
     update = { { "User", pattern = "BookmarkCountChanged" }, "BufEnter" },
     cfg = {
-      fmtd = Highlighter:draw_fmt(vim.__icons.bookmark .. " %d", { fg = vim.__color.bright_red }),
+      icon = Highlighter:draw(vim.__icons.bookmark .. " ", { fg = vim.__color.bright_red }),
     },
-    rounded = { left = "  " },
+    rounded = { right = "  " },
     function(this, bufnr)
       local bmcount = vim.__bookmark:get_bmcount(bufnr)
       if bmcount == 0 then return end
 
-      return string.format(this.cfg.fmtd, bmcount)
+      return this.cfg.icon .. bmcount
     end,
   }),
   search = Component:new({
@@ -508,11 +546,12 @@ local Statusline = vim.__class.def(function(this)
       Components.lsp,
       Components.git_diff,
       Components.diagnostic,
-      Components.bookmark,
       Components.fill,
       -- Components.cmd,
       -- Components.fill,
       Components.modifiable,
+      Components.bookmark,
+      Components.multicursor,
       Components.search,
       Components.os,
       Components.encoding,

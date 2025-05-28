@@ -68,6 +68,14 @@ return {
           name = "Lib"
         }
       },
+      override_by_operating_system = {
+        ["ubuntu"] = {
+          icon = "󰕈",
+          color = "#DD4814",
+          cterm_color = "196",
+          name = "Ubuntu"
+        },
+      },
       override_by_filetype = {
         lazy = {
           icon = "󰒲",

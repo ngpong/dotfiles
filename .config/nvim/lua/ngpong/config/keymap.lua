@@ -40,7 +40,6 @@ local function del_keymaps()
   -- vim.__key.unrg("", "gV") -- 不知道有什么用
   -- vim.__key.unrg("", "g]") -- tag相关
   -- vim.__key.unrg("", "gh") -- 类似于 v
-  -- vim.__key.unrg("", "<A-g><A-h>") -- 类似于 v
   -- vim.__key.unrg("", "gw") -- 格式化文本，与 gq 类似，但是不使用 formatexpr
   -- vim.__key.unrg("", "g<tab>") -- 切换到上一次访问的 tabpage
   -- vim.__key.unrg("", "gs") -- 使neovim睡n秒
