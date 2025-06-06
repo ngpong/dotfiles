@@ -261,6 +261,8 @@ local set_keymaps = function()
     vim.__autocmd.exec("User", { pattern = "UserPress_CTRLC", data = { wininfos = wininfos } })
   end))
 
+  vim.__key.rg("i", "<C-SPACE>", "<SPACE>")
+
   -- movement
   vim.__key.rg({ "n", "v" }, "j", function() return vim.v.count > 1 and "m'" .. vim.v.count .. "j" or "j" end, { expr = true })
   vim.__key.rg({ "n", "v" }, "k", function() return vim.v.count > 1 and "m'" .. vim.v.count .. "k" or "k" end, { expr = true })

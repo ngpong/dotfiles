@@ -157,8 +157,9 @@ return {
         trigger = {
           show_on_keyword = false, -- 当输入任何字符后检测
           show_on_insert = false, -- 进入插入模式时检测
-          show_on_trigger_character = true, -- 当输入 trigger character 后检测
-          show_on_insert_on_trigger_character = true, -- 当在 trigger character 处进入插入模式时检测
+          -- 禁用自动触发；如需启用，将下面两项配置设置为 true
+          show_on_trigger_character = false, -- 当输入 trigger character 后检测
+          show_on_insert_on_trigger_character = false, -- 当在 trigger character 处进入插入模式时检测
         },
         window = {
           min_width = 1,
