@@ -236,21 +236,21 @@ local set_keymaps = function()
     return "q"
   end, { expr = true })
 
-  vim.__key.rg("n", "<C-s>", vim.schedule_wrap(function()
+  vim.__key.rg("n", "<C-e>", vim.schedule_wrap(function()
     local wininfos = {}
     for _, winid in ipairs(vim.__win.all()) do
       table.insert(wininfos, vim.__win.info(winid)[1])
     end
 
-    vim.__autocmd.exec("User", { pattern = "UserPress_CTRLS", data = { wininfos = wininfos } })
+    vim.__autocmd.exec("User", { pattern = "UserPress_CTRLE", data = { wininfos = wininfos } })
   end))
-  vim.__key.rg("n", "<C-f>", vim.schedule_wrap(function()
+  vim.__key.rg("n", "<C-y>", vim.schedule_wrap(function()
     local wininfos = {}
     for _, winid in ipairs(vim.__win.all()) do
       table.insert(wininfos, vim.__win.info(winid)[1])
     end
 
-    vim.__autocmd.exec("User", { pattern = "UserPress_CTRLF", data = { wininfos = wininfos } })
+    vim.__autocmd.exec("User", { pattern = "UserPress_CTRLY", data = { wininfos = wininfos } })
   end))
   vim.__key.rg("n", "<C-c>", vim.schedule_wrap(function()
     local wininfos = {}
@@ -261,6 +261,7 @@ local set_keymaps = function()
     vim.__autocmd.exec("User", { pattern = "UserPress_CTRLC", data = { wininfos = wininfos } })
   end))
 
+  -- 防止一些键盘误触的映射
   vim.__key.rg("i", "<C-SPACE>", "<SPACE>")
 
   -- movement
@@ -283,16 +284,16 @@ local set_keymaps = function()
 
   -- vim.__key.rg("", "gj", "j")
   -- vim.__key.rg("", "gk", "k")
-  vim.__key.rg("", "<C-e>", "$")
-  vim.__key.rg("i", "<C-e>", "<C-o>$")
-  vim.__key.rg("c", "<C-e>", "<END>")
-  vim.__key.rg("", "<C-S-E>", "g_")
-  vim.__key.rg("i", "<C-S-E>", "<C-o>g_<RIGHT>")
-  vim.__key.rg("", "<C-y>", "0")
-  vim.__key.rg("i", "<C-y>", "<C-o>^")
-  vim.__key.rg("c", "<C-y>", "<HOME>")
-  vim.__key.rg("", "<C-S-Y>", "^")
-  vim.__key.rg("i", "<C-S-Y>", "<C-o>0")
+  vim.__key.rg("", "<C-f>", "$")
+  vim.__key.rg("i", "<C-f>", "<C-o>$")
+  vim.__key.rg("c", "<C-f>", "<END>")
+  vim.__key.rg("", "<C-S-F>", "g_")
+  vim.__key.rg("i", "<C-S-F>", "<C-o>g_<RIGHT>")
+  vim.__key.rg("", "<C-s>", "0")
+  vim.__key.rg("i", "<C-s>", "<C-o>^")
+  vim.__key.rg("c", "<C-s>", "<HOME>")
+  vim.__key.rg("", "<C-S-S>", "^")
+  vim.__key.rg("i", "<C-S-S>", "<C-o>0")
 
   do
     local function f(key, msg)
@@ -444,8 +445,8 @@ local set_keymaps = function()
     vim.__key.rg("n", "<C-w>z", filter_wrap(function() vim.__key.feed("<C-w>=") end))
     vim.__key.rg("n", "<C-w><C-z>", filter_wrap(function() vim.__key.feed("<C-w>=") end))
 
-    vim.__key.rg("n", "<C-w>f", filter_wrap(function() vim.__key.feed("<C-w>|<C-w>_") end))
-    vim.__key.rg("n", "<C-w><C-f>", filter_wrap(function() vim.__key.feed("<C-w>|<C-w>_") end))
+    vim.__key.rg("n", "<C-w>t", filter_wrap(function() vim.__key.feed("<C-w>|<C-w>_") end))
+    vim.__key.rg("n", "<C-w><C-t>", filter_wrap(function() vim.__key.feed("<C-w>|<C-w>_") end))
 
     vim.__key.rg("n", "<C-w><LEFT>", filter_wrap(function() vim.__key.feed("<C-w>H") end))
     vim.__key.rg("n", "<C-w><C-LEFT>", filter_wrap(function() vim.__key.feed("<C-w>H") end))

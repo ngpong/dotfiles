@@ -53,7 +53,7 @@ return {
             end
           end
         end,
-        pattern = "UserPress_CTRLS"
+        pattern = "UserPress_CTRLY"
       },
       {
         "User",
@@ -67,7 +67,7 @@ return {
             end
           end
         end,
-        pattern = "UserPress_CTRLF"
+        pattern = "UserPress_CTRLE"
       }
     },
     opts = {

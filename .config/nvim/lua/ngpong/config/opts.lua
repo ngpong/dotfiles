@@ -110,10 +110,10 @@ vim.go.ignorecase = false
 vim.go.smartcase = true
 
 -- 上下滚动时可看到的最小行数
-vim.go.scrolloff = 0
+vim.go.scrolloff = 3
 
 -- 左右滚动时可看到的最好列数
-vim.go.sidescrolloff = 0
+vim.go.sidescrolloff = 3
 
 -- comment段换行时继承换行符
 vim.opt.formatoptions:remove({ "j", "q" })

@@ -166,7 +166,7 @@ return {
         ["<c-o><c-s>"] = "jump_split",
         ["<c-o>v"] = "jump_vsplit",
         ["<c-o><c-v>"] = "jump_vsplit",
-        ["<C-f>"] = function(self)
+        ["<C-e>"] = function(self)
           local winid = self.preview_win.win
           if not winid then
             return
@@ -175,7 +175,7 @@ return {
             vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-d>")))
           end)
         end,
-        ["<C-s>"] = function(self)
+        ["<C-y>"] = function(self)
           local winid = self.preview_win.win
           if not winid then
             return

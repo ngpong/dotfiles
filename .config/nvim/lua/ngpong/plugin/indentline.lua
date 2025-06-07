@@ -69,36 +69,37 @@
 --   },
 -- }
 
--- return {
---   "nvimdev/indentmini.nvim",
---   lazy = true,
---   event = "VeryLazy",
---   opts = function ()
---     vim.api.nvim_set_hl(0, "IndentLine", { link = "IndentGuide" })
---     vim.api.nvim_set_hl(0, "IndentLineCurrent", { link = "IndentGuide" })
---     return {
---       char = vim.__icons.indent_guid,
---       exclude = vim.__filter.filetypes[1]
---     }
---   end,
--- }
-
 return {
-  "shellRaining/hlchunk.nvim",
-  main = "hlchunk",
+  "nvimdev/indentmini.nvim",
+  main = "indentmini",
   lazy = true,
   event = "VeryLazy",
+  highlights = {
+    { "IndentLine", link = "IndentGuide" },
+    { "IndentLineCurrent", link = "IndentGuide" },
+  },
   opts = {
-    indent = {
-      enable = true,
-      style = "#3f3b38",
-      chars = { vim.__icons.indent_guid },
-      ahead_lines = 5,
-      delay = 70,
-      exclude_filetypes = vim.__filter.filetypes_m[1],
-    }
+    char = vim.__icons.indent_guid,
+    exclude = vim.__filter.filetypes[1]
   }
 }
+
+-- return {
+--   "shellRaining/hlchunk.nvim",
+--   main = "hlchunk",
+--   lazy = true,
+--   event = "VeryLazy",
+--   opts = {
+--     indent = {
+--       enable = true,
+--       style = "#3f3b38",
+--       chars = { vim.__icons.indent_guid },
+--       ahead_lines = 5,
+--       delay = 70,
+--       exclude_filetypes = vim.__filter.filetypes_m[1],
+--     }
+--   }
+-- }
 
 -- local exclude_bufnrs = {}
 -- return {

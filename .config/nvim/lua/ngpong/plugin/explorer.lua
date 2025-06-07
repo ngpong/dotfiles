@@ -146,8 +146,8 @@ return {
         { "<C-o><C-v>", function() require("nvim-tree.api").node.open.vertical() end },
         { "<C-o><C-s>", function() require("nvim-tree.api").node.open.horizontal() end },
 
-        { "<C-f>", function() return require("nvim-tree-preview").scroll(8) end },
-        { "<C-s>", function() return require("nvim-tree-preview").scroll(-8) end },
+        { "<C-e>", function() return require("nvim-tree-preview").scroll(8) end },
+        { "<C-y>", function() return require("nvim-tree-preview").scroll(-8) end },
         {
           "<C-g>",
           function()
