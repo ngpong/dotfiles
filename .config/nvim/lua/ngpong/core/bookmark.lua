@@ -53,7 +53,7 @@ local Bookmark = vim.__class.def(function(this)
     -- 还未找到确切原因，所以暂时使用 schedule 来包装执行来规避这一问题
     vim.schedule(function()
       vim.__autocmd.exec("User", { pattern = "BookmarkCountChanged" })
-      vim.__stl.redraw(true)
+      vim.__stl.redraw()
     end)
   end
 

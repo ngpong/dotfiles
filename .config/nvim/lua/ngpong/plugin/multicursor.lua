@@ -19,7 +19,7 @@ local f_wrap = function(f)
 
     f()
 
-    vim.__stl.redraw(true)
+    vim.__stl.redraw()
   end
 end
 

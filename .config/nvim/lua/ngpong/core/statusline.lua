@@ -176,6 +176,8 @@ local Components = {
       "ModeChanged",
       "TermLeave",
       "TermEnter",
+      "CmdlineEnter",
+      "CmdlineLeave",
       { "User", pattern = "PickerOnShow" },
       { "User", pattern = "PickerOnClose" }
     },
@@ -576,11 +578,8 @@ local Statusline = vim.__class.def(function(this)
       Components.location,
     }
   }
-  local m_forceredraw, m_evalcache = false, {
-    unknown = {
-      components = m_compgroup.unknown,
-      timer = vim.loop.new_timer(),
-    }
+  local m_caches = {
+    unknown = m_compgroup.unknown
   }
   local function get_components(ft)
     return vim.__filter.contain_fts(ft) and m_compgroup.special or m_compgroup.normal
@@ -612,81 +611,64 @@ local Statusline = vim.__class.def(function(this)
     vim.o.statusline = "%{%v:lua.require'ngpong.core.statusline'.eval()%}"
     vim.g.qf_disable_statusline = 1
 
-    vim.__autocmd.on("BufDelete", function(state)
-      local bufnr = state.buf
-
-      local cache = m_evalcache[bufnr]
-      if not cache then return end
-
-      cache.timer:stop()
-      cache.timer:close()
-
-      m_evalcache[bufnr] = nil
-    end)
-
-    -- constant updater
-    vim.uv.new_timer():start(650, 650, vim.schedule_wrap(function()
+    -- updater
+    vim.uv.new_timer():start(1000, 1000, vim.schedule_wrap(function()
       this:redraw()
     end))
+    vim.__autocmd.on("BufDelete", function(state)
+      m_caches[state.buf] = nil
+    end)
+    -- HACK:
+    -- 未知原因（怀疑是 neovim 本身的问题），导致在 Insert 模式下移动光标至
+    -- Indent-line 时会消失，必须要强制刷新才可以解决这个问题。
+    --
+    -- 这种情况仅会在 statusline 是一个 eval 函数的时候才会出现。如果是给定
+    -- 一个已经计算出的结果则不会出现这个问题，但是这样的话就需要自己手动管
+    -- 理 redraw 的时机，这是十分难以控制的。
+    vim.__autocmd.on("CursorMovedI", function()
+      this:redraw()
+    end)
+    vim.__autocmd.on("ModeChanged", function ()
+      this:redraw()
+    end, { pattern = "n:i" })
   end
 
   function this:debug()
-    return m_evalcache
+    return m_caches
   end
 
-  function this:redraw(force)
-    if force then m_forceredraw = true end
+  function this:redraw()
     vim.cmd.redraws()
   end
 
-  function this:eval(_)
+  function this:eval()
     local bufnr = tonumber(vim.g.actual_curbuf) or vim.__buf.current()
 
-    local cache = m_evalcache[bufnr]
-    if not cache then
+    local cs = m_caches[bufnr]
+    if not cs then
       local ft = vim.__buf.filetype(bufnr)
-      if ft and ft ~= "" then
-        cache = {
-          components = get_components(ft),
-          timer = vim.loop.new_timer(),
-        }
-        m_evalcache[bufnr] = cache
+      if not vim.__util.isempty(ft) then
+        cs = get_components(ft)
+        m_caches[bufnr] = cs
       else
-        cache = m_evalcache["unknown"]
+        cs = m_caches["unknown"]
       end
     end
-
-    local str = cache.str
-    if str then
-      if m_forceredraw then
-        cache.timer:stop()
-      else
-        return str
-      end
-    end
-    m_forceredraw = false
 
     local evalstrs = {}
-    for _, c in ipairs(cache.components) do
+    for _, c in ipairs(cs) do
       local str0 = c:eval(bufnr)
       if str0 and str0 ~= "" then
         table.insert(evalstrs, str0)
       end
     end
-    str = table.concat(evalstrs)
 
-    cache.str = str
-    cache.timer:start(5, 0, function()
-      cache.str = nil
-      cache.timer:stop()
-    end)
-
-    return str
+    return table.concat(evalstrs)
   end
 end)
 
 local stl = Statusline:new()
 return {
-  redraw = function(force) return stl:redraw(force) end,
+  redraw = function() return stl:redraw() end,
   eval = function() return stl:eval() end
 }

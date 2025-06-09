@@ -168,10 +168,10 @@ return {
     },
     on_attach = function(bufnr)
       vim.__autocmd.exec("User", { pattern = "GitSignsAttached", data = bufnr })
-      vim.__stl.redraw(true)
+      vim.__stl.redraw()
 
       vim.__autocmd.on("User", function()
-        vim.__stl.redraw(true)
+        vim.__stl.redraw()
       end, { pattern = "GitSignsUpdate", once = true })
     end
   }

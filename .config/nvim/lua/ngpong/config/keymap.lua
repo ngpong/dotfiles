@@ -557,7 +557,7 @@ local set_keymaps = function()
     if vim.fn.getreg("/") ~= "" then
       vim.__helper.clear_searchpattern()
       vim.__helper.clear_commandline()
-      vim.api.nvim__redraw({ statusline = true })
+      vim.__stl.redraw()
     end
   end, { silent = true })
   -- 添加前置判断条件以防止奇怪的bug

@@ -111,12 +111,12 @@ return {
           -- vim.cmd.stopinsert()
           vim.__autocmd.on("ModeChanged", function()
             vim.__autocmd.exec("User", { pattern = "PickerOnShow" })
-            vim.__stl.redraw(true)
+            vim.__stl.redraw()
           end, { once = true })
         end,
         on_close = function()
           vim.__autocmd.exec("User", { pattern = "PickerOnClose" })
-          vim.__stl.redraw(true)
+          vim.__stl.redraw()
         end,
         actions = {
           nop = function(_) return true end,

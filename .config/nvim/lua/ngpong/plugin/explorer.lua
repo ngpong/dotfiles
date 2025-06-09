@@ -351,14 +351,6 @@ return {
           vim.__buf.wipeout(bufnr)
         end
       end)
-
-      -- HACK:
-      -- clear_prompt 函数在用于 ui.input 当中，奇怪的是，如果不强制刷新 stl，则会导致 mod 状态出现不正确的指示。
-      local org_clear_prompt = NvimTreeUtils.clear_prompt
-      NvimTreeUtils.clear_prompt = function(...)
-        org_clear_prompt(...)
-        vim.__stl.redraw(true)
-      end
     end
   },
   {
