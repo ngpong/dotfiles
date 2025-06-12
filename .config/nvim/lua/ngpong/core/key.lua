@@ -117,8 +117,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "[N]B", "[N] WORD backward", mode_n_v_o },
         { "<ctrl-shift-h>", "word backward", mode_i },
         { "<ctrl-shift-l>", "word forward", mode_i },
-        { "<ctrl-y|Y>", "goto first non-blank-character|column of the line", mode_n_v_o_i },
-        { "<ctrl-e|E>", "goto last non-blank-character|column of the line", mode_n_v_o_i },
+        { "<ctrl-f|F>", "goto first non-blank-character|column of the line", mode_n_v_o_i },
+        { "<ctrl-s|S>", "goto last non-blank-character|column of the line", mode_n_v_o_i },
         { "<ctrl-d>", "scroll downwards", mode_n_v },
         { "<ctrl-u>", "scroll upwards", mode_n_v },
         { "<pageup>", "scroll pageup", mode_n_v },
@@ -266,8 +266,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "<ctrl-c>", "stop snippet sessions", mode_i },
         { "<ctrl-g>", "show|hide selected document", mode_i },
         { "<ctrl-shift-g>", "show|hide lsp-signature", mode_i },
-        { "<ctrl-f>", "scroll forward lsp-signature window", mode_n_i },
-        { "<ctrl-s>", "scroll backward lsp-signature window", mode_n_i },
+        { "<ctrl-e>", "scroll forward lsp-signature window", mode_n_i },
+        { "<ctrl-y>", "scroll backward lsp-signature window", mode_n_i },
 
         { "lsp" },
         { "[d", "goto previous diagnostics", mode_n },
@@ -283,8 +283,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "gD", "textDocument/declaration", mode_n },
         { "gi", "textDocument/implementation", mode_n },
         { "gs", "textDocument/switchSourceHeader", mode_n },
-        { "<ctrl-f>", "scroll forward lsp window", mode_n_i },
-        { "<ctrl-s>", "scroll backward lsp window", mode_n_i },
+        { "<ctrl-e>", "scroll forward lsp window", mode_n_i },
+        { "<ctrl-y>", "scroll backward lsp window", mode_n_i },
         { "<ctrl-c>", "close lsp window", mode_n },
         { ":ClangdAST", "open clangd ast tree", mode_c },
 
@@ -471,8 +471,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "k", "previous item", mode_n },
         { "j", "next item", mode_n },
         { "<ctrl-g>", "toggle preview", mode_n_i },
-        { "<ctrl-f>", "scroll forward preview window", mode_n_i },
-        { "<ctrl-s>", "scroll backward preview window", mode_n_i },
+        { "<ctrl-e>", "scroll forward preview window", mode_n_i },
+        { "<ctrl-y>", "scroll backward preview window", mode_n_i },
         { "<tab>", "toggle selection and move next", mode_n_i },
         { "<shift-tab>", "toggle selection and move previous", mode_n_i },
         { "G", "goto bottom of list", mode_n },
@@ -492,8 +492,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "<leader>hR", "reset current buffer", mode_n },
         { "<leader>hb", "show current line blame", mode_n },
         { "<leader>hp", "show current line preview", mode_n },
-        { "<ctrl-f>", "scroll forward hunk window", mode_n_i },
-        { "<ctrl-s>", "scroll backward hunk window", mode_n_i },
+        { "<ctrl-e>", "scroll forward hunk window", mode_n_i },
+        { "<ctrl-y>", "scroll backward hunk window", mode_n_i },
         { "<ctrl-c>", "close hunk window", mode_n },
         { "[h ]h", "goto previous|next hunk", mode_n_v },
         { "ih", "inner hunk", mode_o },
@@ -518,8 +518,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "<ctrl-o>v", "open in vertical split", mode_n },
         { "<ctrl-o>s", "open in horizontal split", mode_n },
         { "<ctrl-g>", "toggle preview", mode_n },
-        { "<ctrl-f>", "scroll forward preview window", mode_n },
-        { "<ctrl-s>", "scroll backward preview window", mode_n },
+        { "<ctrl-e>", "scroll forward preview window", mode_n },
+        { "<ctrl-y>", "scroll backward preview window", mode_n },
         { "r", "rename", mode_n },
         { "R", "rename full path", mode_n },
         { "a", "create file or directory", mode_n },
@@ -567,8 +567,8 @@ local Cheatsheet = vim.__class.def(function(this)
         { "<ctrl-o>v", "open in vertical split", mode_n },
         { "<ctrl-o>s", "open in horizontal split", mode_n },
         { "<ctrl-g>", "toggle preview", mode_n },
-        { "<ctrl-f>", "scroll forward preview window", mode_n },
-        { "<ctrl-s>", "scroll backward preview window", mode_n },
+        { "<ctrl-e>", "scroll forward preview window", mode_n },
+        { "<ctrl-y>", "scroll backward preview window", mode_n },
       },
     },
     {
@@ -996,7 +996,6 @@ local Cheatsheet = vim.__class.def(function(this)
     -- vim.opt_local.filetype = "cheatsheet"
 
     vim.__autocmd.on({ "WinResized", "VimResized" }, function(_)
-      vim.__logger.info("asdads")
       this:show(true)
     end, { buffer = buf })
 

@@ -59,8 +59,8 @@ return {
   lazy = true,
   event = "VeryLazy",
   highlights = {
-    { "MiniCursorword", bold = true, underline = true },
-    { "MiniCursorwordCurrent", bold = true, underline = true },
+    { "MiniCursorword", bg = vim.__color.dark2 },
+    { "MiniCursorwordCurrent", bg = vim.__color.dark2 },
   },
   autocmds = {
     { "FileType", function() vim.b.minicursorword_disable = true end, pattern = vim.__filter.filetypes[1] }

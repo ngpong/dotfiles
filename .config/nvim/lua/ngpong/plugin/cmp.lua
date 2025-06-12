@@ -38,6 +38,9 @@ return {
       sources = {
         default = { "lsp", "snippets", "buffer", "path" },
         providers = {
+          -- lsp = {
+          --   fallback = { "snippets" },
+          -- },
           path = {
             opts = {
               show_hidden_files_by_default = true,
