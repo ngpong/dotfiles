@@ -136,7 +136,7 @@ return {
           }
         },
         documentation = {
-          auto_show = true,
+          auto_show = false,
           auto_show_delay_ms = 500,
           update_delay_ms = 50,
           treesitter_highlighting = true,
@@ -183,6 +183,7 @@ return {
           ["<A-SPACE>"] = { "show", "hide" },
           ["<C-p>"] = { "select_prev" },
           ["<C-n>"] = { "select_next" },
+          ["<C-g>"] = { "show_documentation", "hide_documentation" },
         },
         sources = function()
           local type = vim.fn.getcmdcompltype()

@@ -284,16 +284,26 @@ local set_keymaps = function()
 
   -- vim.__key.rg("", "gj", "j")
   -- vim.__key.rg("", "gk", "k")
-  vim.__key.rg("", "<C-f>", "$")
-  vim.__key.rg("i", "<C-f>", "<C-o>$")
-  vim.__key.rg("c", "<C-f>", "<END>")
-  vim.__key.rg("", "<C-S-F>", "g_")
-  vim.__key.rg("i", "<C-S-F>", "<C-o>g_<RIGHT>")
-  vim.__key.rg("", "<C-s>", "0")
-  vim.__key.rg("i", "<C-s>", "<C-o>^")
-  vim.__key.rg("c", "<C-s>", "<HOME>")
-  vim.__key.rg("", "<C-S-S>", "^")
-  vim.__key.rg("i", "<C-S-S>", "<C-o>0")
+  do
+    local function do_home(home1, home2)
+      return function()
+      	local row, col = vim.__cursor.get()
+        local str = vim.api.nvim_buf_get_text(0, row - 1, 0, row - 1, col, {})[1]
+      	if vim.__util.isempty(str:match("%S")) then
+      	  return home1
+      	else
+      	  return home2
+      	end
+      end
+    end
+
+    vim.__key.rg("", "<C-f>", "$")
+    vim.__key.rg("v", "<C-f>", "g_")
+    vim.__key.rg({ "i", "c"}, "<C-f>", "<END>")
+    vim.__key.rg("", "<C-s>", do_home("0", "^"), { expr = true })
+    vim.__key.rg("i", "<C-s>", do_home("<HOME>", "<C-o>^"), { expr = true })
+    vim.__key.rg("c", "<C-s>", "<HOME>")
+  end
 
   do
     local function f(key, msg)
