@@ -17,7 +17,7 @@
     "body": [
       "#include <iostream>",
       "",
-      "int main (int argc, char *argv[]) {",
+      "int32_t main (int32_t argc, char *argv[]) {",
       "\t$0",
       "",
       "\treturn 0;",
@@ -37,7 +37,7 @@
   "for": {
     "prefix": "for",
     "body": [
-      "for (${1:int} ${2:i} = ${3:0}; $2 < ${4:length}; ${5:$2++}) {",
+      "for (${1:int32_t} ${2:i} = ${3:0}; $2 < ${4:length}; ${5:$2++}) {",
       "\t$0",
       "}"
     ],
@@ -46,7 +46,7 @@
   "forr": {
     "prefix": "forr",
     "body": [
-      "for (${1:int} ${2:i} = ${3:length} - 1; $2 >= ${4:0}; ${5:$2++}) {",
+      "for (${1:int32_t} ${2:i} = ${3:length} - 1; $2 >= ${4:0}; ${5:$2++}) {",
       "\t$0",
       "}"
     ],
