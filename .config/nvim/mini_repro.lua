@@ -69,7 +69,7 @@ local plugins = {
   --   "saghen/blink.cmp",
   --   main = "blink-cmp",
   --   dependencies = {
-  --     "echasnovski/mini.snippets",
+  --     "nvim-mini/mini.snippets",
   --   },
   --   build = "cargo build --release",
   --   opts = {
@@ -114,7 +114,7 @@ local plugins = {
   --   },
   -- },
   -- {
-  --   "echasnovski/mini.snippets",
+  --   "nvim-mini/mini.snippets",
   --   main = "mini.snippets",
   --   dependencies = {
   --     "rafamadriz/friendly-snippets",

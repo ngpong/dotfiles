@@ -32,7 +32,7 @@ return {
 
 -- 由于该插件仅渲染需要的部分(scope)，故它为性能问题的最佳解决方案
 -- return {
---   "echasnovski/mini.indentscope",
+--   "nvim-mini/mini.indentscope",
 --   enabled = false,
 --   lazy = true,
 --   event = "VeryLazy",

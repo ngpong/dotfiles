@@ -5,7 +5,7 @@ return {
     lazy = true,
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
-      "echasnovski/mini.snippets",
+      "nvim-mini/mini.snippets",
     },
     build = "cargo build --release",
     highlights = {
@@ -244,7 +244,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.snippets",
+    "nvim-mini/mini.snippets",
     main = "mini.snippets",
     lazy = true,
     dependencies = {

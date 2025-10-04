@@ -165,7 +165,8 @@ return {
         --   },
         -- },
       },
-      capabilities = {},
+      capabilities = {
+      },
       server_capabilities = {
         -- 禁用lsp提供的格式化能力
         -- documentFormattingProvider = false,
@@ -175,18 +176,8 @@ return {
         -- 禁用lsp提供的高亮能力
         -- semanticTokensProvider = false,
       },
-      on_attach = function(cli, bufnr, opts)
-        cli.server_capabilities = vim.__tbl.rr_extend(
-          {},
-          cli.server_capabilities,
-          opts.server_capabilities
-        )
-      end
     },
     config = function(_, opts)
-      -- 禁用日志
-      vim.lsp.set_log_level("off")
-
       -- setup diagnostic
       vim.diagnostic.config(opts.diagnostics)
 
@@ -253,20 +244,19 @@ return {
           end
         end)
 
-        local capabilities = vim.__tbl.rr_extend({}, {
-            opts.capabilities,
-            workspace = {
-              fileOperations = {
-                didRename = true,
-                willRename = true,
-              },
-              didChangeWatchedFiles = {
-                dynamicRegistration = true
-              }
+        opts.capabilities = vim.__tbl.rr_extend({}, {
+          opts.capabilities,
+          workspace = {
+            fileOperations = {
+              didRename = true,
+              willRename = true,
             },
-          }
-        )
-        local server_capabilities = vim.__tbl.rr_extend({}, {
+            didChangeWatchedFiles = {
+              dynamicRegistration = true
+            }
+          },
+        })
+        opts.server_capabilities = vim.__tbl.rr_extend({}, {
           opts.server_capabilities,
           workspace = {
             fileOperations = {
@@ -274,8 +264,6 @@ return {
             }
           }
         })
-        opts.capabilities = capabilities
-        opts.server_capabilities = server_capabilities
       end
 
       -- construct client capabilities
@@ -309,7 +297,11 @@ return {
 
       local function make_on_attach(extra)
         return function(cli, bufnr)
-          opts.on_attach(cli, bufnr, opts)
+          cli.server_capabilities = vim.__tbl.rr_extend(
+            {},
+            cli.server_capabilities,
+            opts.server_capabilities
+          )
           if extra then extra(cli, bufnr) end
         end
       end
@@ -329,7 +321,8 @@ return {
           server_opts.config()
         end
 
-        require("lspconfig")[server].setup(final_opts)
+        vim.lsp.config[server] = final_opts
+        vim.lsp.enable(server)
       end
 
       for server, server_opts in pairs(opts.servers) do
@@ -386,7 +379,7 @@ return {
     },
     config = function(_, opts)
       require("mason").setup(opts)
-      require("mason-lspconfig").setup()
+      require("mason-lspconfig").setup({ automatic_enable = false })
 
       local mr = require("mason-registry")
 

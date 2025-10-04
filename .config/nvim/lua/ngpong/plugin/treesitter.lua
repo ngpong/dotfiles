@@ -65,7 +65,7 @@ return {
       local bufnr = args.buf
       local ft    = args.match
 
-      if vim.__buf.size(bufnr) >= vim.__filter.max_size[2] then
+      if vim.__buf.size(bufnr) >= vim.__filter.max_size[3] then
         return
       end
 

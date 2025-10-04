@@ -54,7 +54,7 @@ local function cursorword_jump(backward)
 end
 
 return {
-  "echasnovski/mini.cursorword",
+  "nvim-mini/mini.cursorword",
   main = "mini.cursorword",
   lazy = true,
   event = "VeryLazy",

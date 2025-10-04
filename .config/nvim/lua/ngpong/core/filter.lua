@@ -61,7 +61,8 @@ M.names = {
 
 M.max_size = {
   1024 * 512, -- 512kb
-  1024 * 1024 -- 1mb
+  1024 * 1024, -- 1mb
+  1024 * 1024 * 10, -- 1mb
 }
 
 function M.contain_fts(ft, idx)
