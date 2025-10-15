@@ -9,153 +9,163 @@
 --  * 原先配置中有太多的自定义内容，以更好的和这些自定义内容做融合
 --  * 目前看 barbar 的实现其实还有很多优化的空间，比如尽可能的使用缓存减少运算
 
+local khelper
+do
+  local function filter()
+    local winid = vim.__win.current()
+    if vim.__win.is_diff(winid) then
+      return false
+    end
+    if vim.__win.is_float(winid) then
+      return false
+    end
+
+    local ft = vim.__buf.filetype(0)
+    if vim.__filter.contain_fts(ft) then
+      return false
+    end
+
+    return true
+  end
+
+  khelper = {
+    next = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferNext")
+    end,
+    previous = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferPrevious")
+    end,
+    move_next = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferMoveNext")
+    end,
+    move_previous = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferMovePrevious")
+    end,
+    pin = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferPin")
+    end,
+    pick = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferPick")
+    end,
+    restore = function()
+      if not filter() then
+        return
+      end
+      vim.cmd("BufferRestore")
+    end,
+    delete = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarState = vim.__lazy.require("barbar.state")
+      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+
+      local bufnr = vim.__buf.current()
+
+      if vim.bo[bufnr].modified then
+        return vim.__echo.warn("No write since last change.")
+      end
+
+      if BarbarState.is_pinned(bufnr) then
+        return vim.__echo.warn("Can't not close pinned buffer.")
+      end
+
+      BarbarBbye.bdelete(false, bufnr)
+    end,
+    delete_all = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarState = vim.__lazy.require("barbar.state")
+      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+
+      vim.ui.input({ prompt = "Delete all buffers, y/N: " }, function(ip)
+        if not ip or string.lower(ip) ~= "y" then
+          return
+        end
+
+        for _, bufnr in ipairs(BarbarState.buffers) do
+          local is_pinned = BarbarState.is_pinned(bufnr)
+          local is_modified = vim.bo[bufnr].modified
+
+          if not is_modified and not is_pinned then
+            BarbarBbye.bdelete(false, bufnr)
+          end
+        end
+      end)
+    end,
+    delete_except = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarState = vim.__lazy.require("barbar.state")
+      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+
+      vim.ui.input({ prompt = "Delete all buffers except current, y/N: " }, function(ip)
+        if not ip or string.lower(ip) ~= "y" then
+          return
+        end
+
+        local curbufnr = vim.__buf.current()
+        for _, bufnr in ipairs(BarbarState.buffers) do
+          local is_current = curbufnr == bufnr
+          local is_pinned = BarbarState.is_pinned(bufnr)
+          local is_modified = vim.bo[bufnr].modified
+
+          if not is_modified and not is_pinned and not is_current then
+            BarbarBbye.bdelete(false, bufnr)
+          end
+        end
+      end)
+    end,
+  }
+end
+
 return {
   "romgrk/barbar.nvim",
   main = "barbar",
   lazy = false,
-  dispatchs = {
-    {
-      "barbar",
-      function(this)
-        local function filter()
-          local winid = vim.__win.current()
-          if vim.__win.is_diff(winid) then
-            return false
-          end
-          if vim.__win.is_float(winid) then
-            return false
-          end
-
-          local ft = vim.__buf.filetype(0)
-          if vim.__filter.contain_fts(ft) then
-            return false
-          end
-
-          return true
-        end
-
-        function this:next()
-          if not filter() then return end
-          vim.cmd("BufferNext")
-        end
-
-        function this:previous()
-          if not filter() then return end
-          vim.cmd("BufferPrevious")
-        end
-
-        function this:move_next()
-          if not filter() then return end
-          vim.cmd("BufferMoveNext")
-        end
-
-        function this:move_previous()
-          if not filter() then return end
-          vim.cmd("BufferMovePrevious")
-        end
-
-        function this:pin()
-          if not filter() then return end
-          vim.cmd("BufferPin")
-        end
-
-        function this:pick()
-          if not filter() then return end
-          vim.cmd("BufferPick")
-        end
-
-        function this:restore()
-          if not filter() then return end
-          vim.cmd("BufferRestore")
-        end
-
-        function this:delete()
-          if not filter() then return end
-
-          local BarbarState = vim.__lazy.require("barbar.state")
-          local BarbarBbye  = vim.__lazy.require("barbar.bbye")
-
-          local bufnr = vim.__buf.current()
-
-          if vim.bo[bufnr].modified then
-            return vim.__echo.warn("No write since last change.")
-          end
-
-          if BarbarState.is_pinned(bufnr) then
-            return vim.__echo.warn("Can't not close pinned buffer.")
-          end
-
-          BarbarBbye.bdelete(false, bufnr)
-        end
-
-        function this:delete_all()
-          if not filter() then return end
-
-          local BarbarState = vim.__lazy.require("barbar.state")
-          local BarbarBbye  = vim.__lazy.require("barbar.bbye")
-
-          vim.ui.input({ prompt = "Delete all buffers, y/N: ", }, function(ip)
-            if not ip or string.lower(ip) ~= "y" then
-              return
-            end
-
-            for _, bufnr in ipairs(BarbarState.buffers) do
-              local is_pinned   = BarbarState.is_pinned(bufnr)
-              local is_modified = vim.bo[bufnr].modified
-
-              if not is_modified and not is_pinned then
-                BarbarBbye.bdelete(false, bufnr)
-              end
-            end
-          end)
-        end
-
-        function this:delete_except()
-          if not filter() then return end
-
-          local BarbarState = vim.__lazy.require("barbar.state")
-          local BarbarBbye  = vim.__lazy.require("barbar.bbye")
-
-          vim.ui.input({ prompt = "Delete all buffers except current, y/N: ", }, function(ip)
-            if not ip or string.lower(ip) ~= "y" then
-              return
-            end
-
-            local curbufnr = vim.__buf.current()
-            for _, bufnr in ipairs(BarbarState.buffers) do
-              local is_current  = curbufnr == bufnr
-              local is_pinned   = BarbarState.is_pinned(bufnr)
-              local is_modified = vim.bo[bufnr].modified
-
-              if not is_modified and not is_pinned and not is_current then
-                BarbarBbye.bdelete(false, bufnr)
-              end
-            end
-          end)
-        end
-      end
-    }
-  },
   init = function()
     vim.g.barbar_auto_setup = false
   end,
   keys = {
     -- { "]b", buffer_next },
     -- { "[b", buffer_previous },
-    { "<C-.>", function() vim.__barbar:next() end },
-    { "<C-,>", function() vim.__barbar:previous() end },
-    { "<C->>", function() vim.__barbar:move_next() end },
-    { "<C-<>", function() vim.__barbar:move_previous() end },
-    { "<C-b>p", function() vim.__barbar:pin() end },
-    { "<C-b><C-p>", function() vim.__barbar:pin() end },
-    { "<C-b>g", function() vim.__barbar:pick() end },
-    { "<C-b><C-g>", function() vim.__barbar:pick() end },
-    { "<C-b>r", function() vim.__barbar:restore() end },
-    { "<C-b><C-r>", function() vim.__barbar:restore() end },
-    { "<C-b>d", function() vim.__barbar:delete() end },
-    { "<C-b><C-d>", function() vim.__barbar:delete() end },
-    { "<C-b>o", function() vim.__barbar:delete_except() end },
-    { "<C-b><C-o>", function() vim.__barbar:delete_except() end },
+    { "<C-.>", khelper.next },
+    { "<C-,>", khelper.previous },
+    { "<C->>", khelper.move_next },
+    { "<C-<>", khelper.move_previous },
+    { "<C-b>p", khelper.pin },
+    { "<C-b><C-p>", khelper.pin },
+    { "<C-b>g", khelper.pick },
+    { "<C-b><C-g>", khelper.pick },
+    { "<C-b>r", khelper.restore },
+    { "<C-b><C-r>", khelper.restore },
+    { "<C-b>d", khelper.delete },
+    { "<C-b><C-d>", khelper.delete },
+    { "<C-b>o", khelper.delete_except },
+    { "<C-b><C-o>", khelper.delete_except },
   },
   highlights = {
     { "BufferTabpageFill", bg = vim.__color.dark0, fg = vim.__color.light1 },

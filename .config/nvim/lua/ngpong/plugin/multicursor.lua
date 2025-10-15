@@ -48,7 +48,7 @@ return {
         mode = { "n", "v" }
       },
       {
-        "<A-s>",
+        "<A-b>",
         f_wrap(function()
           mc.prevCursor()
         end),

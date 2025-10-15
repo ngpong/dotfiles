@@ -47,25 +47,25 @@ return {
               get_cwd = vim.__path.cwd,
             }
           },
-          cmdline = {
-            min_keyword_length = function(ctx)
-              if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
-                return 2
-              end
-              return 0
-            end
-          }
+          -- cmdline = {
+          --   min_keyword_length = function(ctx)
+          --     if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
+          --       return 2
+          --     end
+          --     return 0
+          --   end
+          -- }
         },
       },
       keymap = {
         preset = "none",
         ["<C-g>"] = { "show_documentation", "hide_documentation" },
-        ["<C-S-G>"] = { "show_signature", "hide_signature" },
+        ["<C-s>"] = { "show_signature", "hide_signature" },
         ["<C-e>"] = { "scroll_documentation_down" },
         ["<C-y>"] = { "scroll_documentation_up" },
         ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
         ["<S-TAB>"] = { "snippet_backward", "fallback" },
-        ["<A-SPACE>"] = { "show", "hide" },
+        ["<C-x>"] = { "show" },
         ["<C-c>"] = {
           function()
             if not MiniSnippets.session.get() then
@@ -79,10 +79,13 @@ return {
             end)
             return true
           end,
+          "hide",
           "fallback"
         },
         ["<C-p>"] = { "select_prev" },
         ["<C-n>"] = { "select_next" },
+        ["<C-d>"] = { function(cmp) return cmp.select_next({ count = 5 }) end },
+        ["<C-u>"] = { function(cmp) return cmp.select_prev({ count = 5 }) end },
       },
       fuzzy = {
         implementation = "rust",
@@ -180,9 +183,12 @@ return {
         keymap = {
           preset = "none",
           ["<TAB>"] = { "accept", "fallback" },
-          ["<A-SPACE>"] = { "show", "hide" },
+          ["<C-x>"] = { "show" },
+          ["<C-c>"] = { "hide" },
           ["<C-p>"] = { "select_prev" },
           ["<C-n>"] = { "select_next" },
+          ["<C-d>"] = { function(cmp) return cmp.select_next({ count = 5 }) end },
+          ["<C-u>"] = { function(cmp) return cmp.select_prev({ count = 5 }) end },
           ["<C-g>"] = { "show_documentation", "hide_documentation" },
         },
         sources = function()
@@ -202,7 +208,7 @@ return {
               auto_insert = false,
             },
           },
-          menu = { auto_show = true },
+          menu = { auto_show = false },
           ghost_text = { enabled = false }
         }
       },

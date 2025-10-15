@@ -1,3 +1,62 @@
+local khelper = {
+  picker = function()
+    require("snacks").picker()
+  end,
+  resume = function()
+    require("snacks").picker.resume()
+  end,
+  files = function()
+    require("snacks").picker.files()
+  end,
+  diagnostics_buffer = function()
+    require("snacks").picker.diagnostics_buffer()
+  end,
+  diagnostics = function()
+    require("snacks").picker.diagnostics()
+  end,
+  bookmarks = function()
+    require("snacks").picker.bookmarks()
+  end,
+  lsp_symbols = function()
+    require("snacks").picker.lsp_symbols()
+  end,
+  treesitter = function()
+    require("snacks").picker.treesitter()
+  end,
+  lines = function()
+    require("snacks").picker.lines()
+  end,
+  buffers = function()
+    require("snacks").picker.buffers()
+  end,
+  live_grep = function()
+    local search
+    if vim.__helper.get_mode() == "v" then
+      search = vim.__helper.get_selection()
+      if search == "" then
+        search = nil
+      end
+    end
+    require("snacks").picker.grep({ search = search })
+  end,
+  grep = function()
+    local mode = vim.__helper.get_mode()
+    if mode == "n" then
+      vim.ui.input({ prompt = "search for: " }, function(ip)
+        if ip ~= nil and ip ~= "" then
+          require("snacks").picker.grep({ search = ip, live = false })
+        end
+      end)
+    else
+      local search = vim.__helper.get_selection()
+      if search == "" then
+        search = nil
+      end
+      require("snacks").picker.grep({ search = search, live = false })
+    end
+  end,
+}
+
 return {
   {
     "folke/snacks.nvim",
@@ -64,46 +123,29 @@ return {
       { "SnacksPickerIconVariable", link = vim.__icons.lsp_kinds.Variable.hl },
     },
     keys = {
-      { "<leader>f<leader>", function() require("snacks").picker() end, },
-      { "<leader>fr", function() require("snacks").picker.resume() end, },
-      { "<leader>ff", function() require("snacks").picker.files() end, },
-      { "<leader>fd", function() require("snacks").picker.diagnostics_buffer() end, },
-      { "<leader>fD", function() require("snacks").picker.diagnostics() end, },
-      { "<leader>fm", function() require("snacks").picker.bookmarks() end, },
-      { "<leader>fs", function() require("snacks").picker.lsp_symbols() end, },
-      { "<leader>fS", function() require("snacks").picker.treesitter() end, },
-      { "<leader>f/", function() require("snacks").picker.lines() end, },
-      { "<leader>fb", function() require("snacks").picker.buffers() end, },
-      {
-        "<leader>fg",
-        function()
-          local search
-          if vim.__helper.get_mode() == "v" then
-            search = vim.__helper.get_selection()
-            if search == "" then search = nil end
-          end
-          require("snacks").picker.grep({ search = search })
-        end,
-        mode = { "n", "v" }
-      },
-      {
-        "<leader>fG",
-        function()
-          local mode = vim.__helper.get_mode()
-          if mode == "n" then
-            vim.ui.input({ prompt = "search for: ", }, function(ip)
-              if ip ~= nil and ip ~= "" then
-                require("snacks").picker.grep({ search = ip, live = false })
-              end
-            end)
-          else
-            local search = vim.__helper.get_selection()
-            if search == "" then search = nil end
-            require("snacks").picker.grep({ search = search, live = false })
-          end
-        end,
-        mode = { "n", "v" }
-      },
+      { "<C-f><leader>", khelper.picker, },
+      { "<C-f>r", khelper.resume, },
+      { "<C-f><C-r>", khelper.resume, },
+      { "<C-f>f", khelper.files, },
+      { "<C-f><C-f>", khelper.files, },
+      { "<C-f>d", khelper.diagnostics_buffer, },
+      { "<C-f><C-d>", khelper.diagnostics_buffer, },
+      { "<C-f>D", khelper.diagnostics, },
+      { "<C-f><C-D>", khelper.diagnostics, },
+      { "<C-f>m", khelper.bookmarks, },
+      { "<C-f><C-m>", khelper.bookmarks, },
+      { "<C-f>s", khelper.lsp_symbols, },
+      { "<C-f><C-s>", khelper.lsp_symbols, },
+      { "<C-f>S", khelper.treesitter, },
+      { "<C-f><C-S>", khelper.treesitter, },
+      { "<C-f>/", khelper.lines, },
+      { "<C-f><C-/>", khelper.lines, },
+      { "<C-f>b", khelper.buffers, },
+      { "<C-f><C-b>", khelper.buffers, },
+      { "<C-f>g", khelper.live_grep, mode = { "n", "v" } },
+      { "<C-f><C-g>", khelper.live_grep, mode = { "n", "v" } },
+      { "<C-f>G", khelper.grep, mode = { "n", "v" } },
+      { "<C-f><C-S-g>", khelper.grep, mode = { "n", "v" } },
     },
     opts = {
       picker = {
@@ -127,23 +169,23 @@ return {
             keys = {
               ["<C-a>"] = { "select_all", mode = "i" },
               ["<C-q>"] = { "qflist", mode = "i" },
-              ["<A-m>"] = { "toggle_maximize", mode = "i" },
+              ["<C-t>"] = { "trouble_open", mode = "i" },
+              ["<F10>"] = { "toggle_maximize", mode = "i" },
               ["<C-r><C-l>"] = { "insert_line", mode = "i" },
               ["<C-r><C-p>"] = { "insert_file_full", mode = "i" },
               ["<C-r><C-S-W>"] = { "insert_cWORD", mode = "i" },
               ["<C-r><C-w>"] = { "insert_cword", mode = "i" },
+              ["<A-q>"] = { "close", mode = "i" },
               ["<ESC>"] = { "nop", mode = "i" },
-              ["<A-w>"] = { "cycle_win", mode = "i" },
+              ["<C-s>"] = { "cycle_win", mode = "i" },
               ["<C-o>v"] = { "edit_vsplit", mode = "i" },
               ["<C-o>s"] = { "edit_split", mode = "i" },
               ["<C-o><C-v>"] = { "edit_vsplit", mode = "i" },
               ["<C-o><C-s>"] = { "edit_split", mode = "i" },
               ["<C-k>"] = { "history_back", mode = "i" },
               ["<C-j>"] = { "history_forward", mode = "i" },
-              ["<A-q>"] = { "close", mode = "i" },
               ["<CR>"] = { "confirm", mode = "i" },
-              ["<C-t>"] = { "trouble_open", mode = "i" },
-              ["<A-SPACE>"] = { "toggle_live", mode = "i" },
+              ["<F9>"] = { "toggle_live", mode = "i" },
               ["<C-d>"] = { "list_scroll_down", mode = "i" },
               ["<C-u>"] = { "list_scroll_up", mode = "i" },
               ["<C-n>"] = { "list_down", mode = "i" },
@@ -163,13 +205,13 @@ return {
             keys = {
               ["<C-a>"] = "select_all",
               ["<C-q>"] = "qflist",
-              ["<A-SPACE>"] = "toggle_live",
-              ["<A-m>"] = "toggle_maximize",
+              ["<F9>"] = "toggle_live",
+              ["<F10>"] = "toggle_maximize",
               ["<CR>"] = "confirm",
               ["<C-t>"] = "trouble_open",
               ["<S-Tab>"] = { "select_and_prev", mode = { "n", "x" } },
               ["<Tab>"] = { "select_and_next", mode = { "n", "x" } },
-              ["<A-w>"] = "cycle_win",
+              ["<C-s>"] = "cycle_win",
               ["<C-g>"] = "toggle_preview",
               ["<C-e>"] = "preview_scroll_down",
               ["<C-y>"] = "preview_scroll_up",
@@ -195,11 +237,11 @@ return {
           },
           preview = {
             keys = {
-              ["<A-m>"] = "toggle_maximize",
+              ["<F10>"] = "toggle_maximize",
               ["q"] = "close",
               ["i"] = "focus_input",
               ["a"] = "focus_input",
-              ["<A-w>"] = "cycle_win",
+              ["<C-s>"] = "cycle_win",
               ["<C-g>"] = "toggle_preview",
             },
             wo = {

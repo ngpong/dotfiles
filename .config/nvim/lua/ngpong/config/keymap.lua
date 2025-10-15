@@ -211,6 +211,11 @@ local function del_keymaps()
   vim.__key.del("", "<C-s>")
   vim.__key.del("n", "<C-w>d")
   vim.__key.del("n", "<C-w><C-d>")
+
+  -- 防止误触
+  for c = string.byte('a'), string.byte('z') do
+    vim.__key.unrg("i", "<A-" .. string.char(c) .. ">")
+  end
 end
 
 local set_keymaps = function()
@@ -262,17 +267,19 @@ local set_keymaps = function()
   end))
 
   -- 防止一些键盘误触的映射
-  vim.__key.rg("i", "<C-SPACE>", "<SPACE>")
+  -- vim.__key.rg("i", "<C-SPACE>", "<SPACE>")
+  vim.__key.rg("i", "<A-CR>", "<CR>")
+  vim.__key.rg("i", "<A- >", " ")
 
   -- movement
   vim.__key.rg({ "n", "v" }, "j", function() return vim.v.count > 1 and "m'" .. vim.v.count .. "j" or "j" end, { expr = true })
   vim.__key.rg({ "n", "v" }, "k", function() return vim.v.count > 1 and "m'" .. vim.v.count .. "k" or "k" end, { expr = true })
-  vim.__key.rg({ "i", "c" }, "<C-h>", "<left>", { remap = true })
-  vim.__key.rg({ "i", "c" }, "<C-j>", "<down>", { remap = true })
-  vim.__key.rg({ "i", "c" }, "<C-k>", "<up>", { remap = true })
-  vim.__key.rg({ "i", "c" }, "<C-l>", "<right>", { remap = true })
-  vim.__key.rg({ "n", "c", "i" }, "<C-S-H>", "<C-LEFT>")
-  vim.__key.rg({ "n", "c", "i" }, "<C-S-L>", "<C-RIGHT>")
+  vim.__key.rg({ "i", "c" }, "<A-h>", "<left>", { remap = true })
+  vim.__key.rg({ "i", "c" }, "<A-j>", "<down>", { remap = true })
+  vim.__key.rg({ "i", "c" }, "<A-k>", "<up>", { remap = true })
+  vim.__key.rg({ "i", "c" }, "<A-l>", "<right>", { remap = true })
+  vim.__key.rg({ "n", "c", "i" }, "<A-b>", "<C-LEFT>")
+  vim.__key.rg({ "n", "c", "i" }, "<A-w>", "<C-RIGHT>")
 
   vim.__key.rg("", "gp", "%")
   vim.__key.rg("", "ge", "G")
@@ -297,12 +304,12 @@ local set_keymaps = function()
       end
     end
 
-    vim.__key.rg("", "<C-f>", "$")
-    vim.__key.rg("v", "<C-f>", "g_")
-    vim.__key.rg({ "i", "c"}, "<C-f>", "<END>")
-    vim.__key.rg("", "<C-s>", do_home("0", "^"), { expr = true })
-    vim.__key.rg("i", "<C-s>", do_home("<HOME>", "<C-o>^"), { expr = true })
-    vim.__key.rg("c", "<C-s>", "<HOME>")
+    vim.__key.rg("", "'", "$")
+    vim.__key.rg("v", "'", "g_")
+    vim.__key.rg({ "i", "c"}, "<A-'>", "<END>")
+    vim.__key.rg("", ";", do_home("0", "^"), { expr = true })
+    vim.__key.rg("i", "<A-;>", do_home("<HOME>", "<C-o>^"), { expr = true })
+    vim.__key.rg("c", ";", "<HOME>")
   end
 
   do
