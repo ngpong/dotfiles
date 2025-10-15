@@ -41,14 +41,14 @@ return {
     hlsearch = true,
     layer_keys = {
       {
-        "<A-f>",
+        "<A-.>",
         f_wrap(function()
           mc.nextCursor()
         end),
         mode = { "n", "v" }
       },
       {
-        "<A-b>",
+        "<A-,>",
         f_wrap(function()
           mc.prevCursor()
         end),
