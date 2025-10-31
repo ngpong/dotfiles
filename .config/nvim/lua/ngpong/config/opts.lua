@@ -227,9 +227,8 @@ if vim.g.neovide then
   vim.g.neovide_cursor_animate_command_line = true -- 切换到命令行使用动画
   -- 样式
   vim.g.neovide_theme = "dark"
-  -- 不透明度
-  vim.g.neovide_transparency = 1.0
-  vim.g.transparency = 1.0
+  -- title背景颜色
+  vim.g.neovide_title_background_color = "#282828"
   -- 空闲的时候也会刷新
   vim.g.neovide_no_idle = true
   vim.g.neovide_refresh_rate_idle = 30

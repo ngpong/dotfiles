@@ -81,7 +81,7 @@ if status is-interactive
   alias explorer="/mnt/c/Windows/explorer.exe"
   alias test_font="echo -e \"\e[1mABCDEFG\e[0m\n\e[3mabcdefgABCDEFG\e[0m\n\e[4munderline\e[0m\n\e[9mstrikethrough\e[0m\""
   # https://github.com/neovide/neovide/issues/2689
-  alias nvid="neovide.exe --wsl --frame none --maximized --no-vsync --no-idle"
+  alias nvid="neovide.exe --wsl --no-vsync --no-idle" # --frame none --maximized 
   alias neovide="nvid"
 
   # fzf
