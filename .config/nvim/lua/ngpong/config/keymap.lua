@@ -46,6 +46,7 @@ local function del_keymaps()
   -- vim.__key.unrg("n", "gQ") -- 切换到 Ex 模式
   vim.__key.unrg("", "g")
   vim.__key.del("", "gri") -- vim.lsp.buf.implementation
+  vim.__key.del("", "grt") -- vim.lsp.buf.implementation
   vim.__key.del("", "grr") -- vim.lsp.buf.references
   vim.__key.del("", "gra") -- vim.lsp.buf.code_action
   vim.__key.del("", "grn") -- vim.lsp.buf.rename

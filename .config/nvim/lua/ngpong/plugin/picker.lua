@@ -283,7 +283,7 @@ return {
         },
         formatters = {
           file = {
-            truncate = 9999,
+            truncate = "center",
           },
         },
         previewers = {
