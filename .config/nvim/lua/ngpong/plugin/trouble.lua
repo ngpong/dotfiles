@@ -168,7 +168,7 @@ return {
         ["q"] = "close",
         ["o"] = "jump",
         ["O"] = "fold_close",
-        ["<cr>"] = "jump",
+        ["<cr>"] = "jump_close",
         ["<c-o>s"] = "jump_split",
         ["<c-o><c-s>"] = "jump_split",
         ["<c-o>v"] = "jump_vsplit",

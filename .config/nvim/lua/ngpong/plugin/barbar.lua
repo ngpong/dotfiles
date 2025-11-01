@@ -77,7 +77,7 @@ do
       end
 
       local BarbarState = vim.__lazy.require("barbar.state")
-      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+      local BarbarBbye  = vim.__lazy.require("barbar.bbye")
 
       local bufnr = vim.__buf.current()
 
@@ -96,8 +96,9 @@ do
         return
       end
 
-      local BarbarState = vim.__lazy.require("barbar.state")
-      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+      local BarbarState  = vim.__lazy.require("barbar.state")
+      local BarbarBbye   = vim.__lazy.require("barbar.bbye")
+      local BarbarRender = vim.__lazy.require("barbar.ui.render")
 
       vim.ui.input({ prompt = "Delete all buffers, y/N: " }, function(ip)
         if not ip or string.lower(ip) ~= "y" then
@@ -112,6 +113,8 @@ do
             BarbarBbye.bdelete(false, bufnr)
           end
         end
+
+        BarbarRender.update()
       end)
     end,
     delete_except = function()
@@ -119,8 +122,9 @@ do
         return
       end
 
-      local BarbarState = vim.__lazy.require("barbar.state")
-      local BarbarBbye = vim.__lazy.require("barbar.bbye")
+      local BarbarState  = vim.__lazy.require("barbar.state")
+      local BarbarBbye   = vim.__lazy.require("barbar.bbye")
+      local BarbarRender = vim.__lazy.require("barbar.ui.render")
 
       vim.ui.input({ prompt = "Delete all buffers except current, y/N: " }, function(ip)
         if not ip or string.lower(ip) ~= "y" then
@@ -137,8 +141,117 @@ do
             BarbarBbye.bdelete(false, bufnr)
           end
         end
+
+        BarbarRender.update()
       end)
     end,
+    delete_left = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarBbye   = vim.__lazy.require("barbar.bbye")
+      local BarbarState  = vim.__lazy.require("barbar.state")
+      local BarbarRender = vim.__lazy.require("barbar.ui.render")
+      local BarbarUtils  = vim.__lazy.require("barbar.utils.list")
+
+      local current = vim.__buf.current()
+
+      local idx = BarbarUtils.index_of(BarbarState.buffers, current)
+      if idx == nil or idx == 1 then
+        return
+      end
+
+      for i = idx - 1, 1, -1 do
+        local bufnr = BarbarState.buffers[i]
+
+        local is_pinned = BarbarState.is_pinned(bufnr)
+        local is_modified = vim.bo[bufnr].modified
+        if not is_pinned and not is_modified then
+          BarbarBbye.bdelete(false, bufnr)
+        end
+      end
+
+      BarbarRender.update()
+    end,
+    delete_right = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarBbye   = vim.__lazy.require("barbar.bbye")
+      local BarbarState  = vim.__lazy.require("barbar.state")
+      local BarbarRender = vim.__lazy.require("barbar.ui.render")
+      local BarbarUtils  = vim.__lazy.require("barbar.utils.list")
+
+      local current = vim.__buf.current()
+
+      local idx = BarbarUtils.index_of(BarbarState.buffers, current)
+      if idx == nil or idx == 1 then
+        return
+      end
+
+      for i = #BarbarState.buffers, idx + 1, -1 do
+        local bufnr = BarbarState.buffers[i]
+
+        local is_pinned = BarbarState.is_pinned(bufnr)
+        local is_modified = vim.bo[bufnr].modified
+        if not is_pinned and not is_modified then
+          BarbarBbye.bdelete(false, bufnr)
+        end
+      end
+
+      BarbarRender.update()
+    end,
+    pick_delete = function()
+      if not filter() then
+        return
+      end
+
+      local BarbarBbye     = vim.__lazy.require("barbar.bbye")
+      local BarbarState    = vim.__lazy.require('barbar.state')
+      local BarbarRender   = vim.__lazy.require('barbar.ui.render')
+      local BarbarJumpMode = vim.__lazy.require('barbar.jump_mode')
+
+      local ESC = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
+
+      BarbarState.is_picking_buffer = true
+      BarbarRender.update()
+
+      local function fn()
+        local ok, letter = pcall(function() return string.char(vim.fn.getchar()) end)
+        if ok and letter ~= '' then
+          if letter == ESC then
+            return true
+          end
+
+          local bufnr = BarbarJumpMode.buffer_by_letter[letter]
+          if not bufnr then
+            return vim.__echo.warn("Couldn't find buffer with letter '" .. letter .. "'")
+          end
+
+          if vim.bo[bufnr].modified then
+            return vim.__echo.warn("No write since last change.")
+          end
+
+          if BarbarState.is_pinned(bufnr) then
+            return vim.__echo.warn("Can't not close pinned buffer.")
+          end
+
+          BarbarBbye.bdelete(false, bufnr)
+        else
+          require('barbar.utils').notify('Invalid input', vim.log.levels.WARN)
+        end
+
+        BarbarRender.update()
+        vim.api.nvim_command('redraw')
+      end
+      while not fn() do end
+
+      BarbarState.is_picking_buffer = false
+      BarbarRender.update()
+    end,
+
   }
 end
 
@@ -160,6 +273,12 @@ return {
     { "<C-b><C-p>", khelper.pin },
     { "<C-b>g", khelper.pick },
     { "<C-b><C-g>", khelper.pick },
+    { "<C-b>cc", khelper.pick_delete },
+    { "<C-b><C-c><C-c>", khelper.pick_delete },
+    { "<C-b>c.", khelper.delete_right },
+    { "<C-b><C-c><C-.>", khelper.delete_right },
+    { "<C-b>c,", khelper.delete_left },
+    { "<C-b><C-c><C-,>", khelper.delete_left },
     { "<C-b>r", khelper.restore },
     { "<C-b><C-r>", khelper.restore },
     { "<C-b>d", khelper.delete },
