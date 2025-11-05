@@ -187,7 +187,7 @@ do
       local current = vim.__buf.current()
 
       local idx = BarbarUtils.index_of(BarbarState.buffers, current)
-      if idx == nil or idx == 1 then
+      if idx == nil then
         return
       end
 
@@ -279,6 +279,8 @@ return {
     { "<C-b><C-c><C-.>", khelper.delete_right },
     { "<C-b>c,", khelper.delete_left },
     { "<C-b><C-c><C-,>", khelper.delete_left },
+    -- 防误触
+    { "<C-b><C-c><C-/>", function() end },
     { "<C-b>r", khelper.restore },
     { "<C-b><C-r>", khelper.restore },
     { "<C-b>d", khelper.delete },

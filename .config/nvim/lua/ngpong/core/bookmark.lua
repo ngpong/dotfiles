@@ -23,14 +23,28 @@ local Bookmark = vim.__class.def(function(this)
     return vim.api.nvim_buf_del_extmark(bufnr, BOOKMARK_NAMESPACE_ID, extmark_id)
   end
 
-  local function get_extmarks(bufnr, r_start, r_end, opts)
-    return vim.api.nvim_buf_get_extmarks(
+  local function get_extmarks(bufnr, lnum, opts, filter)
+    local r_start, r_end
+    if lnum then
+      r_start = { lnum - 1, 0 }
+      r_end   = { lnum - 1, -1 }
+    else
+      r_start = 0
+      r_end   = -1
+    end
+
+    local extmarks = vim.api.nvim_buf_get_extmarks(
       bufnr,
       BOOKMARK_NAMESPACE_ID,
       r_start,
       r_end,
       opts or {}
     )
+    if filter then
+      vim.__tbl.remove_iter(extmarks, filter)
+    end
+
+    return extmarks
   end
 
   local function set_extmark(bufnr, lnum, col, opts)
@@ -180,27 +194,8 @@ local Bookmark = vim.__class.def(function(this)
     end)
   end
 
-  function this:get(bufnr, lnum, opts, filter)
-    local r_start, r_end
-    if lnum then
-      r_start = { lnum - 1, 0 }
-      r_end   = { lnum - 1, -1 }
-    else
-      r_start = 0
-      r_end   = -1
-    end
-
-    local marks = get_extmarks(
-      bufnr,
-      r_start,
-      r_end,
-      opts or {}
-    )
-    if filter then
-      vim.__tbl.remove_iter(marks, filter)
-    end
-
-    return marks
+  function this:get_extmarks(bufnr, lnum, opts)
+    return get_extmarks(bufnr, lnum, opts)
   end
 
   local function set(bufnr, lnum, bmid, alias)
@@ -313,7 +308,7 @@ local Bookmark = vim.__class.def(function(this)
     end
 
     local alias_extid, alias_bmid
-    for _, extmark in ipairs(this:get(bufnr, lnum, { details = true })) do
+    for _, extmark in ipairs(get_extmarks(bufnr, lnum, { details = true })) do
       local details = extmark[4] or {}
 
       if details.virt_lines and details.virt_lines_above then
@@ -365,8 +360,8 @@ local Bookmark = vim.__class.def(function(this)
       return
     end
 
-    local extids = this:get(bufnr)
-    if not next(extids) then
+    local extmarks = get_extmarks(bufnr)
+    if not next(extmarks) then
       return
     end
 
@@ -381,7 +376,7 @@ local Bookmark = vim.__class.def(function(this)
     state._ = {}
     state.modif = true
 
-    for _, extmark in ipairs(extids) do
+    for _, extmark in ipairs(extmarks) do
       del_extmark(bufnr, extmark[1])
     end
   end
@@ -408,18 +403,18 @@ local Bookmark = vim.__class.def(function(this)
     end
 
     -- 删除当前行下的所有bookmark
-    for _, mark in ipairs(this:get(bufnr, lnum)) do
-      __del(mark[1])
+    for _, extmark in ipairs(get_extmarks(bufnr, lnum)) do
+      __del(extmark[1])
     end
 
     -- 如果是最后一行，则可能会有些invalid-bookmark残存
     local maxline = vim.__buf.maxline(bufnr)
     if lnum == maxline then
-      local invalid_marks = this:get(bufnr, nil, nil, function(t, i)
+      local invalid_extmarks = get_extmarks(bufnr, nil, nil, function(t, i)
         return t[i][2] > maxline - 1
       end)
-      for _, mark in ipairs(invalid_marks)do
-        __del(mark[1])
+      for _, extmark in ipairs(invalid_extmarks)do
+        __del(extmark[1])
       end
     end
   end
@@ -437,10 +432,10 @@ local Bookmark = vim.__class.def(function(this)
     local lnum, _ = vim.__cursor.get()
 
     local avalib_lnums_m = {}
-    for _, v in ipairs(this:get(bufnr, nil, nil, function(t, i)
+    for _, extmark in ipairs(get_extmarks(bufnr, nil, nil, function(t, i)
       return t[i][2] > lnum - 1
     end)) do
-      avalib_lnums_m[v[2]] = 1
+      avalib_lnums_m[extmark[2]] = 1
     end
 
     local avalib_lnums = vim.__tbl.keys(avalib_lnums_m)
@@ -460,8 +455,8 @@ local Bookmark = vim.__class.def(function(this)
     end
 
     local avalib_lnums_m = {}
-    for _, v in ipairs(this:get(bufnr, nil, nil, filter)) do
-      avalib_lnums_m[v[2]] = 1
+    for _, extmark in ipairs(get_extmarks(bufnr, nil, nil, filter)) do
+      avalib_lnums_m[extmark[2]] = 1
     end
 
     local avalib_lnums = vim.__tbl.keys(avalib_lnums_m)
@@ -525,11 +520,34 @@ local Bookmark = vim.__class.def(function(this)
     return bm_states, bm_persists, get_extmark_lnum
   end
 
+  function this:exists(bufnr, bmid)
+    local state = bm_states[bufnr]
+    if not state then
+      return -1
+    end
+
+    if not bmid then
+      return -1;
+    end
+
+    if not is_valid_bmid(bmid) then
+      vim.__echo.warn(string.format("invalid bookmark: %s not support", bmid))
+      return -1;
+    end
+
+    local bm = state._[bmid]
+    if not bm then
+      return -1;
+    end
+
+    return get_extmark_lnum(bufnr, bm.ex_ids[1])
+  end
+
   function this:debug()
     vim.__logger.info("nsid:", BOOKMARK_NAMESPACE_ID)
     local bm_state_cpy = vim.deepcopy(bm_states)
     for bufnr, _ in pairs(bm_state_cpy) do
-      bm_state_cpy[bufnr].extmarks = this:get(bufnr)
+      bm_state_cpy[bufnr].extmarks = get_extmarks(bufnr)
     end
     vim.__logger.info("bm_states:", bm_state_cpy)
     vim.__logger.info("bm_persists:", bm_persists)

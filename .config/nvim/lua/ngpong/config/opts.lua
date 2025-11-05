@@ -212,7 +212,7 @@ vim.g.loaded_perl_provider = 0
 -- neovide 设置
 if vim.g.neovide then
   -- 设置 guifont
-  vim.go.guifont = "CaskaydiaCove Nerd Font,corners,FZXingKaiS,FZQiTi-S14S" -- FZSongKeBenXiuKaiS-R-GB, Muyao-Softbrush, FZQiTi-S14S
+  vim.go.guifont = "CaskaydiaCove Nerd Font,corners,LXGW WenKai,FZXingKaiS,FZQiTi-S14S" -- FZSongKeBenXiuKaiS-R-GB, Muyao-Softbrush, FZQiTi-S14S
   -- 控制行距
   vim.go.linespace = 0
   -- 启动鼠标控制

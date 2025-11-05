@@ -344,7 +344,7 @@ local set_keymaps = function()
   vim.__key.rg("", "zl", "zL")
   vim.__key.rg("", "zk", "zb")
   vim.__key.rg("", "zj", "zt")
-  vim.__key.rg("", "zz", "zz")
+  vim.__key.rg("", "zz", "zz99999999zH")
   vim.__key.rg("", "ze", "ze")
   vim.__key.rg("", "zs", "zs")
 
@@ -610,7 +610,22 @@ local set_keymaps = function()
     local bufnr = vim.__buf.current()
     local lnum, _ = vim.__cursor.get()
 
-    vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
+    local function f()
+      vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
+    end
+
+    local exists = vim.__bookmark:exists(bufnr, bmid)
+    if exists > 0 then
+      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists), }, function(ip)
+        if not ip or string.lower(ip) ~= "y" then
+          return
+        end
+
+        f()
+      end)
+    else
+      f()
+    end
   end, { motion = true })
   vim.__key.rg("n", "mn", function()
     local byte = vim.fn.getchar(-1)
@@ -625,10 +640,25 @@ local set_keymaps = function()
     local bufnr = vim.__buf.current()
     local lnum, _ = vim.__cursor.get()
 
-    vim.ui.input({ prompt = "set alias: ", }, function(alias)
-      if vim.trim(alias or "") == "" then alias = nil end
-      vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid, alias = alias })
-    end)
+    local function f()
+      vim.ui.input({ prompt = "set alias: ", }, function(alias)
+        if vim.trim(alias or "") == "" then alias = nil end
+        vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid, alias = alias })
+      end)
+    end
+
+    local exists = vim.__bookmark:exists(bufnr, bmid)
+    if exists > 0 then
+      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists), }, function(ip)
+        if not ip or string.lower(ip) ~= "y" then
+          return
+        end
+
+        f();
+      end)
+    else
+      f();
+    end
   end, { motion = true })
   vim.__key.rg("n", "ma", function()
     local bufnr = vim.__buf.current()
@@ -649,7 +679,7 @@ local set_keymaps = function()
       local bufnr = vim.__buf.current()
 
       local deleted = {}
-      for _, extmark in ipairs(vim.__bookmark:get(bufnr)) do
+      for _, extmark in ipairs(vim.__bookmark:get_extmarks(bufnr)) do
         local extmark_lnum = extmark[2] + 1
         if not deleted[extmark_lnum] then
           deleted[extmark_lnum] = 1
@@ -668,7 +698,7 @@ local set_keymaps = function()
       local lnum, _ = vim.__cursor.get()
 
       local deleted = {}
-      for _, extmark in ipairs(vim.__bookmark:get(bufnr)) do
+      for _, extmark in ipairs(vim.__bookmark:get_extmarks(bufnr)) do
         local extmark_lnum = extmark[2] + 1
         if not deleted[extmark_lnum] and extmark_lnum ~= lnum then
           deleted[extmark_lnum] = 1
