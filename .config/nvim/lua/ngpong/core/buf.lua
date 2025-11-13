@@ -247,12 +247,14 @@ local function has_altbuf(bufnr)
   if bufnr < 0 then return false end
 
   local valid               = M.is_valid(bufnr)
+  local listed              = M.is_listed(bufnr)
   local non_special         = M.buftype(bufnr) == ""
   local morethan_one_buffer = #(vim.fn.getbufinfo { buflisted = 1 }) > 1
   local curbuf_not_alt      = M.current() ~= bufnr -- fixes weird rare vim bug
   local altfile_exists      = vim.__fs.exists(M.name(bufnr))
 
   return valid and
+         listed and
          non_special and
          morethan_one_buffer and
          curbuf_not_alt and

@@ -20,14 +20,14 @@ return {
       }
     },
     keys = {
-      { "[f", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous_end, "@function.outer") end, mode = { "n", "v", "o" } },
-      { "]f", function() pcall(require("nvim-treesitter-textobjects.move").goto_next_start, "@function.inner") end, mode = { "n", "v", "o" } },
-      { "[c", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous_end, "@class.outer") end, mode = { "n", "v", "o" } },
-      { "]c", function() pcall(require("nvim-treesitter-textobjects.move").goto_next_start, "@class.inner") end, mode = { "n", "v", "o" } },
-      { "[o", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous_end, "@conditional.outer") end, mode = { "n", "v", "o" } },
-      { "]o", function() pcall(require("nvim-treesitter-textobjects.move").goto_next_start, "@conditional.inner") end, mode = { "n", "v", "o" } },
-      { "[O", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous_end, "@loop.outer") end, mode = { "n", "v", "o" } },
-      { "]O", function() pcall(require("nvim-treesitter-textobjects.move").goto_next_start, "@loop.inner") end, mode = { "n", "v", "o" } },
+      { "[f", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous, "@function.inner") end, mode = { "n", "v", "o" } },
+      { "]f", function() pcall(require("nvim-treesitter-textobjects.move").goto_next, "@function.inner") end, mode = { "n", "v", "o" } },
+      { "[c", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous, "@class.inner") end, mode = { "n", "v", "o" } },
+      { "]c", function() pcall(require("nvim-treesitter-textobjects.move").goto_next, "@class.inner") end, mode = { "n", "v", "o" } },
+      { "[o", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous, "@conditional.inner") end, mode = { "n", "v", "o" } },
+      { "]o", function() pcall(require("nvim-treesitter-textobjects.move").goto_next, "@conditional.inner") end, mode = { "n", "v", "o" } },
+      { "[O", function() pcall(require("nvim-treesitter-textobjects.move").goto_previous, "@loop.inner") end, mode = { "n", "v", "o" } },
+      { "]O", function() pcall(require("nvim-treesitter-textobjects.move").goto_next, "@loop.inner") end, mode = { "n", "v", "o" } },
     },
   },
   {
