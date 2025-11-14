@@ -106,6 +106,7 @@ local function del_keymaps()
   -- https://neovim.io/doc/user/quickref.html#Q_ma
   vim.__key.unrg("", "m") -- 设置 mark
   vim.__key.unrg("", "'") -- 跳转 mark
+  vim.__key.unrg("", "<C-'>") -- 跳转 mark
   vim.__key.unrg("", "`") -- 跳转 mark
 
   -- https://neovim.io/doc/user/quickref.html#Q_ta
