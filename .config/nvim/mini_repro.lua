@@ -19,6 +19,16 @@ vim.opt.runtimepath:prepend(lazypath)
 
 local plugins = {
   {
+    "ellisonleao/gruvbox.nvim",
+    main = "gruvbox",
+    priority = 10000,
+    config = function(_, opts)
+      require("gruvbox").setup(opts)
+      vim.go.background = "dark"
+      vim.cmd.colorscheme("gruvbox")
+    end
+  },
+  {
     "folke/snacks.nvim",
     lazy = false,
     opts = {
