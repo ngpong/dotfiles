@@ -83,12 +83,17 @@ local function get_millisecond()
   C.gettimeofday(gettimeofday_struct, nil)
   return (tonumber(gettimeofday_struct.tv_sec) * 1000) + (tonumber(gettimeofday_struct.tv_usec) / 1000)
 end
+local function get_second()
+  C.gettimeofday(gettimeofday_struct, nil)
+  return (tonumber(gettimeofday_struct.tv_sec)) + (tonumber(gettimeofday_struct.tv_usec) / 1000000)
+end
 
 return {
   get_utc = get_utc,
   get_utc_ms = get_utc_ms,
   get_timetable = get_timetable,
   get_timestamps = get_timestamps,
+  get_second = get_second,
   get_microsecond = get_microsecond,
   get_millisecond = get_millisecond,
 }

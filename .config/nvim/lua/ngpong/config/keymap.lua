@@ -345,7 +345,7 @@ local set_keymaps = function()
   vim.__key.rg("", "zl", "zL")
   vim.__key.rg("", "zk", "zb")
   vim.__key.rg("", "zj", "zt")
-  vim.__key.rg("", "zz", "zz99999999zH")
+  vim.__key.rg("", "zz", "zz999zH")
   vim.__key.rg("", "ze", "ze")
   vim.__key.rg("", "zs", "zs")
 

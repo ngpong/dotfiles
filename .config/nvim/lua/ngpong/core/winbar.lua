@@ -184,7 +184,7 @@ local LspSymbol = vim.__class.def(function(this)
 
   local m_items = setmetatable({}, {
     __index = function(t, k)
-      rawset(t, k, {})
+      rawset(t, k, vim.__cache.new(0x100))
       return rawget(t, k)
     end,
   })
@@ -427,12 +427,14 @@ local LspSymbol = vim.__class.def(function(this)
         local kind = symbol.kind
         local name = symbol.name
 
-        local item = m_items[kind][name]
+        local cache = m_items[kind]
+
+        local item = cache:get(name)
         if not item then
           local k = lsp_kinds[kind] or lsp_kinds.Unknown
           item = Item:new(name, k.val, k.hl)
 
-          m_items[kind][name] = item
+          cache:set(name, item)
         end
 
         table.insert(items, item)
@@ -542,22 +544,18 @@ local LspSource = vim.__class.def(function(this)
 end)
 
 local PathSource = vim.__class.def(function(this)
-  local m_items = {}
-
-  function this:__init()
-    vim.__autocmd.on("BufWipeout", function(state) m_items[state.match] = nil end)
-  end
+  local m_items = vim.__cache.new(0x100)
 
   function this:eval(winid, bufnr)
     local fpath = vim.__buf.name(bufnr)
     local root  = vim.__path.cwd()
 
-    local items = m_items[fpath]
+    local items = m_items:get(fpath)
     if items then
       return items
     else
       items = {}
-      m_items[fpath] = items
+      m_items:set(fpath, items)
     end
 
     local p = fpath

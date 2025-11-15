@@ -31,6 +31,7 @@ do
   vim.__fs        = vim.__lazy.require("ngpong.utils.fs")
   vim.__path      = vim.__lazy.require("ngpong.utils.path")
   vim.__git       = vim.__lazy.require("ngpong.utils.git")
+  vim.__cache     = vim.__lazy.require("ngpong.utils.lrucache")
   vim.__util      = vim.__lazy.require("ngpong.utils")
   vim.__logger    = vim.__lazy.require("ngpong.utils.log")
   vim.__timestamp = vim.__lazy.require("ngpong.utils.timestamp")
