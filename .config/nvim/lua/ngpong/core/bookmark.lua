@@ -520,27 +520,27 @@ local Bookmark = vim.__class.def(function(this)
     return bm_states, bm_persists, get_extmark_lnum
   end
 
-  function this:exists(bufnr, bmid)
+  function this:set_prepare(bufnr, bmid)
     local state = bm_states[bufnr]
     if not state then
-      return -1
+      return -1, false
     end
 
     if not bmid then
-      return -1;
+      return -1, false
     end
 
     if not is_valid_bmid(bmid) then
       vim.__echo.warn(string.format("invalid bookmark [%s] not support", bmid))
-      return -1;
+      return -1, false
     end
 
     local bm = state._[bmid]
     if not bm then
-      return -1;
+      return -1, true
     end
 
-    return get_extmark_lnum(bufnr, bm.ex_ids[1])
+    return get_extmark_lnum(bufnr, bm.ex_ids[1]), true
   end
 
   function this:debug()

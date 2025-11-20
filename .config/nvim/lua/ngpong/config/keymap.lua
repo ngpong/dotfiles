@@ -615,9 +615,13 @@ local set_keymaps = function()
       vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
     end
 
-    local exists = vim.__bookmark:exists(bufnr, bmid)
-    if exists > 0 then
-      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists), }, function(ip)
+    local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, bmid)
+    if not bmid_ok then
+      return
+    end
+
+    if exists_lnum > 0 then
+      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists_lnum), }, function(ip)
         if not ip or string.lower(ip) ~= "y" then
           return
         end
@@ -648,9 +652,13 @@ local set_keymaps = function()
       end)
     end
 
-    local exists = vim.__bookmark:exists(bufnr, bmid)
-    if exists > 0 then
-      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists), }, function(ip)
+    local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, bmid)
+    if not bmid_ok then
+      return
+    end
+
+    if exists_lnum > 0 then
+      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists_lnum), }, function(ip)
         if not ip or string.lower(ip) ~= "y" then
           return
         end

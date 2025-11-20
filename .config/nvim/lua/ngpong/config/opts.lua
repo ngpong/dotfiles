@@ -220,11 +220,16 @@ if vim.g.neovide then
   -- 刷新率
   vim.g.neovide_refresh_rate = 144
   -- 鼠标行为
-  vim.g.neovide_cursor_animation_length = 0.06 -- 动画长度
-  vim.g.neovide_cursor_trail_size = 0.3 -- 尾部拖拽长度
+  -- vim.g.neovide_cursor_hack = true
+  vim.g.neovide_cursor_animation_length = 0.03 -- 动画长度
+  vim.g.neovide_cursor_trail_size = 1 -- 尾部拖拽长度
   vim.g.neovide_cursor_antialiasing = true -- 抗锯齿
   vim.g.neovide_cursor_vfx_mode = "pixiedust" -- 雪花
-  vim.g.neovide_cursor_animate_command_line = true -- 切换到命令行使用动画
+  vim.g.neovide_cursor_animate_command_line = false -- 切换到命令行使用动画
+  -- 滚动屏幕时的动画时间
+  vim.g.neovide_scroll_animation_length = 0.15
+  -- 开启新窗口时出现动画的时间
+  vim.g.neovide_position_animation_length = 0.1
   -- 样式
   vim.g.neovide_theme = "dark"
   -- title背景颜色
