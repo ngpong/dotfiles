@@ -274,7 +274,7 @@ local Components = {
     id = "location",
     update = "never",
     function(_, _)
-      return Highlighter:draw(" ", { fg = vim.__color.bright_yellow }) .. "%l/%L:%c  " ..
+      return Highlighter:draw(" ", { fg = vim.__color.bright_yellow }) .. "%l/%L:%2c  " ..
              Highlighter:draw(" ", { fg = vim.__color.bright_aqua }) .. Highlighter:draw("%P ", { bold = true, italic = true })
     end
   }),
