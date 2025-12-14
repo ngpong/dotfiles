@@ -5,13 +5,14 @@ set -l SOCKS5_ADDR socks5://$HOST_IP:7890
 set -l HTTP_ADDR http://$HOST_IP:7890
 
 # proxy
-# set -Ux all_proxy $HTTP_ADDR
+# set -Ux all_proxy $SOCKS5_ADDR
 # set -Ux http_proxy $HTTP_ADDR
 # set -Ux https_proxy $HTTP_ADDR
-# set -Ux ALL_PROXY $HTTP_ADDR
+# set -Ux ALL_PROXY $SOCKS5_ADDR
 # set -Ux HTTP_PROXY $HTTP_ADDR
 # set -Ux HTTPS_PROXY $HTTP_ADDR
 if type -q git
-  git config --global http.proxy $HTTP_ADDR
-  git config --global https.proxy $HTTP_ADDR
+  git config --global http.proxy $SOCKS5_ADDR
+  git config --global https.proxy $SOCKS5_ADDR
+  # echo -e "Host github.com\n\tUser git\n\tProxyCommand nc -v -x 127.0.0.1:7890 %h %p" >> ~/.ssh/config
 end

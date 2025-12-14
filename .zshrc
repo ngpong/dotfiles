@@ -82,10 +82,10 @@ bindkey "^[p" delete-char
 bindkey "^[s" delete-char
 
 # proxy
-export all_proxy="$HTTP_ADDR"
+export all_proxy="$SOCKS5_ADDR"
 export http_proxy="$HTTP_ADDR"
 export https_proxy="$HTTP_ADDR"
-export ALL_PROXY="$HTTP_ADDR"
+export ALL_PROXY="$SOCKS5_ADDR"
 export HTTP_PROXY="$HTTP_ADDR"
 export HTTPS_PROXY="$HTTP_ADDR"
 

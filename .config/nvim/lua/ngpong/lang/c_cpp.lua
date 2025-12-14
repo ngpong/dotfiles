@@ -50,6 +50,7 @@ return {
             "--pch-storage=memory",
             "--limit-references=0",
             "--rename-file-limit=0",
+            -- "--query-driver=/usr/bin/gcc-4.8,/usr/bin/g++-4.8",
             -- "--limit-results=30",
             -- "--compile-commands-dir=/home/ngpong/code/cpp/CPP-Study-02/TEST/TEST_93/",
             -- "--log=verbose",
