@@ -1,10 +1,12 @@
+local __all_parser = {}
+
 return {
   "nvim-treesitter/nvim-treesitter",
   main = "nvim-treesitter",
   lazy = vim.fn.argc(-1) == 0,
   event = { "LazyFile", "VeryLazy" },
   branch = "main",
-  build = ":TSUpdate",
+  build = ":TSInstallAndUpdate",
   highlights = {
     { "@string", fg = vim.__color.bright_green },
     { "@operator", fg = vim.__color.light4 },
@@ -29,10 +31,16 @@ return {
     { "@namespace", fg = vim.__color.bright_green, italic = true },
     { "@markup.link.label.markdown_inline", fg = vim.__color.bright_yellow },
   },
-  opts_extend = { "ensure_install" },
-  opts = {
-    ensure_install = {},
+  commands = {
+    {
+      "TSInstallAndUpdate",
+      function(_)
+        require("nvim-treesitter").install(__all_parser):wait(300000) -- wait 5min
+        require("nvim-treesitter").update(__all_parser):wait(300000) -- wait 5min
+      end
+    }
   },
+  opts_extend = { "ensure_install" },
   config = function(_, opts)
     local ensure_parse    = {}
     local ensure_filetype = {}
@@ -52,10 +60,12 @@ return {
       for _, ft in ipairs(fts) do
         table.insert(ensure_filetype, ft)
       end
+      -- 需要处理解析器名与文件类型名不对应的情况，使用静态配置避免 core 过多且重复获取文件类型的逻辑
       vim.treesitter.language.register(parse, fts)
     end
+    __all_parser = ensure_parse
+    opts.ensure_install = nil
 
-    opts.ensure_install = ensure_parse
     require("nvim-treesitter").setup(opts)
     -- enhance tinyd performance?
     -- https://www.reddit.com/r/neovim/comments/1144spy/will_treesitter_ever_be_stable_on_big_files/
