@@ -64,7 +64,7 @@ return {
       vim.treesitter.language.register(parse, fts)
     end
     __all_parser = ensure_parse
-    opts.ensure_install = nil
+    opts.ensure_install = nil -- 该字段已经被移除，自动安装逻辑改为手动安装命令:TSInstallAndUpdate
 
     require("nvim-treesitter").setup(opts)
     -- enhance tinyd performance?
