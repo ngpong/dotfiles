@@ -571,10 +571,15 @@ local Statusline = vim.__class.def(function(this)
     },
     unknown = {
       Components.mode,
+      Components.git_branch,
+      Components.git_diff,
       Components.fill,
       Components.modifiable,
+      Components.bookmark,
+      Components.multicursor,
       Components.search,
       Components.os,
+      Components.encoding,
       Components.location,
     }
   }
@@ -608,7 +613,7 @@ local Statusline = vim.__class.def(function(this)
     vim.go.cmdheight = 1
 
     -- statusline
-    vim.o.statusline = "%{%v:lua.require'ngpong.core.statusline'.eval()%}"
+    vim.o.statusline = "%{%v:lua.require'neil.core.statusline'.eval()%}"
     vim.g.qf_disable_statusline = 1
 
     -- updater

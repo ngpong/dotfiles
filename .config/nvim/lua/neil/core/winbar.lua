@@ -221,7 +221,7 @@ local LspSymbol = vim.__class.def(function(this)
     vim.defer_fn(function() __update(bufnr, ttl - 1) end, m_lsp_options.retry_interval)
   end
   __update_leagcy_worker_libs = string.dump(function()
-    return require("string.buffer"), require("ngpong.utils.tbl")
+    return require("string.buffer"), require("neil.utils.tbl")
   end)
   __update_leagcy_worker = uv.new_work(
     function(bufnr, symbols_bc, libs_bc)
@@ -606,7 +606,7 @@ local Winbar = vim.__class.def(function(this)
         return
       end
 
-      vim.wo[winid].winbar = "%{%v:lua.require'ngpong.core.winbar'.eval()%}"
+      vim.wo[winid].winbar = "%{%v:lua.require'neil.core.winbar'.eval()%}"
     end
     for _, winid in ipairs(vim.__win.all()) do
       local bufnr = vim.__buf.number(winid)

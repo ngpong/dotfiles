@@ -1,7 +1,7 @@
 local vim = vim
 local uv = vim.loop
 
-local F = require("ngpong.utils.async.functional")
+local F = require("neil.utils.async.functional")
 
 ---@class Job
 ---@field command string Command to run

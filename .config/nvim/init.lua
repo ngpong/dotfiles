@@ -7,4 +7,4 @@
 -- )
 
 vim.loader.enable(true)
-require "ngpong.bootstrap"
+require "neil.bootstrap"

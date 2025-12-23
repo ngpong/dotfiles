@@ -1,6 +1,6 @@
 local default_config = {
   -- Name of the plugin. Prepended to log messages
-  plugin = "ngpong",
+  plugin = "neil",
   -- Should print the output to neovim while running
   use_console = false,
   -- Should highlighting be used in console (using echohl)

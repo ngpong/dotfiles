@@ -39,7 +39,7 @@ end
 
 function M.reload_cfg()
   for name, _ in pairs(package.loaded) do
-    if name:match("^ngpong") then
+    if name:match("^neil") then
       package.loaded[name] = nil
     end
   end

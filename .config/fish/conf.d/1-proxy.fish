@@ -12,7 +12,7 @@ set -l HTTP_ADDR http://$HOST_IP:7890
 # set -Ux HTTP_PROXY $HTTP_ADDR
 # set -Ux HTTPS_PROXY $HTTP_ADDR
 if type -q git
-  git config --global http.proxy $SOCKS5_ADDR
-  git config --global https.proxy $SOCKS5_ADDR
+  git config --global http.proxy $HTTP_ADDR
+  git config --global https.proxy $HTTP_ADDR
   # echo -e "Host github.com\n\tUser git\n\tProxyCommand nc -v -x 127.0.0.1:7890 %h %p" >> ~/.ssh/config
 end

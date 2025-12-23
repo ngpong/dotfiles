@@ -1,8 +1,8 @@
 local co = coroutine
-local vararg = require("ngpong.utils.async.vararg")
-local errors = require("ngpong.utils.async.errors")
+local vararg = require("neil.utils.async.vararg")
+local errors = require("neil.utils.async.errors")
 local traceback_error = errors.traceback_error
-local f = require("ngpong.utils.async.functional")
+local f = require("neil.utils.async.functional")
 
 local M = {}
 

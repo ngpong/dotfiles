@@ -1,6 +1,6 @@
 return {
   "stevearc/profile.nvim",
-  enabled = false,
+  enabled = true,
   lazy = false,
   config = function()
     -- https://www.reddit.com/r/neovim/comments/16zfm91/how_do_you_profile_sluggish_scrolling/

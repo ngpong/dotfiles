@@ -1,5 +1,5 @@
 return {
-  "NGPONG/matchparen.nvim",
+  "ngpong/matchparen.nvim",
   main = "matchparen",
   lazy = true,
   event = "VeryLazy",

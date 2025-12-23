@@ -1,4 +1,4 @@
-local a = require("ngpong.utils.async")
+local a = require("neil.utils.async")
 local uv = vim.loop
 
 local M = {}

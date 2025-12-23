@@ -11,7 +11,7 @@ local Bookmark = vim.__class.def(function(this)
   local BOOKMARK_ICON_HL      = "BookmarkIcon"
   local BOOKMARK_ALIAS_HL     = "BookmarkAlias"
   local BOOKMARK_LINE_HL      = "BookmarkLine"
-  local BOOKMARK_NAMESPACE_ID = vim.api.nvim_create_namespace("NGPONG-BOOKMARK-NAMESPACE")
+  local BOOKMARK_NAMESPACE_ID = vim.api.nvim_create_namespace("NEIL-BOOKMARK-NAMESPACE")
 
   local bm_states, bm_persists = {}, {}
 

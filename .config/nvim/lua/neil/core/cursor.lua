@@ -4,7 +4,7 @@ local M = {}
 local tmp_guicursor = ""
 
 function M.ishide()
-  if vim.o.guicursor == "a:NGPONGHiddenCursor" then
+  if vim.o.guicursor == "a:NEILHiddenCursor" then
     return true
   else
     return false
@@ -14,14 +14,14 @@ end
 local isset_hidden_hl = false
 function M.hide()
   if not isset_hidden_hl then
-    vim.api.nvim_set_hl(0, "NGPONGHiddenCursor", { reverse = true, blend = 100 })
+    vim.api.nvim_set_hl(0, "NEILHiddenCursor", { reverse = true, blend = 100 })
     isset_hidden_hl = true
   end
 
   if not M.ishide() then
     if vim.o.termguicolors and vim.o.guicursor ~= "" then
       tmp_guicursor = vim.o.guicursor
-      vim.o.guicursor = "a:NGPONGHiddenCursor"
+      vim.o.guicursor = "a:NEILHiddenCursor"
     end
   end
 end

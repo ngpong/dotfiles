@@ -21,7 +21,7 @@ local Augroup = vim.__class.def(function(this)
   function this:__init(_key)
     key = _key
     group_cache[key] = this
-    name = "user-ngpong-" .. key
+    name = "user-neil-" .. key
     groupid = vim.api.nvim_create_augroup( name, { clear = true } )
   end
 
