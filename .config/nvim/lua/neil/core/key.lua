@@ -1093,7 +1093,7 @@ local kcode_cache = {}
 function M.kcode(key)
   local ret = kcode_cache[key]
   if not ret then
-    ret = vim.api.nvim_replace_termcodes(key, true, false, true)
+    ret = vim.api.nvim_replace_termcodes(key, true, true, true)
     kcode_cache[key] = ret
   end
   return ret

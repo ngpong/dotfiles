@@ -272,7 +272,7 @@ return {
         },
         formatters = {
           file = {
-            truncate = "right",
+            truncate = "left",
           },
         },
         previewers = {

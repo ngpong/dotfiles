@@ -50,7 +50,7 @@ return {
         for _, wininfo in ipairs(args.data.wininfos) do
           if wininfo.variables.gitsigns_preview ~= nil then
             return vim.api.nvim_win_call(wininfo.winid, function()
-              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-u>")))
+              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-y>")))
             end)
           end
         end
@@ -63,7 +63,7 @@ return {
         for _, wininfo in ipairs(args.data.wininfos) do
           if wininfo.variables.gitsigns_preview ~= nil then
             return vim.api.nvim_win_call(wininfo.winid, function()
-              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-d>")))
+              vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-e>")))
             end)
           end
         end

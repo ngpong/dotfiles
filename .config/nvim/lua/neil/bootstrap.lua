@@ -465,5 +465,8 @@ do
   end)
 
   -- restore session
-  vim.__session.buffer:load()
+  local should_load_session = os.getenv("NVIM_SESSION")
+  if not should_load_session or should_load_session == 1 then
+    vim.__session.buffer:load()
+  end
 end

@@ -255,8 +255,9 @@ return {
         enable = false,
         auto_open = false,
       },
+      -- 因为性能问题，暂时禁用掉 diagnostic 和 git；git 可能是最终祸首
       diagnostics = {
-        enable = true,
+        enable = false,
         show_on_dirs = true,
         icons = {
           hint = vim.__icons.diagnostic_hint,
@@ -266,6 +267,7 @@ return {
         },
       },
       git = {
+        enable = false,
         timeout = 1000, -- 400
       },
       filters = {

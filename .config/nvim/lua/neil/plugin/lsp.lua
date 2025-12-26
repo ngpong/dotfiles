@@ -48,7 +48,7 @@ return {
             local variables = wininfo.variables
             if variables.line ~= nil or variables.lsp_floating_bufnr ~= nil then
               return vim.api.nvim_win_call(wininfo.winid, function()
-                vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-u>")))
+                vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-y>")))
               end)
             end
           end
@@ -62,7 +62,7 @@ return {
             local variables = wininfo.variables
             if variables.line ~= nil or variables.lsp_floating_bufnr ~= nil then
               return vim.api.nvim_win_call(wininfo.winid, function()
-                vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-d>")))
+                vim.cmd(string.format("normal! %s", vim.__key.kcode("<C-e>")))
               end)
             end
           end
