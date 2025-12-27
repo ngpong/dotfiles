@@ -404,9 +404,9 @@ return {
               form[#form] = nil
 
               if item.alias then
-                table.insert(form, { string.format(" (%s: %s)", item.bmid, item.alias), "SnacksPickerBookmark" })
+                table.insert(form, { string.format(" %s: %s", item.bmid, item.alias), "SnacksPickerBookmark" })
               else
-                table.insert(form, { string.format(" (%s)", tostring(item.bmid)), "SnacksPickerBookmark" })
+                table.insert(form, { string.format(" %s", tostring(item.bmid)), "SnacksPickerBookmark" })
               end
               table.insert(form, { " ", "SnacksPickerDelim" })
 
