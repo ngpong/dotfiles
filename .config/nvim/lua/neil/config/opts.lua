@@ -36,7 +36,7 @@ vim.g.clipboard = {
 -- 字符过长自动换行
 vim.opt.wrap = false -- 当一行的字符过长时，超出行的字符将会被包裹并显示在下一行
 vim.opt.breakindent = true -- 换行时自动对齐上一行的格式(可能会有性能损失)
-vim.opt.breakindentopt = "sbr" -- 设置换行符
+-- vim.opt.breakindentopt = "sbr" -- 设置换行符
 -- vim.opt.showbreak = "➥►" -- ➥► 设置换行符
 vim.go.display = "lastline" -- "@@@" 放在最后一列上
 
@@ -147,10 +147,10 @@ vim.go.timeoutlen = 500
 vim.go.fillchars = "horiz: ,horizup: ,horizdown: ,vert: ,vertleft: ,vertright: ,vertright: "
 
 -- 是否显示不可见字符，对于查看文件中是否有多余字符(tab 或 space)有帮助
-vim.wo.list = false
+vim.wo.list = true
 
 -- 不可见字符的表示
--- vim.o.listchars = "space:·,tab:··"
+vim.go.listchars = "tab:  ,extends:…,precedes: " -- …
 
 -- 禁用内置语法高亮
 -- vim.cmd("syntax off")

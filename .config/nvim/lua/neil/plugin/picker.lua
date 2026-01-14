@@ -273,6 +273,7 @@ return {
         formatters = {
           file = {
             truncate = "left",
+            min_width = 40,
           },
         },
         previewers = {

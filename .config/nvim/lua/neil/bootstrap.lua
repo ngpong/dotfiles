@@ -20,7 +20,12 @@ do
     end
   end
 
-  vim.__g         = {}
+  vim.__g = {}
+  do
+    local should_load_session = os.getenv("NVIM_SESSION")
+    vim.__g.should_load_session = not should_load_session or should_load_session == "1"
+  end
+
   vim.__lazy      = require("neil.utils.lazy")
   vim.__class     = vim.__lazy.require("neil.utils.oop")
   vim.__async     = vim.__lazy.require("neil.utils.async")
@@ -412,6 +417,7 @@ do
           "vimballPlugin",
           "spellfile_plugin",
           "spellfile",
+          "editorconfig", -- 该内置插件在保存文件时会遍历文件内容，可能会造成一些性能问题
           -- "osc52",
         },
       },
@@ -465,8 +471,7 @@ do
   end)
 
   -- restore session
-  local should_load_session = os.getenv("NVIM_SESSION")
-  if not should_load_session or should_load_session == 1 then
+  if vim.__g.should_load_session then
     vim.__session.buffer:load()
   end
 end

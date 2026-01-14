@@ -9,6 +9,10 @@ local BufferSession = vim.__class.def(function(this)
   local session_data = {}
 
   function this:__init()
+    if not vim.__g.should_load_session then
+      return
+    end
+
     local session_file = vim.__path.join(
       vim.__path.standard("data"),
       "session",
@@ -173,6 +177,10 @@ end)
 
 local CursorSession = vim.__class.def(function(this)
   function this:__init()
+    if not vim.__g.should_load_session then
+      return
+    end
+
     -- restore cursor position when opening a file
     --  # https://github.com/neovim/neovim/issues/16339
     vim.__autocmd.on("BufRead", function(state)
