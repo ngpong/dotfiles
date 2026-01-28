@@ -15,13 +15,7 @@ return {
       {
         "fd",
         function()
-          for _, winid in ipairs(vim.__win.all()) do
-            if vim.w[winid].line ~= nil then
-              return vim.__win.close(winid)
-            end
-          end
-
-          vim.diagnostic.open_float({ focusable = false, width = 60 })
+          vim.diagnostic.open_float({ focusable = true, width = 60 })
         end
       },
     },
@@ -82,14 +76,8 @@ return {
           "fi",
           "textDocument/signatureHelp",
           function()
-            for _, winid in ipairs(vim.__win.all()) do
-              if vim.w[winid].lsp_floating_bufnr ~= nil then
-                return vim.__win.close(winid)
-              end
-            end
-
             vim.lsp.buf.signature_help {
-              focusable = false,
+              focusable = true,
               border = vim.__icons.border.no,
               relative = "cursor",
               silent = true,
@@ -100,14 +88,8 @@ return {
           "fk",
           "textDocument/hover",
           function()
-            for _, winid in ipairs(vim.__win.all()) do
-              if vim.w[winid].lsp_floating_bufnr ~= nil then
-                return vim.__win.close(winid)
-              end
-            end
-
             vim.lsp.buf.hover {
-              focusable = false,
+              focusable = true,
               border = vim.__icons.border.no,
               relative = "cursor",
               silent = true,

@@ -272,8 +272,9 @@ return {
         },
         formatters = {
           file = {
-            truncate = "left",
+            truncate = "center", -- left, right, center
             min_width = 40,
+            filename_only = false,
           },
         },
         previewers = {

@@ -100,12 +100,6 @@ return {
     {
       "<leader>hb",
       function()
-        for _, winid in ipairs(vim.__win.all()) do
-          if vim.w[winid].gitsigns_preview == "blame" then
-            return vim.__win.close(winid)
-          end
-        end
-
         require("gitsigns").blame_line()
       end
     },
@@ -113,12 +107,6 @@ return {
     {
       "<leader>hp",
       function()
-        for _, winid in ipairs(vim.__win.all()) do
-          if vim.w[winid].gitsigns_preview == "hunk" then
-            return vim.__win.close(winid)
-          end
-        end
-
         require("gitsigns").preview_hunk()
       end
     },

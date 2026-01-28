@@ -599,39 +599,67 @@ local set_keymaps = function()
 
   -- bookmarks
   vim.__key.rg("n", "mm", function()
-    local byte = vim.fn.getchar(-1)
-    if type(byte) ~= "number" then
-      return
-    end
-    if byte == 27 then -- <esc>
-      return
-    end
-
-    local bmid = string.char(byte)
+    local bmid
     local bufnr = vim.__buf.current()
     local lnum, _ = vim.__cursor.get()
 
-    local function f()
-      vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
+    for code = 97, 122 do
+      local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, string.char(code))
+      if bmid_ok and exists_lnum == -1 then
+        bmid = string.char(code)
+        break
+      end
+    end
+    if not bmid then
+      for code = 49, 57 do
+        local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, string.char(code))
+        if bmid_ok and exists_lnum == -1 then
+          bmid = string.char(code)
+          break
+        end
+      end
     end
 
-    local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, bmid)
-    if not bmid_ok then
+    if not bmid then
       return
     end
 
-    if exists_lnum > 0 then
-      vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists_lnum), }, function(ip)
-        if not ip or string.lower(ip) ~= "y" then
-          return
-        end
-
-        f()
-      end)
-    else
-      f()
-    end
-  end, { motion = true })
+    vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
+  end)
+  -- vim.__key.rg("n", "mm", function()
+  --   local byte = vim.fn.getchar(-1)
+  --   if type(byte) ~= "number" then
+  --     return
+  --   end
+  --   if byte == 27 then -- <esc>
+  --     return
+  --   end
+  --
+  --   local bmid = string.char(byte)
+  --   local bufnr = vim.__buf.current()
+  --   local lnum, _ = vim.__cursor.get()
+  --
+  --   local function f()
+  --     vim.__bookmark:set(bufnr, { lnum = lnum, bmid = bmid })
+  --   end
+  --
+  --   local exists_lnum, bmid_ok = vim.__bookmark:set_prepare(bufnr, bmid)
+  --   if not bmid_ok then
+  --     return
+  --   end
+  --
+  --   if exists_lnum > 0 then
+  --     vim.ui.input({ prompt = string.format("The operation will replace the bookmark on the %d line, y/N: ", exists_lnum), }, function(ip)
+  --       if not ip or string.lower(ip) ~= "y" then
+  --         return
+  --       end
+  --
+  --       f()
+  --     end)
+  --   else
+  --     f()
+  --   end
+  -- end, { motion = true })
   vim.__key.rg("n", "mn", function()
     local byte = vim.fn.getchar(-1)
     if type(byte) ~= "number" then
