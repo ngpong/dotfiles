@@ -9,7 +9,7 @@ local Options = {
   lsp = {
     retry_ttl = 60,
     retry_interval = 200,
-    update_interval = 350,
+    update_interval = 1000,
     eval_interval = 40,
     lsp_kinds = {
       [1]  = vim.__icons.lsp_kinds.File,
@@ -193,7 +193,8 @@ local LspSymbol = vim.__class.def(function(this)
     __index = function(t, k)
       rawset(t, k, {
         symbols = {},
-        updating = nil
+        updating = nil,
+        req_parms = nil,
       })
       return rawget(t, k)
     end,
@@ -277,22 +278,42 @@ local LspSymbol = vim.__class.def(function(this)
         return true
       end)
 
-      local function range_contain(range1, range2)
-        local range1_start, range1_ended = range1["start"], range1["end"]
-        local range2_start, range2_ended = range2["start"], range2["end"]
-
-        return
-          (range2_start.line > range1_start.line or
-          (range2_start.line == range1_start.line and range2_start.character > range1_start.character))
-          and
-          (range2_start.line < range1_ended.line or
-          (range2_start.line == range1_ended.line and range2_start.character < range1_ended.character))
-          and
-          (range2_ended.line > range1_start.line or
-          (range2_ended.line == range1_start.line and range2_ended.character > range1_start.character))
-          and
-          (range2_ended.line < range1_ended.line or
-          (range2_ended.line == range1_ended.line and range2_ended.character < range1_ended.character))
+      -- 之前实现的版本：任何子范围必须严格内含到父范围内条件才算通过，这意味着不允许任何边界的重合；
+      -- 修订的版本：放宽了边界重合条件，但是还是排除完全相同的范围（这一点和之前保持一致）；
+      --
+      -- local function range_contain(range1, range2)
+      --   local range1_start, range1_ended = range1["start"], range1["end"]
+      --   local range2_start, range2_ended = range2["start"], range2["end"]
+      --
+      --   return
+      --     (range2_start.line > range1_start.line or
+      --     (range2_start.line == range1_start.line and range2_start.character > range1_start.character))
+      --     and
+      --     (range2_start.line < range1_ended.line or
+      --     (range2_start.line == range1_ended.line and range2_start.character < range1_ended.character))
+      --     and
+      --     (range2_ended.line > range1_start.line or
+      --     (range2_ended.line == range1_start.line and range2_ended.character > range1_start.character))
+      --     and
+      --     (range2_ended.line < range1_ended.line or
+      --     (range2_ended.line == range1_ended.line and range2_ended.character < range1_ended.character))
+      -- end
+      local function pos_le(a, b)
+        return a.line < b.line or (a.line == b.line and a.character <= b.character)
+      end
+      local function pos_ge(a, b)
+        return a.line > b.line or (a.line == b.line and a.character >= b.character)
+      end
+      local function range_eq(a, b)
+        return a.start.line == b.start.line
+          and a.start.character == b.start.character
+          and a["end"].line == b["end"].line
+          and a["end"].character == b["end"].character
+      end
+      local function range_contain(parent, child)
+        return pos_ge(child.start, parent.start)
+          and pos_le(child["end"], parent["end"])
+          and not range_eq(parent, child)
       end
       for _, child in ipairs(childs) do
         for _, parent in ipairs(search[child.containerName]) do
@@ -344,13 +365,17 @@ local LspSymbol = vim.__class.def(function(this)
       return
     end
 
-    get_attachstat(bufnr).client:request(
-      "textDocument/documentSymbol",
-      {
+    if not state.req_parms then
+      state.req_parms = {
         textDocument = {
           uri = vim.uri_from_bufnr(bufnr)
         }
-      },
+      }
+    end
+
+    get_attachstat(bufnr).client:request(
+      "textDocument/documentSymbol",
+      state.req_parms,
       function(err, symbols, _)
         if not vim.__buf.is_valid(bufnr) then
           return
@@ -504,19 +529,8 @@ local LspSource = vim.__class.def(function(this)
 
       local group = vim.__autocmd.augroup("wb-lspsource-" .. tostring(bufnr))
       group:on(
-        { "BufWritePost", "TextChanged" },
-        function()
-          m_symhandler:update(bufnr)
-        end,
-        { buffer = bufnr }
-      )
-      group:on(
-        { "ModeChanged" },
-        function()
-          if state.match == "i:n" then
-            m_symhandler:update(bufnr)
-          end
-        end,
+        { "BufWritePost", "TextChanged", "InsertLeave" },
+        function() m_symhandler:update(bufnr) end,
         { buffer = bufnr }
       )
 
