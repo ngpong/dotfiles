@@ -17,6 +17,8 @@ Diagnostics:
     ]
     CheckOptions:
       performance-unnecessary-value-param.AllowedTypes: 'std::shared_ptr'
+CompileFlags:
+  Add: -std=c++23
 ---
 If:
   PathMatch: [
@@ -25,6 +27,6 @@ If:
     /usr/local/include/.*
   ]
 CompileFlags:
-  Add: -ferror-limit=0
+  Add: -ferror-limit=0,
 Diagnostics:
   Suppress: '*'

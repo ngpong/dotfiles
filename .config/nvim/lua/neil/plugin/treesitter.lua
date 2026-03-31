@@ -6,7 +6,7 @@ return {
   lazy = vim.fn.argc(-1) == 0,
   event = { "LazyFile", "VeryLazy" },
   branch = "main",
-  build = ":TSInstallAndUpdate",
+  build = ":TSUpdate", -- TSInstallAndUpdate
   highlights = {
     { "@string", fg = vim.__color.bright_green },
     { "@operator", fg = vim.__color.light4 },

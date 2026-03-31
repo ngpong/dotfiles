@@ -123,7 +123,7 @@ return {
         },
         severity_sort = true,
         jump = { -- vim.diagnostic.JumpOpts
-          float = false,
+          -- float = false, -- deprecated
           wrap = false,
         },
         float = { -- vim.diagnostic.Opts.Float
@@ -200,7 +200,7 @@ return {
           if opts.inlay_hints.enabled and cli:supports_method("textDocument/inlayHint") then
             if vim.__buf.is_valid(bufnr) and
                vim.__buf.buftype(bufnr) == "" and
-               not vim.tbl_contains(opts.inlay_hints.exclude, vim.__buf.filetype(bufnr))
+               not vim.tbl_contains(opts.inlay_hints.exclude or {}, vim.__buf.filetype(bufnr))
             then
               vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
             end
@@ -208,8 +208,12 @@ return {
 
           -- code lens
           if opts.codelens.enabled and cli:supports_method("textDocument/codeLens") then
-            vim.lsp.codelens.refresh()
-            vim.__autocmd.on({ "BufEnter", "CursorHold", "InsertLeave" }, vim.lsp.codelens.refresh, { buffer = bufnr })
+            if vim.__buf.is_valid(bufnr) and
+               vim.__buf.buftype(bufnr) == "" and
+               not vim.tbl_contains(opts.codelens.exclude or {}, vim.__buf.filetype(bufnr))
+            then
+              vim.lsp.codelens.enable(true, { bufnr = bufnr })
+            end
           end
         end
       end)
