@@ -181,7 +181,7 @@ return {
           end
 
           local server_opts = opts.servers[cli.name]
-          if server_opts.enabled ~= false then
+          if server_opts and server_opts.enabled ~= false then
             for _, spec in ipairs(server_opts.keys or {}) do
               vim.__key.rg(spec.mode or "n", spec[1], spec[2], { buffer = bufnr, silent = spec.silent or nil })
             end

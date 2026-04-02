@@ -78,7 +78,7 @@ end
 function M.close_float(async)
   local close_fn
   if async then
-    close_fn = vim.__async.schedule_wrap(function(winid)
+    close_fn = vim.schedule_wrap(function(winid)
       M.close(winid)
     end)
   else

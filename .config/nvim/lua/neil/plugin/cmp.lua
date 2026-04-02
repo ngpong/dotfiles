@@ -29,6 +29,45 @@ return {
 
       { "BlinkCmpScrollBarThumb", bg = vim.__color.dark3 },
       { "BlinkCmpScrollBarGutter", bg = vim.__color.dark0_soft },
+
+      { "BlinkCmpKindText", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindMethod", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindFunction", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindConstructor", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindField", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindVariable", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindClass", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindStruct", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindObject", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindInterface", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindModule", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindNamespace", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindProperty", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindUnit", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindValue", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindNumber", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindArray", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindEnum", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindEnumMember", fg = vim.__color.bright_aqua },
+      { "BlinkCmpKindKeyword", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindKey", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindSnippet", fg = vim.__color.bright_green },
+      { "BlinkCmpKindColor", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindFile", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindReference", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindFolder", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindCopilot", fg = vim.__color.bright_blue },
+      { "BlinkCmpKindString", fg = vim.__color.bright_green },
+      { "BlinkCmpKindConstant", fg = vim.__color.bright_orange },
+      { "BlinkCmpKindEvent", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindOperator", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindType", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindTypeParameter", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindPackage", fg = vim.__color.bright_aqua },
+      { "BlinkCmpKindStaticMethod", fg = vim.__color.bright_yellow },
+      { "BlinkCmpKindNull", fg = vim.__color.gray },
+      { "BlinkCmpKindBoolean", fg = vim.__color.bright_purple },
+      { "BlinkCmpKindUnknown", fg = vim.__color.dark2 },
     },
     opts_extend = { "sources.default" },
     opts = {
@@ -212,11 +251,6 @@ return {
           ghost_text = { enabled = false }
         }
       },
-    },
-  },
-  {
-    "saghen/blink.cmp",
-    opts = {
       appearance = {
         nerd_font_variant = "mono", -- "mono" for "Nerd Font Mono" or "normal" for "Nerd Font"
         kind_icons = {
@@ -354,50 +388,4 @@ return {
       }
     }
   },
-  {
-    "ellisonleao/gruvbox.nvim",
-    optional = true,
-    opts = {
-      overrides = {
-        BlinkCmpKindText = { fg = vim.__color.bright_orange },
-        BlinkCmpKindMethod = { fg = vim.__color.bright_blue },
-        BlinkCmpKindFunction = { fg = vim.__color.bright_blue },
-        BlinkCmpKindConstructor = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindField = { fg = vim.__color.bright_blue },
-        BlinkCmpKindVariable = { fg = vim.__color.bright_orange },
-        BlinkCmpKindClass = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindStruct = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindObject = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindInterface = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindModule = { fg = vim.__color.bright_blue },
-        BlinkCmpKindNamespace = { fg = vim.__color.bright_blue },
-        BlinkCmpKindProperty = { fg = vim.__color.bright_blue },
-        BlinkCmpKindUnit = { fg = vim.__color.bright_blue },
-        BlinkCmpKindValue = { fg = vim.__color.bright_orange },
-        BlinkCmpKindNumber = { fg = vim.__color.bright_orange },
-        BlinkCmpKindArray = { fg = vim.__color.bright_orange },
-        BlinkCmpKindEnum = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindEnumMember = { fg = vim.__color.bright_aqua },
-        BlinkCmpKindKeyword = { fg = vim.__color.bright_purple },
-        BlinkCmpKindKey = { fg = vim.__color.bright_purple },
-        BlinkCmpKindSnippet = { fg = vim.__color.bright_green },
-        BlinkCmpKindColor = { fg = vim.__color.bright_purple },
-        BlinkCmpKindFile = { fg = vim.__color.bright_blue },
-        BlinkCmpKindReference = { fg = vim.__color.bright_purple },
-        BlinkCmpKindFolder = { fg = vim.__color.bright_blue },
-        BlinkCmpKindCopilot = { fg = vim.__color.bright_blue },
-        BlinkCmpKindString = { fg = vim.__color.bright_green },
-        BlinkCmpKindConstant = { fg = vim.__color.bright_orange },
-        BlinkCmpKindEvent = { fg = vim.__color.bright_purple },
-        BlinkCmpKindOperator = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindType = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindTypeParameter = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindPackage = { fg = vim.__color.bright_aqua },
-        BlinkCmpKindStaticMethod = { fg = vim.__color.bright_yellow },
-        BlinkCmpKindNull = { fg = vim.__color.gray },
-        BlinkCmpKindBoolean = { fg = vim.__color.bright_purple },
-        BlinkCmpKindUnknown = { fg = vim.__color.dark2 },
-      }
-    },
-  }
 }

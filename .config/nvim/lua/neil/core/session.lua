@@ -92,17 +92,18 @@ local BufferSession = vim.__class.def(function(this)
       return
     end
 
-    vim.ui.select(items, { prompt = "Select restore session: " }, vim.__async.void(function(choice, idx)
+    vim.ui.select(items, { prompt = "Select restore session: " }, vim.async.void(function(choice, idx)
       if not choice or not idx then
         return
       end
 
       for _, bufnr in ipairs(barbar_state.buffers) do
         barbar_bbye.bwipeout(true, bufnr)
-        vim.__async.scheduler()
+
+        vim.async.await(vim.schedule)
       end
 
-      vim.__async.scheduler()
+      vim.async.await(vim.schedule)
       this:load(idx)
     end))
   end

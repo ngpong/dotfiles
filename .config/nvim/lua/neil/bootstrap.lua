@@ -1,24 +1,82 @@
--- 加载全局的模块
 do
   table.pack = table.pack or function(...) return { n = select("#", ...), ... } end
   table.unpack = table.unpack or function(t, i, j) return unpack(t, i or 1, j or t.n or #t) end
 
   math.randomseed(os.time())
 
-  -- fix builtin inspect
-  local inspect = vim.inspect
-  vim.inspect = function(root, options)
-    local ok, ret = pcall(inspect, root, options)
-    if not ok then
-      vim.__logger.error(root, options, ok, ret)
-      ok, ret = pcall(inspect, root, options)
-    end
-    if not ok then
-      return ""
-    else
-      return ret
-    end
+  vim.pack.add({"https://github.com/ellisonleao/gruvbox.nvim"})
+  do
+    local gb = require("gruvbox")
+    vim.__color = gb.palette
+    gb.setup({
+      undercurl = true,
+      underline = true,
+      bold = true,
+      italic = {
+        strings = true,
+        comments = false,
+        operators = false,
+        folds = true,
+      },
+      strikethrough = true,
+      invert_selection = false,
+      invert_signs = false,
+      invert_tabline = false,
+      invert_intend_guides = false,
+      inverse = true,
+      contrast = "",
+      palette_overrides = {},
+      dim_inactive = false,
+      transparent_mode = false,
+      overrides = {
+        LazyButton = { bg = vim.__color.dark4, fg = vim.__color.dark0 },
+        LazyButtonActive = { bg = vim.__color.bright_blue, fg = vim.__color.dark0, bold = true },
+        LazyH1 = { bg = vim.__color.bright_blue, fg = vim.__color.dark0, bold = true },
+        LazySpecial = { fg = vim.__color.bright_orange },
+        LazyBackdrop = { link = "Normal" },
+
+        WinSeparator = { fg = "#222222" },
+        VertSplit = { fg = vim.__color.dark0_hard },
+
+        NormalFloat = { bg = vim.__color.dark0_soft, fg = vim.__color.light1 },
+        FloatBorder = { fg = vim.__color.dark0_soft, bg = vim.__color.dark0_soft },
+        FloatTitle = { bg = vim.__color.bright_blue, fg = vim.__color.dark0_hard, bold = true },
+        FloatEndOfBuffer = { bg = vim.__color.dark0_soft, fg = vim.__color.dark0_soft },
+
+        CursorLineNr = { fg = vim.__color.bright_yellow, bg = vim.__color.dark0 },
+        CursorLine = { bg = "#302e2e" },
+        CursorLineDark = { bg = "#242424" },
+        Visual = { bg = "#384539" },
+
+        SignColumn = { bg = vim.__color.dark0 },
+
+        IndentGuide = { fg = "#3f3b38" },
+
+        WinBar = { fg = vim.__color.light2 },
+        WinBarNC = { link = "WinBar" },
+
+        -- Directory = { fg = vim.__color.light2 },
+        DirectoryIcon = { fg = "#c09553" },
+
+        -- CurSearch = { link = "Search" },
+        -- IncSearch = { link = "Search" },
+
+        StatusLine = { bg = vim.__color.dark0_soft },
+        StatusLineNC = { bg = vim.__color.dark0_soft },
+        StatusLineTermNC = { bg = vim.__color.dark0_soft },
+
+        cStatement = { fg = vim.__color.bright_red, italic = true },
+        cppStatement = { fg = vim.__color.bright_red, italic = true },
+        cConditional = { fg = vim.__color.bright_red, italic = true },
+        cRepeat = { fg = vim.__color.bright_red, italic = true },
+        cLabel = { fg = vim.__color.bright_red, italic = true },
+      }
+    })
+    vim.go.background = "dark"
+    vim.cmd.colorscheme("gruvbox")
   end
+
+  vim.async = require("neil.utils.async")
 
   vim.__g = {}
   do
@@ -26,10 +84,9 @@ do
     vim.__g.should_load_session = not should_load_session or should_load_session == "1"
   end
 
-  vim.__lazy      = require("neil.utils.lazy")
+  vim.__lazy = require("neil.utils.lazy")
+
   vim.__class     = vim.__lazy.require("neil.utils.oop")
-  vim.__async     = vim.__lazy.require("neil.utils.async")
-  vim.__job       = vim.__lazy.require("neil.utils.async.job")
   vim.__bouncer   = vim.__lazy.require("neil.utils.debounce")
   vim.__str       = vim.__lazy.require("neil.utils.str")
   vim.__tbl       = vim.__lazy.require("neil.utils.tbl")
@@ -54,73 +111,97 @@ do
   vim.__cursor    = vim.__lazy.require("neil.core.cursor")
   vim.__jumplst   = vim.__lazy.require("neil.core.jumplst")
   vim.__qfixlst   = vim.__lazy.require("neil.core.qfixlst")
-  vim.__color     = vim.__lazy.require("neil.core.color")
   vim.__plugin    = vim.__lazy.require("neil.core.plugin")
   vim.__echo      = vim.__lazy.require("neil.core.echo")
-  vim.__stl       = vim.__lazy.require("neil.core.statusline").__get()
-  vim.__session   = vim.__lazy.require("neil.core.session").__get()
-  vim.__wbr       = vim.__lazy.require("neil.core.winbar").__get()
-  vim.__bookmark  = vim.__lazy.require("neil.core.bookmark").__get()
-end
 
--- 加载用户配置
-do
+  vim.__stl      = require("neil.core.statusline")
+  vim.__session  = require("neil.core.session")
+  vim.__wbr      = require("neil.core.winbar")
+  vim.__bookmark = require("neil.core.bookmark")
+
+  -- 加载用户配置
   require("neil.config.opts")
   require("neil.config.cmds")
   require("neil.config.keymap")
+
+  vim.__autocmd.on("VimEnter", function()
+    -- clear jump list && search pattern
+    vim.__jumplst.clear()
+    vim.__helper.clear_searchpattern()
+
+    -- preserved position after yank
+    local ylnum, ycol
+    vim.__autocmd.on("ModeChanged", function()
+      if vim.v.operator == "y" then
+        ylnum, ycol = vim.__cursor.get()
+      end
+    end, { pattern = "n:no" })
+    vim.__autocmd.on("TextYankPost", function()
+      if vim.__helper.get_mode() ~= "no" or vim.v.event.operator ~= "y" then
+        return
+      end
+
+      if not vim.b.visual_multi then
+        vim.highlight.on_yank{ higroup = "Visual", timeout = 75 }
+      end
+
+      if ylnum and ycol then
+        vim.__cursor.set(ylnum, ycol)
+      end
+    end)
+  end)
 end
 
--- 确保 lazy.nvim 的安装
 do
-  local path = vim.__path.join(vim.__path.standard("data"), "lazy", "lazy.nvim")
-  if not vim.__fs.exists(path) then
-    vim.fn.system({
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable", -- latest stable release
-      path,
-    })
+  -- 确保 lazy.nvim 的安装
+  do
+    local path = vim.__path.join(vim.__path.standard("data"), "lazy", "lazy.nvim")
+    if not vim.__fs.exists(path) then
+      vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable", -- latest stable release
+        path,
+      })
+    end
+    vim.opt.rtp:prepend(path)
   end
-  vim.opt.rtp:prepend(path)
-end
 
--- 注册 lazy-spec 使用到的懒加载事件
-do
-  local lazy_event = require("lazy.core.handler.event")
+  -- 注册 lazy-spec 使用到的懒加载事件
+  do
+    local lazy_event = require("lazy.core.handler.event")
 
-  -- Add support for the LazyFile event
-  local Event = require("lazy.core.handler.event")
+    -- Add support for the LazyFile event
+    local Event = require("lazy.core.handler.event")
 
-  lazy_event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
-  lazy_event.mappings["User LazyFile"] = Event.mappings.LazyFile
+    lazy_event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
+    lazy_event.mappings["User LazyFile"] = Event.mappings.LazyFile
 
-  lazy_event.mappings.VeryLazyFile = { id = "VeryLazyFile", event = "User", pattern = "VeryLazyFile" }
-  lazy_event.mappings["User VeryLazyFile"] = Event.mappings.VeryLazyFile
+    lazy_event.mappings.VeryLazyFile = { id = "VeryLazyFile", event = "User", pattern = "VeryLazyFile" }
+    lazy_event.mappings["User VeryLazyFile"] = Event.mappings.VeryLazyFile
 
-  local group = vim.__autocmd.augroup("lazy_event")
-  group:on({ "BufReadPost", "BufNewFile", "BufWritePre" }, vim.__async.void(function(_)
-    group:del()
-    vim.__autocmd.exec("User", { pattern = "LazyFile" })
-    vim.__async.sleep(200)
-    vim.__autocmd.exec("User", { pattern = "VeryLazyFile", modeline = false })
-  end))
-end
+    local group = vim.__autocmd.augroup("lazy_event")
+    group:on({ "BufReadPost", "BufNewFile", "BufWritePre" }, vim.async.void(function(_)
+      group:del()
+      vim.__autocmd.exec("User", { pattern = "LazyFile" })
+      vim.async.sleep(200)
+      vim.__autocmd.exec("User", { pattern = "VeryLazyFile", modeline = false })
+    end))
+  end
 
--- 注册 lazy.nvim 的按键
-do
-  vim.__key.rg("n", "<leader>p", function() pcall(vim.cmd, "Lazy") end)
+  -- 注册 lazy.nvim 的按键
+  do
+    vim.__key.rg("n", "<leader>p", function() pcall(vim.cmd, "Lazy") end)
 
-  -- hijack plugin manager native key setup
-  local Config = require("lazy.view.config")
-  Config.keys.hover = "<nop>"
-  Config.keys.diff = "<nop>"
-  Config.commands.help.key = "M"
-end
+    -- hijack plugin manager native key setup
+    local Config = require("lazy.view.config")
+    Config.keys.hover = "<nop>"
+    Config.keys.diff = "<nop>"
+    Config.commands.help.key = "M"
+  end
 
--- lanugh
-do
   local function getspecs()
     local config_path = vim.__path.standard("config")
 
@@ -237,27 +318,32 @@ do
       local combconfig = specs.combconfig
 
       for _, spec in ipairs(specs) do
-        local highlights = spec.highlights spec.highlights = nil
+        local highlights = spec.highlights
+        spec.highlights = nil
         if highlights then
           combconfig = setup_spec_highlights(combconfig, highlights)
         end
 
-        local hackers = spec.hackers spec.hackers = nil
+        local hackers = spec.hackers
+        spec.hackers = nil
         if hackers then
           combconfig = setup_spec_hackers(combconfig, hackers)
         end
 
-        local dispatchs = spec.dispatchs spec.dispatchs = nil
+        local dispatchs = spec.dispatchs
+        spec.dispatchs = nil
         if dispatchs then
           combinit = setup_spec_dispatchs(combinit, dispatchs)
         end
 
-        local commands = spec.commands spec.commands = nil
+        local commands = spec.commands
+        spec.commands = nil
         if commands then
           combinit = setup_spec_commands(combinit, commands)
         end
 
-        local autocmds = spec.autocmds spec.autocmds = nil
+        local autocmds = spec.autocmds
+        spec.autocmds = nil
         if autocmds then
           combinit = setup_spec_autocmds(combinit, autocmds)
         end
@@ -441,37 +527,7 @@ do
   end, { pattern = "lazy" })
 end
 
--- finally
-do
-  -- clear jump list && search pattern
-  vim.__autocmd.on("VimEnter", function()
-    vim.__jumplst.clear()
-    vim.__helper.clear_searchpattern()
-
-    -- preserved position after yank
-    local ylnum, ycol
-    vim.__autocmd.on("ModeChanged", function()
-      if vim.v.operator == "y" then
-        ylnum, ycol = vim.__cursor.get()
-      end
-    end, { pattern = "n:no" })
-    vim.__autocmd.on("TextYankPost", function()
-      if vim.__helper.get_mode() ~= "no" or vim.v.event.operator ~= "y" then
-        return
-      end
-
-      if not vim.b.visual_multi then
-        vim.highlight.on_yank{ higroup = "Visual", timeout = 75 }
-      end
-
-      if ylnum and ycol then
-        vim.__cursor.set(ylnum, ycol)
-      end
-    end)
-  end)
-
-  -- restore session
-  if vim.__g.should_load_session then
-    vim.__session.buffer:load()
-  end
+-- restore session
+if vim.__g.should_load_session then
+  vim.__session.buffer:load()
 end

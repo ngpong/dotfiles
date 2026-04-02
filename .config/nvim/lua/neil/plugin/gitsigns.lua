@@ -73,12 +73,9 @@ return {
   },
   keys = {
     { "<leader>hd", function()
-      if vim.__win.close_diff() then
-        return
+      if not vim.__win.close_diff() then
+        require("gitsigns").diffthis()
       end
-
-      local path = vim.__buf.name(vim.__buf.current())
-      vim.__git.if_has_diff_or_untracked(path, function() require("gitsigns").diffthis() end)
     end },
     { "[h"        , function() require("gitsigns").prev_hunk({ wrap = false, navigation_message = true }) end, mode = { "n", "v" } },
     { "]h"        , function() require("gitsigns").next_hunk({ wrap = false, navigation_message = true }) end, mode = { "n", "v" } },
