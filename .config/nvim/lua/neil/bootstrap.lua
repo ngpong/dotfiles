@@ -525,6 +525,9 @@ do
       end
     end, { buffer = state.buf, once = true })
   end, { pattern = "lazy" })
+  vim.__autocmd.on("User", function()
+    vim.pack.update(nil, { force = true })
+  end, { pattern = "LazyUpdate" })
 end
 
 -- restore session
