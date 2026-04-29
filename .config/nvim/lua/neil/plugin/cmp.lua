@@ -4,10 +4,15 @@ return {
     main = "blink-cmp",
     lazy = true,
     event = { "InsertEnter", "CmdlineEnter" },
+    version = '1.*',
     dependencies = {
+      -- "saghen/blink.lib",
       "nvim-mini/mini.snippets",
     },
     build = "cargo build --release",
+    -- build = function()
+    --   require('blink.cmp').build():wait(60000)
+    -- end,
     highlights = {
       { "BlinkCmpGhostText", fg = vim.__color.dark3, italic = true },
 
@@ -127,6 +132,7 @@ return {
         ["<C-u>"] = { function(cmp) return cmp.select_prev({ count = 5 }) end },
       },
       fuzzy = {
+        -- implementation = "prefer_rust",
         implementation = "rust",
         -- label | sort_text | kind | score | exact
         -- sorts = {

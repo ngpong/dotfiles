@@ -512,11 +512,6 @@ do
 
   -- lazy autocmd
   vim.__autocmd.on("FileType", function(state)
-    vim.__autocmd.on("BufModifiedSet", function()
-      vim.__autocmd.exec("User", { pattern = "UserBufModifiedSet" })
-      vim.__stl.redraw()
-    end, { buffer = state.buf, once = true })
-
     vim.__autocmd.on("WinLeave", function()
       local view = require("lazy.view").view
 

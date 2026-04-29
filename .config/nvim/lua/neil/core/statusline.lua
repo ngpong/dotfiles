@@ -296,30 +296,30 @@ local Components = {
       return this.cfg.icontxt .. " " .. fencoding
     end,
   }),
-  modifiable = Component:new({
-    id = "modifiable",
-    rounded = { right = " " },
-    update = { { "User", pattern = "UserBufModifiedSet" }, "BufEnter" },
-    cfg = {
-      readyonly = Highlighter:draw("󱙑 ", { fg = vim.__color.bright_red }),
-      unmodifiable = Highlighter:draw("󱙏 ", { fg = vim.__color.bright_yellow }),
-    },
-    function(this, bufnr)
-      local ret = {}
-
-      local bopts = vim.bo[bufnr]
-
-      if bopts.readonly then
-        table.insert(ret, this.cfg.readyonly)
-      end
-
-      if not bopts.modifiable then
-        table.insert(ret, this.cfg.unmodifiable)
-      end
-
-      return table.concat(ret)
-    end,
-  }),
+  -- modifiable = Component:new({
+  --   id = "modifiable",
+  --   rounded = { right = " " },
+  --   update = { "BufEnter" },
+  --   cfg = {
+  --     readyonly = Highlighter:draw("󱙑 ", { fg = vim.__color.bright_red }),
+  --     unmodifiable = Highlighter:draw("󱙏 ", { fg = vim.__color.bright_yellow }),
+  --   },
+  --   function(this, bufnr)
+  --     local ret = {}
+  --
+  --     local bopts = vim.bo[bufnr]
+  --
+  --     if bopts.readonly then
+  --       table.insert(ret, this.cfg.readyonly)
+  --     end
+  --
+  --     if not bopts.modifiable then
+  --       table.insert(ret, this.cfg.unmodifiable)
+  --     end
+  --
+  --     return table.concat(ret)
+  --   end,
+  -- }),
   filetype = Component:new({
     id = "filetype",
     update = { "BufEnter", "TermEnter" },
@@ -551,7 +551,7 @@ local Statusline = vim.__class.def(function(this)
       Components.fill,
       -- Components.cmd,
       -- Components.fill,
-      Components.modifiable,
+      -- Components.modifiable,
       Components.bookmark,
       Components.multicursor,
       Components.search,
@@ -563,7 +563,7 @@ local Statusline = vim.__class.def(function(this)
     special = {
       Components.mode,
       Components.fill,
-      Components.modifiable,
+      -- Components.modifiable,
       Components.search,
       Components.os,
       Components.filetype,
@@ -574,7 +574,7 @@ local Statusline = vim.__class.def(function(this)
       Components.git_branch,
       Components.git_diff,
       Components.fill,
-      Components.modifiable,
+      -- Components.modifiable,
       Components.bookmark,
       Components.multicursor,
       Components.search,
