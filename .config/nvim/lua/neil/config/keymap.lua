@@ -49,6 +49,7 @@ local function del_keymaps()
   vim.__key.del("", "grt") -- vim.lsp.buf.implementation
   vim.__key.del("", "grr") -- vim.lsp.buf.references
   vim.__key.del("", "gra") -- vim.lsp.buf.code_action
+  vim.__key.del("", "grx") -- vim.lsp.buf.code_action
   vim.__key.del("", "grn") -- vim.lsp.buf.rename
   vim.__key.del("", "gO") -- vim.lsp.buf.document_symbol
   vim.__key.del("", "gx") -- netrw

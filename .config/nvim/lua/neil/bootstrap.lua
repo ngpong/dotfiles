@@ -142,7 +142,7 @@ do
       end
 
       if not vim.b.visual_multi then
-        vim.highlight.on_yank{ higroup = "Visual", timeout = 75 }
+        vim.hl.hl_op{ higroup = "Visual", timeout = 75 }
       end
 
       if ylnum and ycol then

@@ -55,9 +55,14 @@ function M.findwin(bufnr)
   return vim.fn.win_findbuf(bufnr)
 end
 
+-- https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
 function M.del(bufnr, force, cond)
   bufnr = bufnr or M.current()
   force = force or true
+
+  if M.is_valid(bufnr) then
+    return
+  end
 
   if cond and not cond(bufnr) then
     return false
@@ -73,75 +78,68 @@ function M.del(bufnr, force, cond)
     end
   end
 
+  local info = vim.fn.getbufinfo({ buflisted = 1 })
+  info = vim.tbl_filter(function(b) return b.bufnr ~= bufnr end, info)
+  table.sort(info, function(a, b) return a.lastused > b.lastused end)
+
+  local new_bufnr = info[1] and info[1].bufnr or vim.api.nvim_create_buf(true, false)
   for _, win in ipairs(M.findwin(bufnr)) do
-    vim.api.nvim_win_call(win, function()
-      if not vim.__win.is_valid(win) or vim.__win.bufnr(win) ~= bufnr then
-        return
-      end
-      -- Try using alternate buffer
+    local win_buf = new_bufnr
+    vim.api.nvim_win_call(win, function() -- Try using alternate buffer
       local alt = vim.fn.bufnr("#")
-      if alt ~= bufnr and vim.fn.buflisted(alt) == 1 then
-        vim.api.nvim_win_set_buf(win, alt)
-        return
-      end
-
-      -- Try using previous buffer
-      local has_previous = pcall(vim.cmd, "bprevious")
-      if has_previous and bufnr ~= vim.__win.bufnr(win) then
-        return
-      end
-
-      -- Create new listed buffer
-      local new_buf = vim.api.nvim_create_buf(true, false)
-      vim.api.nvim_win_set_buf(win, new_buf)
+      win_buf = alt >= 0 and alt ~= bufnr and vim.bo[alt].buflisted and alt or win_buf
     end)
+    vim.api.nvim_win_set_buf(win, win_buf)
   end
 
-  local success
   if M.is_valid(bufnr) then
-    success, _ = pcall(vim.cmd, "keepjumps bdelete! " .. bufnr)
-  end
+    local ei = vim.o.eventignore
+    vim.o.eventignore = "DiagnosticChanged"
+    local success, _ = pcall(vim.cmd, "keepjumps bdelete! " .. bufnr)
+    vim.o.eventignore = ei
 
-  return success
+    return success
+  else
+    return false
+  end
 end
 
+-- https://github.com/folke/snacks.nvim/blob/main/lua/snacks/bufdelete.lua
 function M.wipeout(bufnr, cond)
   bufnr = bufnr or M.current()
+
+  if M.is_valid(bufnr) then
+    return
+  end
 
   if cond and not cond(bufnr) then
     return false
   end
 
-  for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
-    vim.api.nvim_win_call(win, function()
-    if not vim.__win.is_valid(win) or vim.__win.bufnr(win) ~= bufnr then
-      return
-    end
-    -- Try using alternate buffer
-    local alt = vim.fn.bufnr("#")
-    if alt ~= bufnr and vim.fn.buflisted(alt) == 1 then
-      vim.api.nvim_win_set_buf(win, alt)
-      return
-    end
+  local info = vim.fn.getbufinfo({ buflisted = 1 })
+  info = vim.tbl_filter(function(b) return b.bufnr ~= bufnr end, info)
+  table.sort(info, function(a, b) return a.lastused > b.lastused end)
 
-    -- Try using previous buffer
-    local has_previous = pcall(vim.cmd, "bprevious")
-    if has_previous and bufnr ~= vim.__win.bufnr(win) then
-      return
-    end
-
-    -- Create new listed buffer
-    local new_buf = vim.api.nvim_create_buf(true, false)
-    vim.api.nvim_win_set_buf(win, new_buf)
+  local new_bufnr = info[1] and info[1].bufnr or vim.api.nvim_create_buf(true, false)
+  for _, win in ipairs(M.findwin(bufnr)) do
+    local win_buf = new_bufnr
+    vim.api.nvim_win_call(win, function() -- Try using alternate buffer
+      local alt = vim.fn.bufnr("#")
+      win_buf = alt >= 0 and alt ~= bufnr and vim.bo[alt].buflisted and alt or win_buf
     end)
+    vim.api.nvim_win_set_buf(win, win_buf)
   end
 
-  local success
   if M.is_valid(bufnr) then
-    success, _ = pcall(vim.cmd, "keepjumps bwipeout! " .. bufnr)
-  end
+    local ei = vim.o.eventignore
+    vim.o.eventignore = "DiagnosticChanged"
+    local success, _ = pcall(vim.cmd, "keepjumps bwipeout! " .. bufnr)
+    vim.o.eventignore = ei
 
-  return success
+    return success
+  else
+    return false
+  end
 end
 
 function M.current()
