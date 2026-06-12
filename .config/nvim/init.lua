@@ -7,4 +7,4 @@
 -- )
 
 vim.loader.enable(true)
-require "neil.bootstrap"
+require("neil.bootstrap")
