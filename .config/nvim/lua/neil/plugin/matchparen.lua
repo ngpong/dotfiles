@@ -9,7 +9,6 @@ return {
   opts = {
     enabled = true,
     hl_group = 'MatchParen',
-    debounce_time = 60,
     skip_folds = true,
   }
 }

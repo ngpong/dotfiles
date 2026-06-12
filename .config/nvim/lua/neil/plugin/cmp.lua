@@ -11,7 +11,7 @@ return {
     },
     build = "cargo build --release",
     -- build = function()
-    --   require('blink.cmp').build():wait(60000)
+    --   require('blink.cmp').build():pwait()
     -- end,
     highlights = {
       { "BlinkCmpGhostText", fg = vim.__color.dark3, italic = true },
