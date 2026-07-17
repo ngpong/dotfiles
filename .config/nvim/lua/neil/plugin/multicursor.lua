@@ -193,7 +193,7 @@ return {
       mode = "v"
     },
     {
-      "<A-`>",
+      "<A-q>",
       f_wrap(function()
         local has_cursor     = mc.hasCursors()
         local cursor_enabled = mc.cursorsEnabled()
@@ -206,7 +206,7 @@ return {
       end)
     },
     {
-      "<A-`>",
+      "<A-q>",
       f_wrap(function()
         mc.visualToCursors()
         if not mc.cursorsEnabled() then
