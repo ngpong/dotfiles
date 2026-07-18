@@ -204,6 +204,8 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
 vim.g.qf_disable_statusline = 1
+vim.g.loaded_nvim_dir_plugin = 1
+vim.g.loaded_autoread = 1
 
 -- 禁用一些无用的 providers
 vim.g.loaded_ruby_provider = 0
